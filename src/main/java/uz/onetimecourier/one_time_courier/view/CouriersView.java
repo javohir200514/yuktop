@@ -1,7 +1,6 @@
 package uz.onetimecourier.one_time_courier.view;
 
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -12,7 +11,6 @@ import com.vaadin.flow.component.html.NativeButton;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -32,7 +30,6 @@ import uz.onetimecourier.one_time_courier.service.CourierTripService;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-
 import static uz.onetimecourier.one_time_courier.view.DeliveryViewSupport.sizeLabel;
 import static uz.onetimecourier.one_time_courier.view.DeliveryViewSupport.tag;
 
@@ -42,12 +39,11 @@ import static uz.onetimecourier.one_time_courier.view.DeliveryViewSupport.tag;
  */
 @Route(value = "couriers", layout = PageLayout.class)
 @RouteAlias(value = "trips", layout = PageLayout.class)
-@PageTitle("Kurierlar | YukBor")
+@PageTitle("Kuryerlar | YukBor")
 @AnonymousAllowed
-@CssImport("./styles/my-deliveries.css")
-@CssImport("./styles/deliveries-feed.css")
-@CssImport("./styles/deliveries-modern.css")
-@CssImport("./styles/trips.css")
+@CssImport("./styles/page-head.css")
+@CssImport("./styles/deliveries-responsive.css")
+@CssImport("./styles/couriers-page.css")
 public class CouriersView extends Div {
 
     private static final Logger log = LoggerFactory.getLogger(CouriersView.class);
@@ -88,6 +84,17 @@ public class CouriersView extends Div {
 
         addClassNames("md-page", "dm-page");
 
+        // ---- sarlavha: sahifa nomi va qisqa yozuv
+        H2 title = new H2("Kuryerlar");
+        title.addClassName("dm-page-title");
+
+        Paragraph subtitle = new Paragraph(
+                "Yo'nalishingizga mos kuryer safarlarini toping va to'g'ridan-to'g'ri bog'laning.");
+        subtitle.addClassName("dm-page-sub");
+
+        Div head = new Div(title, subtitle);
+        head.addClassName("dm-page-head");
+
         // ---- filtr paneli (ochiq yuklar bilan bir xil)
         configureFilters();
         Span filterArrow = new Span("⇄");
@@ -115,7 +122,7 @@ public class CouriersView extends Div {
         listBox.addClassName("dm-list");
         buildPager();
 
-        add(filters, toolbar, alert, listBox, pager);
+        add(head, filters, toolbar, alert, listBox, pager);
         load();
     }
 
@@ -341,6 +348,7 @@ public class CouriersView extends Div {
         dialog.add(content);
         dialog.open();
     }
+
     /** Quti ikonkasi: oddiy Div, SVG ichida. Shu sababli klass doim karta elementiga tegadi. */
     private static Div iconBox() {
         Div box = new Div();
@@ -349,6 +357,7 @@ public class CouriersView extends Div {
         box.getElement().setProperty("innerHTML", BOX_SVG);
         return box;
     }
+
     private void showAlert(String message) {
         alert.setText(message);
         alert.setVisible(true);

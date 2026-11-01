@@ -1,0 +1,21 @@
+/* Sahifa sarlavhasi: Yuklar va Kuryerlar sahifalari uchun umumiy */
+
+.dm-page-head {
+    margin: 0 0 20px;
+}
+
+.dm-page-title {
+    margin: 0 0 6px;
+    color: #102b50;
+    font-size: clamp(24px, 3vw, 32px);
+    font-weight: 850;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+}
+
+.dm-page-sub {
+    margin: 0;
+    color: #647895;
+    font-size: 15px;
+    line-height: 1.6;
+}

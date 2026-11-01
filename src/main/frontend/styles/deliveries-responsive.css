@@ -1,7 +1,16 @@
-/* ============================================================
-   Ochiq yuklar: ikonka, holat rangi, responsive
+/* =====================================================
+   Ochiq yuklar: karta, ikonka, holat, responsive
    Bu fayl boshqa dm-* uslublardan keyin yuklanadi va ularni tuzatadi.
-   ============================================================ */
+   ===================================================== */
+
+:root {
+  --dm-navy: #102b50;
+  --dm-blue: #1764ed;
+  --dm-blue-dark: #104fc4;
+  --dm-green: #17b26a;
+  --dm-muted: #6b7280;
+  --dm-line: #e5e7eb;
+}
 
 .dm-page {
   box-sizing: border-box;
@@ -52,8 +61,8 @@
   min-width: 0;
   padding: 18px 20px;
   background: #fff;
-  border: 1px solid #e5e7eb;
-  border-left: 4px solid #17b26a;
+  border: 1px solid var(--dm-line);
+  border-left: 4px solid var(--dm-green);
   border-radius: 18px;
 }
 
@@ -61,7 +70,7 @@
   min-width: 0;
 }
 
-/* Ikonka: doim kvadrat, hech qachon cho'zilmaydi, har doim ko'rinadi */
+/* Ikonka: kvadrat, rangli gradient */
 .dm-card > .dm-card-icon {
   flex: 0 0 auto;
   display: flex;
@@ -72,8 +81,9 @@
   min-width: 52px;
   aspect-ratio: 1 / 1;
   border-radius: 14px;
-  background: #111827;
+  background: linear-gradient(135deg, var(--dm-navy), var(--dm-blue));
   color: #fff;
+  box-shadow: 0 8px 16px rgba(23, 100, 237, 0.22);
 }
 
 .dm-card-icon svg {
@@ -96,7 +106,7 @@
   gap: 10px;
   font-size: 18px;
   font-weight: 700;
-  color: #111827;
+  color: var(--dm-navy);
 }
 
 .dm-tags {
@@ -107,10 +117,10 @@
 
 .dm-date {
   font-size: 13px;
-  color: #6b7280;
+  color: var(--dm-muted);
 }
 
-/* ---------------- holat, narx, tugma ---------------- */
+/* ---------------- holat, narx, tugma (kengda) ---------------- */
 
 .dm-card > .dm-card-side {
   flex: 0 0 auto;
@@ -119,7 +129,7 @@
   gap: 14px;
 }
 
-/* "Kuryer qidirilmoqda": yashil belgi, bir qatorda */
+/* "Kuryer qidirilmoqda": yashil belgi */
 .dm-status {
   display: inline-flex;
   align-items: center;
@@ -135,30 +145,43 @@
   white-space: nowrap;
 }
 
-/* Nuqta doira bo'lib qoladi (ovalga aylanmaydi) */
+/* Nuqta doira bo'lib qoladi */
 .dm-status-dot {
   flex: 0 0 8px;
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #17b26a;
+  background: var(--dm-green);
   box-shadow: 0 0 0 3px rgba(23, 178, 106, 0.18);
 }
 
 .dm-reward {
   font-size: 20px;
-  font-weight: 700;
-  color: #111827;
+  font-weight: 800;
+  color: var(--dm-navy);
   white-space: nowrap;
 }
 
-.dm-card-side .dm-deliver {
+/* Yetkazib berish tugmasi: sayt palitrasidagi ko'k */
+.dm-card .dm-card-side .dm-deliver {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-height: 44px;
   padding: 0 18px;
+  border: none;
+  border-radius: 12px;
+  background: var(--dm-blue) !important;
+  color: #fff !important;
+  font-weight: 700;
   white-space: nowrap;
+  box-shadow: 0 8px 18px rgba(23, 100, 237, 0.25);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.dm-card .dm-card-side .dm-deliver:hover {
+  background: var(--dm-blue-dark) !important;
+  transform: translateY(-1px);
 }
 
 /* ---------------- sahifalash ---------------- */
@@ -197,10 +220,10 @@
     gap: 12px;
   }
 
-  /* Karta ikki qatorli: yuqorida ikonka + matn, pastda holat/narx/tugma */
+  /* Karta: yuqorida ikonka + matn, pastda holat/narx/tugma */
   .dm-card.dm-card {
     display: grid;
-    grid-template-columns: 52px minmax(0, 1fr);
+    grid-template-columns: 48px minmax(0, 1fr);
     column-gap: 14px;
     row-gap: 12px;
     align-items: start;
@@ -210,63 +233,134 @@
   .dm-card > .dm-card-icon {
     grid-column: 1;
     grid-row: 1;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    border-radius: 14px;
   }
 
   .dm-card > .dm-card-main {
     grid-column: 2;
     grid-row: 1;
+    gap: 8px;
   }
 
+  /* Yo'nalish: bitta qatorda, chiziq o'rniga strelka */
+  .dm-route {
+    flex-wrap: nowrap;
+    gap: 6px;
+    width: 100%;
+    min-width: 0;
+    font-size: 15px;
+    line-height: 1.3;
+  }
+
+  .dm-route-line {
+    display: none;
+  }
+
+  .dm-route > span {
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .dm-route > span:first-child::after {
+    content: "→";
+    display: inline-block;
+    margin: 0 6px;
+    color: #94a3b8;
+    font-weight: 500;
+  }
+
+  /* Teglar: kichik va ixcham */
+  .dm-tags {
+    gap: 6px;
+  }
+
+  .dm-tags > * {
+    padding: 4px 10px;
+    font-size: 12px;
+  }
+
+  .dm-date {
+    font-size: 12px;
+  }
+
+  /* Pastki qism: holat va narx birinchi qatorda, tugma to'liq kenglikda */
   .dm-card > .dm-card-side {
     grid-column: 1 / -1;
     grid-row: 2;
     display: grid;
-    grid-template-columns: max-content max-content;
-    justify-content: space-between;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
-    gap: 10px 12px;
+    gap: 12px;
     width: 100%;
-    padding-top: 12px;
-    border-top: 1px dashed #e5e7eb;
+    padding-top: 14px;
+    border-top: 1px dashed var(--dm-line);
+  }
+
+  .dm-status {
+    justify-self: start;
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+
+  .dm-reward {
+    justify-self: end;
+    font-size: 17px;
+  }
+
+  .dm-card .dm-card-side .dm-deliver {
+    grid-column: 1 / -1;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    min-height: 48px;
+    font-size: 15px;
+    white-space: normal;
+    text-align: center;
   }
 
   .dm-card > .dm-extra {
     grid-column: 1 / -1;
     grid-row: 3;
   }
-
-  .dm-route {
-    font-size: 16px;
-  }
-
-  .dm-reward {
-    font-size: 17px;
-  }
-
-  /* Tugma to'liq kenglikda, kesilmasdan */
-  .dm-card-side .dm-deliver {
-    grid-column: 1 / -1;
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    box-sizing: border-box;
-    white-space: normal;
-    overflow: visible;
-    text-align: center;
-  }
 }
 
-/* Juda tor ekran: ikonkasiz, bir ustun */
+/* Juda tor ekran: ikonka kichrayadi, matn kengroq */
 @media (max-width: 360px) {
   .dm-card.dm-card {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: 40px minmax(0, 1fr);
+    column-gap: 10px;
+    padding: 14px;
   }
 
   .dm-card > .dm-card-icon {
-    display: none;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: 12px;
   }
 
-  .dm-card > .dm-card-main {
-    grid-column: 1;
+  .dm-card-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .dm-route {
+    font-size: 14px;
+  }
+
+  .dm-reward {
+    font-size: 15px;
+  }
+}
+
+/* Animatsiyalarni kamaytirish */
+@media (prefers-reduced-motion: reduce) {
+  .dm-card .dm-card-side .dm-deliver {
+    transition: none;
   }
 }
