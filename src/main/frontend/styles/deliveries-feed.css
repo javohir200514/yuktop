@@ -1,0 +1,186 @@
+/* Ochiq yuklar va kuryer sahifalari uchun qo'shimcha uslublar. Sinflar df- bilan boshlanadi.
+   Asosiy kartochka/tab/dialog uslublari my-deliveries.css (md-) da. */
+
+/* Havola ko'rinishidagi tugmalar */
+.df-link-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.md-btn--solid {
+  color: #fff;
+  background: var(--md-blue);
+  border: 1px solid var(--md-blue);
+}
+
+.md-btn--solid:hover:not(:disabled) {
+  background: #1d4fd0;
+}
+
+/* Kirmaganlar uchun blok */
+.df-gate {
+  margin-bottom: 16px;
+  padding: 16px;
+  background: #fff8e1;
+  border: 1px solid #f3dc9a;
+  border-radius: 10px;
+}
+
+.df-gate-title {
+  display: block;
+  font-family: "Bricolage Grotesque", "Manrope", system-ui, sans-serif;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.df-gate-text {
+  margin: 6px 0 0;
+  line-height: 1.5;
+  color: var(--md-muted);
+}
+
+.df-gate-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+@media (max-width: 479px) {
+  .df-gate-actions .md-btn {
+    flex: 1 1 100%;
+  }
+}
+
+/* Jo'natuvchi hisobi uchun izoh */
+.df-note {
+  margin-bottom: 16px;
+  padding: 10px 12px;
+  font-size: 0.9375rem;
+  background: var(--md-bg);
+  border: 1px solid var(--md-line);
+  border-radius: 8px;
+}
+
+/* Viloyat filtri */
+.df-filters {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+@media (min-width: 640px) {
+  .df-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 640px;
+  }
+}
+
+/* "Ro'yxat yangilandi" bloki */
+.df-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  font-size: 0.9375rem;
+  background: #eef4ff;
+  border: 1px solid #b9cdf0;
+  border-radius: 8px;
+}
+
+/* Kuryer uchun jo'natuvchi bloki */
+.df-contact {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  margin-top: 14px;
+  padding: 12px;
+  background: var(--md-bg);
+  border: 1px solid var(--md-line);
+  border-radius: 8px;
+}
+
+@media (min-width: 560px) {
+  .df-contact {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.df-contact-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+}
+
+.df-hint {
+  margin: 10px 0 0;
+  font-size: 0.8125rem;
+  color: var(--md-muted);
+}
+
+.df-verify {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 999px;
+}
+
+.df-contact-row .df-verify {
+  margin-top: 0;
+}
+
+.df-verify--no {
+  color: #6b4e00;
+  background: #fff1c7;
+}
+
+.df-verify--yes {
+  color: #0f5132;
+  background: #d8f1e1;
+}
+
+/* Qabul qilingan yuk: ma'lumot bloklari (2 ustun) */
+.df-blocks {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--md-line);
+}
+
+@media (min-width: 720px) {
+  .df-blocks {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px 24px;
+  }
+}
+
+.df-blocks .md-block-value,
+.md-block .md-block-value {
+  margin-bottom: 2px;
+}
+
+.df-desc {
+  margin-top: 12px;
+}
+
+.df-link {
+  font-weight: 600;
+  color: var(--md-blue);
+  overflow-wrap: anywhere;
+}
+
+.df-link:focus-visible {
+  outline: 2px solid var(--md-blue);
+  outline-offset: 2px;
+}

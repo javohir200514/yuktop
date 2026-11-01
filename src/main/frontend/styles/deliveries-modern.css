@@ -1,0 +1,458 @@
+/* ===== YukBor: "Yuklar" sahifasi (v6, oq-qora, ixcham) ===== */
+
+html:has(.dm-page),
+body:has(.dm-page) {
+  background: #fff;
+}
+
+.dm-page {
+  --dm-black: #0a0a0a;
+  --dm-white: #ffffff;
+  --dm-muted: #737373;
+  --dm-line: #e5e5e5;
+  --dm-field: #f4f4f4;
+  padding-top: 28px;
+  padding-bottom: 56px;
+  color: var(--dm-black);
+}
+
+/* ---------- Filtr paneli ---------- */
+.dm-page .dm-filter-bar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto;
+  align-items: end;
+  gap: 14px;
+  margin-bottom: 22px;
+  padding: 20px 24px;
+  background: var(--dm-white);
+  border: 1px solid var(--dm-line);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .07);
+}
+.dm-page .dm-filter-bar vaadin-select { min-width: 0; }
+.dm-page .dm-filter-bar vaadin-select::part(label) {
+  margin-bottom: 4px;
+  color: var(--dm-black);
+  font-weight: 600;
+  font-size: .9rem;
+}
+.dm-page .dm-filter-bar vaadin-select::part(input-field) {
+  min-height: 50px;
+  border-radius: 14px;
+  background: var(--dm-field);
+  box-shadow: inset 0 0 0 1px transparent;
+  transition: box-shadow .15s ease, background .15s ease;
+}
+.dm-page .dm-filter-bar vaadin-select:hover::part(input-field) { background: #ececec; }
+.dm-page .dm-filter-bar vaadin-select[focused]::part(input-field),
+.dm-page .dm-filter-bar vaadin-select[opened]::part(input-field) {
+  background: var(--dm-white);
+  box-shadow: inset 0 0 0 2px var(--dm-black);
+}
+.dm-page .dm-filter-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  background: var(--dm-black);
+  color: var(--dm-white);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+/* ---------- Tugmalar ---------- */
+.dm-page .dm-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  border: 0;
+  border-radius: 12px;
+  font: inherit;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease, background .15s ease, color .15s ease;
+}
+.dm-page .dm-btn--solid { background: var(--dm-black); color: var(--dm-white); }
+.dm-page .dm-btn--solid:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, .28);
+}
+.dm-page .dm-btn--ghost {
+  background: var(--dm-white);
+  color: var(--dm-black);
+  box-shadow: inset 0 0 0 1.5px var(--dm-black);
+}
+.dm-page .dm-btn--ghost:hover { background: var(--dm-black); color: var(--dm-white); }
+.dm-page .dm-clear { height: 50px; }
+
+/* ---------- Gate (faqat kirmaganlar uchun) ---------- */
+.dm-page .dm-gate {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding: 18px 22px;
+  border-radius: 16px;
+  background: var(--dm-field);
+  border: 1px solid var(--dm-line);
+}
+.dm-page .dm-gate-title { display: block; font-size: 1rem; font-weight: 800; color: var(--dm-black); }
+.dm-page .dm-gate-text { margin: 4px 0 0; color: var(--dm-muted); font-size: .9rem; }
+.dm-page .dm-gate-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+
+/* ---------- Xabarlar ---------- */
+.dm-page .dm-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 12px 18px;
+  border-radius: 14px;
+  background: var(--dm-black);
+  color: var(--dm-white);
+  font-weight: 600;
+}
+.dm-page .dm-banner .dm-btn--ghost {
+  background: transparent;
+  color: var(--dm-white);
+  box-shadow: inset 0 0 0 1.5px var(--dm-white);
+}
+.dm-page .dm-banner .dm-btn--ghost:hover { background: var(--dm-white); color: var(--dm-black); }
+
+.dm-page .dm-alert {
+  margin-bottom: 16px;
+  padding: 12px 18px;
+  border-radius: 14px;
+  background: var(--dm-white);
+  border: 2px solid var(--dm-black);
+  color: var(--dm-black);
+  font-weight: 700;
+}
+
+/* ---------- Jami ---------- */
+.dm-page .dm-total {
+  display: inline-block;
+  margin: 2px 4px 14px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  background: var(--dm-black);
+  color: var(--dm-white);
+  font-size: .82rem;
+  font-weight: 700;
+}
+
+/* ---------- Ro'yxat: har qatorda bitta uzun karta ---------- */
+.dm-page .dm-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@keyframes dm-rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.dm-page .dm-card {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 16px 24px;
+  align-items: center;
+  padding: 22px 28px 22px 30px;
+  background: var(--dm-white);
+  border: 1px solid var(--dm-line);
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .04);
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  animation: dm-rise .35s ease backwards;
+}
+.dm-page .dm-card:nth-child(2) { animation-delay: .05s; }
+.dm-page .dm-card:nth-child(3) { animation-delay: .10s; }
+.dm-page .dm-card:nth-child(4) { animation-delay: .15s; }
+.dm-page .dm-card:nth-child(n+5) { animation-delay: .2s; }
+
+.dm-page .dm-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: var(--dm-black);
+}
+.dm-page .dm-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--dm-black);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, .14);
+}
+
+/* ikonka */
+.dm-page .dm-card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  background: var(--dm-black);
+  color: var(--dm-white);
+}
+
+/* o'rta qism */
+.dm-page .dm-card-main {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+.dm-page .dm-route {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  color: var(--dm-black);
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: -.015em;
+}
+/* nuqta ──── nuqta */
+.dm-page .dm-route-line {
+  position: relative;
+  width: 64px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--dm-black);
+}
+.dm-page .dm-route-line::before,
+.dm-page .dm-route-line::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  margin-top: -5px;
+  border-radius: 50%;
+}
+.dm-page .dm-route-line::before { left: -5px;  background: var(--dm-white); box-shadow: inset 0 0 0 2px var(--dm-black); }
+.dm-page .dm-route-line::after  { right: -5px; background: var(--dm-black); }
+
+.dm-page .dm-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.dm-page .dm-tags > * {
+  padding: 4px 13px;
+  border-radius: 999px;
+  background: var(--dm-white);
+  box-shadow: inset 0 0 0 1px #cfcfcf;
+  color: var(--dm-black);
+  font-size: .8rem;
+  font-weight: 600;
+}
+.dm-page .dm-date { color: var(--dm-muted); font-size: .84rem; }
+
+/* o'ng qism */
+.dm-page .dm-card-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  padding-left: 28px;
+  border-left: 1px dashed #bdbdbd;
+  min-width: 190px;
+}
+/* status belgisi: oq fonda qora ramkali pill */
+.dm-page .dm-card-side > :first-child {
+  background: var(--dm-white) !important;
+  color: var(--dm-black) !important;
+  box-shadow: inset 0 0 0 1.5px var(--dm-black);
+  border: 0 !important;
+  font-weight: 700;
+}
+.dm-page .dm-extra .df-contact-row > * { filter: grayscale(1) contrast(1.15); }
+
+/* "Yetkazib berish" tugmasi: har bir kartada, o'ng ustunning pastida */
+.dm-page .dm-card-side .dm-deliver {
+  width: 100%;
+  margin-top: auto;
+  padding: 12px 20px;
+}
+
+.dm-page .dm-reward {
+  color: var(--dm-black);
+  font-size: 1.7rem;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  white-space: nowrap;
+}
+
+/* kuryer uchun qo'shimcha blok */
+.dm-page .dm-extra {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px 24px;
+  padding-top: 16px;
+  border-top: 1px dashed #bdbdbd;
+}
+.dm-page .dm-extra .df-contact {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--dm-field);
+}
+.dm-page .dm-extra .df-hint { margin: 0; color: var(--dm-muted); font-size: .84rem; }
+.dm-page .dm-actions { display: flex; justify-content: flex-end; }
+
+/* ---------- Bo'sh holat ---------- */
+.dm-page .dm-empty {
+  padding: 56px 20px;
+  text-align: center;
+  border: 2px dashed #bdbdbd;
+  border-radius: 20px;
+  background: var(--dm-white);
+}
+.dm-page .dm-empty-title { margin: 0 0 6px; color: var(--dm-black); font-size: 1.25rem; font-weight: 800; }
+.dm-page .dm-empty-text { margin: 0; color: var(--dm-muted); }
+
+/* ---------- Pager ---------- */
+.dm-page .dm-pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 26px;
+}
+.dm-page .dm-page-btn {
+  padding: 10px 18px;
+  border: 1.5px solid var(--dm-black);
+  border-radius: 12px;
+  background: var(--dm-white);
+  color: var(--dm-black);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease;
+}
+.dm-page .dm-page-btn:hover:not([disabled]) { background: var(--dm-black); color: var(--dm-white); }
+.dm-page .dm-page-btn[disabled] { opacity: .35; cursor: default; }
+.dm-page .dm-page-label { color: var(--dm-muted); font-weight: 600; }
+
+/* ---------- Animatsiyani xohlamaganlar uchun ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .dm-page .dm-card { animation: none; }
+  .dm-page .dm-card,
+  .dm-page .dm-btn { transition: none; }
+}
+
+/* ---------- Mobil / planshet ---------- */
+@media (max-width: 820px) {
+  .dm-page .dm-filter-bar { grid-template-columns: 1fr; padding: 16px; }
+  .dm-page .dm-filter-arrow { display: none; }
+  .dm-page .dm-clear { height: auto; }
+  .dm-page .dm-gate { flex-direction: column; align-items: flex-start; }
+
+  .dm-page .dm-card { grid-template-columns: 1fr; padding: 20px 20px 18px 24px; }
+  .dm-page .dm-card-icon { display: none; }
+  .dm-page .dm-card-side {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0 0;
+    border-left: 0;
+    border-top: 1px dashed #bdbdbd;
+    min-width: 0;
+  }
+  .dm-page .dm-route { font-size: 1.15rem; gap: 10px; }
+  .dm-page .dm-route-line { width: 36px; }
+  .dm-page .dm-reward { font-size: 1.4rem; }
+  .dm-page .dm-extra { grid-template-columns: 1fr; }
+  .dm-page .dm-extra .df-contact { grid-template-columns: 1fr; }
+  .dm-page .dm-actions { justify-content: stretch; }
+  .dm-page .dm-actions .dm-btn { width: 100%; }
+}
+/* ===== Kuryer yuklari sahifasi: deliveries-modern.css ustiga qo'shimchalar ===== */
+
+/* ---------- Tablar ---------- */
+.dm-page .dm-tabs {
+  display: inline-flex;
+  gap: 4px;
+  margin-bottom: 22px;
+  padding: 5px;
+  border-radius: 16px;
+  background: var(--dm-field);
+}
+.dm-page .dm-tab {
+  padding: 10px 22px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--dm-muted);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease, box-shadow .15s ease;
+}
+.dm-page .dm-tab:hover { color: var(--dm-black); }
+.dm-page .dm-tab--active {
+  background: var(--dm-black);
+  color: var(--dm-white);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, .2);
+}
+
+/* ---------- Manzillar va aloqa bloki ---------- */
+.dm-page .dm-detail-grid {
+  grid-template-columns: repeat(4, 1fr);
+  align-items: start;
+  gap: 14px 20px;
+}
+.dm-page .dm-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--dm-field);
+}
+.dm-page .dm-detail-label {
+  color: var(--dm-muted);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.dm-page .dm-detail-value {
+  color: var(--dm-black);
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.dm-page .dm-detail-phone {
+  align-self: flex-start;
+  margin-top: 2px;
+  padding: 3px 12px;
+  border-radius: 999px;
+  background: var(--dm-black);
+  color: var(--dm-white);
+  font-size: .82rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+.dm-page .dm-detail-phone:hover { box-shadow: 0 6px 14px rgba(0, 0, 0, .25); }
+
+@media (max-width: 1000px) {
+  .dm-page .dm-detail-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 820px) {
+  .dm-page .dm-tabs { display: flex; }
+  .dm-page .dm-tab { flex: 1; padding: 10px 12px; }
+  .dm-page .dm-detail-grid { grid-template-columns: 1fr; }
+}

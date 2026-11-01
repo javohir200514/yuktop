@@ -1,0 +1,53 @@
+.rc-card {
+  padding: 16px 24px !important;
+}
+
+.rc-card .brand-name {
+  font-size: 1.3rem;
+}
+
+.rc-card .brand-tagline {
+  display: none;
+}
+
+.rc-card .yukbor-brand {
+  margin-bottom: 4px;
+}
+
+.rc-card .login-title {
+  font-size: 1.6rem;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.rc-desc {
+  margin: 0 0 12px;
+  font-size: 0.85rem;
+}
+
+.rc-form {
+  gap: 8px;
+}
+
+.rc-input::part(input-field) {
+  min-height: 40px;
+}
+
+.rc-input input {
+  font-size: 0.95rem;
+}
+
+.rc-input::part(label) {
+  font-size: 0.8rem;
+  padding-bottom: 2px;
+}
+
+.rc-submit {
+  height: 44px;
+  margin-top: 8px;
+}
+
+.rc-footer {
+  margin-top: 10px;
+  font-size: 0.85rem;
+}

@@ -1,0 +1,1316 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+
+/* =========================================
+   ONE-TIME COURIER — LOGIN THEME
+   ========================================= */
+
+:root {
+    --otc-white: #ffffff;
+    --otc-sky-50: #f3f8ff;
+    --otc-sky-100: #e5f0ff;
+    --otc-blue-600: #246bdf;
+    --otc-blue-700: #175cd3;
+    --otc-blue-800: #124ba9;
+    --otc-violet-500: #6c63f2;
+    --otc-ink-900: #13213c;
+    --otc-ink-600: #5d6b82;
+    --otc-ink-400: #8d9ab0;
+    --otc-border: #dce7f7;
+    --otc-font: 'Manrope', Arial, sans-serif;
+    --otc-radius-sm: 12px;
+    --otc-radius-md: 16px;
+    --otc-radius-card: 28px;
+    --otc-shadow-card:
+        0 26px 70px rgba(31, 80, 153, 0.14),
+        0 4px 18px rgba(31, 80, 153, 0.06);
+    --otc-shadow-button: 0 12px 24px rgba(36, 107, 223, 0.24);
+}
+
+html,
+body {
+    width: 100%;
+    min-width: 320px;
+    min-height: 100%;
+    margin: 0;
+    font-family: var(--otc-font);
+    color: var(--otc-ink-900);
+}
+
+body {
+    min-height: 100vh;
+    min-height: 100dvh;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+button,
+input {
+    font: inherit;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* =========================================
+   AUTH LAYOUT
+   ========================================= */
+
+.auth-shell {
+    position: relative;
+    isolation: isolate;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: 28px 20px;
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 50% 0%,
+            rgba(190, 219, 255, .8),
+            transparent 42%
+        ),
+        radial-gradient(
+            circle at 8% 85%,
+            rgba(147, 190, 255, .25),
+            transparent 28%
+        ),
+        linear-gradient(
+            145deg,
+            #f9fcff 0%,
+            #eff7ff 48%,
+            #f4f2ff 100%
+        );
+}
+
+.auth-shell::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 50%;
+    left: 50%;
+    width: min(850px, 85vw);
+    aspect-ratio: 1;
+    border: 1px solid rgba(133, 175, 235, .2);
+    border-radius: 50%;
+    box-shadow:
+        0 0 0 70px rgba(255, 255, 255, .14),
+        0 0 0 145px rgba(130, 176, 239, .05);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+/* Eski chap panel */
+.auth-side {
+    display: none !important;
+}
+
+/* AuthLayout asosiy kontenti */
+.auth-main {
+    position: relative;
+    z-index: 1;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: 20px !important;
+    background: transparent !important;
+}
+
+/* =========================================
+   LOGIN CARD
+   ========================================= */
+
+.login-stage {
+    position: relative;
+    z-index: 2;
+    width: min(100%, 500px);
+    max-height: calc(100dvh - 40px);
+    overflow-y: auto;
+    padding: 27px 40px 30px;
+    margin: auto;
+
+    border: 1px solid rgba(255, 255, 255, .92);
+    border-radius: var(--otc-radius-card);
+    background: rgba(255, 255, 255, .94);
+    box-shadow: var(--otc-shadow-card);
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    animation: otc-card-enter .5s cubic-bezier(.2, .7, .2, 1) both;
+}
+
+@keyframes otc-card-enter {
+    from {
+        opacity: 0;
+        transform: translateY(15px) scale(.985);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* =========================================
+   BRAND / LOGO
+   ========================================= */
+
+.login-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 11px;
+    margin-bottom: 14px;
+}
+
+.login-logo-icon {
+    display: grid;
+    place-items: center;
+    width: 45px;
+    height: 45px;
+    flex: 0 0 45px;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, .45);
+    border-radius: 15px;
+
+    background: linear-gradient(
+        140deg,
+        #36a0ff 0%,
+        #246bdf 56%,
+        #6c63f2 100%
+    );
+
+    box-shadow:
+        0 8px 18px rgba(36, 107, 223, .25),
+        inset 0 1px 0 rgba(255, 255, 255, .4);
+
+    transform: rotate(-3deg);
+}
+
+.login-logo-icon vaadin-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.login-logo-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.login-logo-name {
+    color: var(--otc-ink-900);
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: .11em;
+    line-height: 1;
+}
+
+.login-logo-accent {
+    color: var(--otc-blue-700);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .24em;
+    line-height: 1;
+}
+
+/* =========================================
+   DECORATIVE DELIVERY ILLUSTRATION
+   ========================================= */
+
+.delivery-illustration {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 106px;
+    margin: 0 auto 8px;
+    overflow: hidden;
+    border-radius: 20px;
+
+    background:
+        radial-gradient(
+            ellipse at 50% 105%,
+            rgba(85, 145, 255, .18),
+            transparent 65%
+        ),
+        linear-gradient(
+            135deg,
+            #f7fbff,
+            #eef5ff 60%,
+            #f5f3ff
+        );
+}
+
+.delivery-illustration::before {
+    content: "";
+    position: absolute;
+    left: 12%;
+    right: 12%;
+    top: 50%;
+    height: 1px;
+    border-top: 2px dashed rgba(75, 131, 223, .32);
+    transform: translateY(-50%);
+}
+
+.delivery-illustration::after {
+    content: "";
+    position: absolute;
+    bottom: 15px;
+    left: 20%;
+    right: 20%;
+    height: 9px;
+    border-radius: 50%;
+    background: rgba(64, 105, 181, .11);
+    filter: blur(5px);
+}
+
+.delivery-truck {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 86px;
+    height: 67px;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, .55);
+    border-radius: 19px;
+    background: linear-gradient(145deg, #399dff, #2463e8 70%, #4f5ee9);
+    box-shadow:
+        0 12px 22px rgba(36, 107, 223, .26),
+        inset 0 1px 0 rgba(255, 255, 255, .35);
+    transform: translateX(-12px);
+}
+
+.delivery-truck vaadin-icon {
+    width: 39px;
+    height: 39px;
+}
+
+.delivery-parcel {
+    position: absolute;
+    z-index: 3;
+    top: 10px;
+    left: calc(50% + 45px);
+    display: grid;
+    place-items: center;
+    width: 37px;
+    height: 37px;
+    color: #fff;
+    border: 2px solid rgba(255, 255, 255, .9);
+    border-radius: 12px;
+    background: linear-gradient(145deg, #ffbd68, #f58a42);
+    box-shadow: 0 7px 15px rgba(231, 138, 54, .25);
+    transform: rotate(8deg);
+}
+
+.delivery-parcel vaadin-icon {
+    width: 21px;
+    height: 21px;
+}
+
+.delivery-location {
+    position: absolute;
+    z-index: 3;
+    top: 13px;
+    left: calc(50% - 76px);
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    color: #fff;
+    border-radius: 50% 50% 50% 10px;
+    background: linear-gradient(145deg, #7e7af7, #5b54dd);
+    box-shadow: 0 6px 14px rgba(91, 84, 221, .25);
+    transform: rotate(-45deg);
+}
+
+.delivery-location vaadin-icon {
+    width: 17px;
+    height: 17px;
+    transform: rotate(45deg);
+}
+
+/* =========================================
+   HEADING
+   ========================================= */
+
+.auth-head {
+    margin: 0 0 23px;
+    text-align: center;
+}
+
+.eyebrow {
+    display: inline-block;
+    margin-bottom: 8px;
+    color: var(--otc-blue-700);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .19em;
+}
+
+.login-title,
+.auth-head h1 {
+    margin: 0;
+    color: var(--otc-ink-900);
+    font-size: clamp(26px, 4vw, 31px);
+    font-weight: 800;
+    line-height: 1.25;
+    letter-spacing: -.045em;
+}
+
+.login-title span,
+.auth-head h1 span {
+    color: var(--otc-blue-700);
+}
+
+.login-description {
+    display: block;
+    max-width: 350px;
+    margin: 9px auto 0;
+    color: var(--otc-ink-600);
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+/* =========================================
+   FORM AND FIELDS
+   ========================================= */
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+}
+
+.auth-form vaadin-text-field,
+.auth-form vaadin-password-field {
+    display: block;
+    width: 100%;
+}
+
+.auth-form vaadin-text-field::part(label),
+.auth-form vaadin-password-field::part(label) {
+    margin-bottom: 7px;
+    color: #283956;
+    font-family: var(--otc-font);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.auth-form vaadin-text-field::part(input-field),
+.auth-form vaadin-password-field::part(input-field) {
+    min-height: 54px;
+    border: 1px solid var(--otc-border);
+    border-radius: var(--otc-radius-md);
+    background: #f9fbff;
+    box-shadow: none;
+
+    transition:
+        border-color .18s ease,
+        background .18s ease,
+        box-shadow .18s ease;
+}
+
+.auth-form vaadin-text-field:hover::part(input-field),
+.auth-form vaadin-password-field:hover::part(input-field) {
+    border-color: #b8cdf8;
+    background: #fff;
+}
+
+.auth-form vaadin-text-field[focused]::part(input-field),
+.auth-form vaadin-password-field[focused]::part(input-field) {
+    border-color: #73a9f4;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(36, 107, 223, .1);
+}
+
+.auth-form vaadin-text-field[invalid]::part(input-field),
+.auth-form vaadin-password-field[invalid]::part(input-field) {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, .08);
+}
+
+.auth-form vaadin-text-field::part(input),
+.auth-form vaadin-password-field::part(input) {
+    color: var(--otc-ink-900);
+    font-family: var(--otc-font);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.auth-form vaadin-text-field::part(input)::placeholder,
+.auth-form vaadin-password-field::part(input)::placeholder {
+    color: var(--otc-ink-400);
+}
+
+.in-chip {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    margin-right: 4px;
+    color: var(--otc-blue-700);
+    border-radius: 9px;
+    background: var(--otc-sky-100);
+}
+
+.in-chip vaadin-icon {
+    width: 16px;
+    height: 16px;
+}
+
+/* =========================================
+   PRIMARY BUTTON
+   ========================================= */
+
+vaadin-button.otc-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 56px;
+    padding: 0 20px;
+    color: #fff;
+    border: 0;
+    border-radius: var(--otc-radius-md);
+
+    background: linear-gradient(
+        110deg,
+        #1762e9,
+        #246bdf 58%,
+        #625fe9
+    );
+
+    box-shadow: var(--otc-shadow-button);
+    font-family: var(--otc-font);
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease,
+        filter .18s ease;
+}
+
+vaadin-button.otc-full {
+    width: 100%;
+    margin-top: 2px;
+}
+
+vaadin-button.otc-btn:hover {
+    filter: brightness(1.05);
+    transform: translateY(-2px);
+    box-shadow: 0 15px 28px rgba(36, 107, 223, .3);
+}
+
+vaadin-button.otc-btn:active {
+    transform: translateY(0);
+}
+
+vaadin-button.otc-btn[disabled] {
+    opacity: .65;
+    cursor: wait;
+    transform: none;
+}
+
+/* =========================================
+   REGISTER LINK
+   ========================================= */
+
+.auth-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 22px;
+    color: var(--otc-ink-600);
+    font-size: 12px;
+    line-height: 1.8;
+    text-align: center;
+}
+
+.auth-foot a {
+    color: var(--otc-blue-700);
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.auth-foot a:hover {
+    color: var(--otc-violet-500);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+
+@media (max-width: 640px) {
+    .auth-shell {
+        padding: 16px 12px;
+        overflow-y: auto;
+    }
+
+    .auth-main {
+        min-height: 100dvh;
+        padding: 10px !important;
+    }
+
+    .login-stage {
+        width: 100%;
+        max-width: 430px;
+        max-height: none;
+        padding: 24px 22px 25px;
+        border-radius: 23px;
+    }
+
+    .login-brand {
+        margin-bottom: 12px;
+    }
+
+    .login-logo-icon {
+        width: 41px;
+        height: 41px;
+        flex-basis: 41px;
+        border-radius: 13px;
+    }
+
+    .delivery-illustration {
+        height: 92px;
+        margin-bottom: 8px;
+    }
+
+    .delivery-truck {
+        width: 75px;
+        height: 59px;
+    }
+
+    .auth-head {
+        margin-bottom: 20px;
+    }
+
+    .login-title,
+    .auth-head h1 {
+        font-size: 27px;
+    }
+
+    .auth-form {
+        gap: 14px;
+    }
+
+    .auth-foot {
+        margin-top: 19px;
+    }
+}
+
+@media (max-width: 360px) {
+    .login-stage {
+        padding: 22px 16px;
+    }
+
+    .login-title,
+    .auth-head h1 {
+        font-size: 24px;
+    }
+
+    .delivery-illustration {
+        height: 82px;
+    }
+}
+
+@media (max-height: 760px) and (min-width: 641px) {
+    .auth-shell,
+    .auth-main {
+        min-height: 100vh;
+        min-height: 100dvh;
+    }
+
+    .login-stage {
+        max-height: calc(100dvh - 24px);
+        padding-top: 18px;
+        padding-bottom: 20px;
+    }
+
+    .login-brand {
+        margin-bottom: 8px;
+    }
+
+    .delivery-illustration {
+        height: 76px;
+        margin-bottom: 5px;
+    }
+
+    .delivery-truck {
+        height: 54px;
+    }
+
+    .auth-head {
+        margin-bottom: 15px;
+    }
+
+    .auth-form {
+        gap: 12px;
+    }
+
+    .auth-foot {
+        margin-top: 15px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .login-stage {
+        animation: none;
+    }
+
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+    }
+}
+
+
+
+/* =========================================
+   YUKBOR — ABOUT VIEW
+========================================= */
+
+.about-view {
+    width: 100%;
+    min-height: 100vh;
+    padding: 0;
+    margin: 0;
+    gap: 0;
+    background: #ffffff;
+    color: #102747;
+    font-family: inherit;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+/* HERO BANNER */
+
+.about-hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 25px;
+    min-height: 350px;
+    padding: 38px max(5%, calc((100% - 1150px) / 2));
+    box-sizing: border-box;
+    background: linear-gradient(110deg, #ffffff 0%, #edf5ff 55%, #dcecff 100%);
+}
+
+.about-hero-content {
+    max-width: 550px;
+}
+
+.about-badge {
+    display: inline-block;
+    padding: 6px 13px;
+    margin-bottom: 12px;
+    border-radius: 30px;
+    background: #dfedff;
+    color: #0866f5;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .5px;
+}
+
+.about-hero-title {
+    margin: 0 0 15px;
+    color: #102747;
+    font-size: clamp(30px, 3.2vw, 43px);
+    line-height: 1.13;
+    font-weight: 800;
+}
+
+.about-hero-description {
+    max-width: 520px;
+    margin: 0 0 22px;
+    color: #405675;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.about-hero-buttons {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.about-button-primary,
+.about-button-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 43px;
+    padding: 0 19px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    transition: .2s ease;
+}
+
+.about-button-primary {
+    color: white;
+    background: linear-gradient(110deg, #0874f9, #4855ee);
+    box-shadow: 0 5px 15px #1764f533;
+}
+
+.about-button-primary:hover {
+    color: white;
+    transform: translateY(-2px);
+}
+
+.about-button-outline {
+    color: #0866f5;
+    border: 1px solid #4385ff;
+    background: transparent;
+}
+
+.about-button-outline:hover {
+    color: #0756d5;
+    background: #e5efff;
+}
+
+.about-hero-image {
+    width: 100%;
+    min-height: 290px;
+    border-radius: 15px;
+    background:
+        url("/images/yukbor-hero.jpg") center / cover no-repeat,
+        linear-gradient(135deg, #c6e0ff, #789ecb);
+    box-shadow: 0 10px 30px #10274712;
+}
+
+/* COMPANY STORY */
+
+.about-company {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    align-items: center;
+    gap: 32px;
+    width: 90%;
+    max-width: 1150px;
+    margin: 38px auto 32px;
+}
+
+.about-company-image {
+    width: 100%;
+    height: 255px;
+    border-radius: 14px;
+    background:
+        url("/images/yukbor-delivery.jpg") center / cover no-repeat,
+        linear-gradient(135deg, #c5e0ff, #779cc9);
+    box-shadow: 0 5px 20px #10274712;
+}
+
+.about-story {
+    max-width: 570px;
+}
+
+.about-section-label {
+    display: inline-block;
+    margin-bottom: 8px;
+    color: #0866f5;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .5px;
+}
+
+.about-section-title {
+    margin: 0 0 13px;
+    color: #102747;
+    font-size: 25px;
+    line-height: 1.25;
+    font-weight: 800;
+}
+
+.about-story p {
+    margin: 0 0 12px;
+    color: #455b78;
+    font-size: 13px;
+    line-height: 1.75;
+}
+
+/* ADVANTAGES */
+
+.about-advantages {
+    width: 90%;
+    max-width: 1150px;
+    margin: 5px auto 32px;
+    text-align: center;
+}
+
+.about-advantages .about-section-title {
+    margin-bottom: 7px;
+}
+
+.about-section-subtitle {
+    margin: 0 0 22px;
+    color: #65758c;
+    font-size: 13px;
+}
+
+.about-advantage-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    text-align: left;
+}
+
+.about-advantage-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    min-height: 125px;
+    padding: 19px 15px;
+    box-sizing: border-box;
+    border: 1px solid #eaf0f8;
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 4px 18px #10274708;
+    transition: .2s ease;
+}
+
+.about-advantage-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 9px 24px #1764f51a;
+    border-color: #d6e6ff;
+}
+
+.about-card-icon,
+.about-stat-icon,
+.about-value-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #0870f5;
+    background: #e8f2ff;
+    border-radius: 50%;
+}
+
+.about-card-icon {
+    width: 43px;
+    height: 43px;
+}
+
+.about-card-icon vaadin-icon {
+    width: 21px;
+    height: 21px;
+}
+
+.about-card-content h3 {
+    margin: 3px 0 7px;
+    color: #102747;
+    font-size: 13px;
+    line-height: 1.35;
+}
+
+.about-card-content p {
+    margin: 0;
+    color: #64758e;
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+/* STATISTICS */
+
+.about-statistics {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    width: 90%;
+    max-width: 1150px;
+    margin: 0 auto 34px;
+    padding: 22px 12px;
+    box-sizing: border-box;
+    border-radius: 14px;
+    background: #f2f7ff;
+}
+
+.about-stat-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 13px;
+    padding: 4px 12px;
+    border-right: 1px solid #dce8f7;
+}
+
+.about-stat-item:last-child {
+    border-right: none;
+}
+
+.about-stat-icon {
+    width: 44px;
+    height: 44px;
+}
+
+.about-stat-icon vaadin-icon {
+    width: 21px;
+    height: 21px;
+}
+
+.about-stat-text h2 {
+    margin: 0 0 4px;
+    color: #102747;
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.about-stat-text p {
+    margin: 0;
+    color: #536783;
+    font-size: 11px;
+}
+
+/* VALUES */
+
+.about-values-section {
+    width: 90%;
+    max-width: 1150px;
+    margin: 0 auto 30px;
+}
+
+.about-values-section > .about-section-title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.about-value-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.about-value-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    min-height: 95px;
+    padding: 15px 12px;
+    box-sizing: border-box;
+    border: 1px solid #eaf0f8;
+    border-radius: 13px;
+    background: white;
+    box-shadow: 0 4px 15px #10274708;
+}
+
+.about-value-icon {
+    width: 41px;
+    height: 41px;
+}
+
+.about-value-icon vaadin-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.about-value-card h3 {
+    margin: 3px 0 6px;
+    color: #102747;
+    font-size: 13px;
+}
+
+.about-value-card p {
+    margin: 0;
+    color: #64758e;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+/* BOTTOM BANNER */
+
+.about-cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    width: 90%;
+    max-width: 1150px;
+    min-height: 78px;
+    margin: 0 auto 30px;
+    padding: 15px 24px;
+    box-sizing: border-box;
+    border-radius: 14px;
+    color: #ffffff;
+    background: linear-gradient(105deg, #0867ee, #6550ed);
+}
+
+.about-cta-message {
+    display: flex;
+    align-items: center;
+    gap: 17px;
+}
+
+.about-cta-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.about-cta-icon vaadin-icon {
+    width: 27px;
+    height: 27px;
+}
+
+.about-cta-message h3 {
+    margin: 0 0 5px;
+    color: white;
+    font-size: 15px;
+}
+
+.about-cta-message p {
+    margin: 0;
+    color: #ffffff;
+    font-size: 12px;
+}
+
+.about-cta-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-shrink: 0;
+    padding: 11px 17px;
+    border-radius: 30px;
+    color: #175ce8;
+    background: white;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 700;
+    transition: .2s ease;
+}
+
+.about-cta-button:hover {
+    color: #103fae;
+    background: #edf4ff;
+    transform: translateY(-2px);
+}
+
+/* TABLET */
+
+@media (max-width: 1000px) {
+    .about-advantage-cards,
+    .about-value-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .about-company {
+        gap: 22px;
+    }
+}
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+    .about-hero {
+        grid-template-columns: 1fr;
+        padding: 32px 6%;
+        gap: 22px;
+    }
+
+    .about-hero-image {
+        min-height: 220px;
+    }
+
+    .about-company {
+        grid-template-columns: 1fr;
+        width: 88%;
+        gap: 20px;
+        margin-top: 28px;
+    }
+
+    .about-company-image {
+        height: 220px;
+    }
+
+    .about-advantages,
+    .about-values-section {
+        width: 88%;
+    }
+
+    .about-advantage-cards,
+    .about-value-cards {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .about-statistics {
+        width: 88%;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px 0;
+    }
+
+    .about-stat-item {
+        justify-content: flex-start;
+    }
+
+    .about-stat-item:nth-child(2) {
+        border-right: none;
+    }
+
+    .about-cta {
+        width: 88%;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .about-cta-button {
+        align-self: flex-end;
+    }
+}
+
+@media (max-width: 420px) {
+    .about-hero-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .about-button-primary,
+    .about-button-outline {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .about-advantage-cards,
+    .about-value-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .about-statistics {
+        grid-template-columns: 1fr;
+    }
+
+    .about-stat-item {
+        border-right: none;
+        border-bottom: 1px solid #dce8f7;
+        padding: 10px;
+    }
+
+    .about-stat-item:last-child {
+        border-bottom: none;
+    }
+
+    .about-hero-title {
+        font-size: 30px;
+    }
+}
+body { background: #f4f6fb; }
+
+.page-hero {
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+  color: #fff;
+  border-radius: 20px;
+  padding: 32px 36px 72px;
+  margin-bottom: -48px;
+}
+.page-hero h1 { margin: 0; font-size: 2rem; font-weight: 800; }
+.page-hero p  { margin: 6px 0 0; opacity: .85; }
+
+.filter-bar {
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px 20px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, .10);
+  margin: 0 24px 24px;
+}
+
+.notice {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1e40af;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: .95rem;
+}
+
+.delivery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  gap: 20px;
+}
+
+.delivery-card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 22px;
+  border: 1px solid #e8ecf4;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, .04);
+  transition: transform .2s ease, box-shadow .2s ease;
+  position: relative;
+  overflow: hidden;
+}
+.delivery-card::before {
+  content: "";
+  position: absolute; left: 0; top: 0; bottom: 0;
+  width: 5px; background: linear-gradient(#2563eb, #60a5fa);
+}
+.delivery-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px rgba(37, 99, 235, .15);
+}
+
+.route { display: flex; align-items: center; gap: 10px;
+         font-size: 1.25rem; font-weight: 700; color: #0f172a; }
+.route vaadin-icon { color: #2563eb; }
+
+.chip { background: #f1f5f9; color: #475569; border-radius: 999px;
+        padding: 4px 12px; font-size: .8rem; font-weight: 500; }
+
+.status { border-radius: 999px; padding: 5px 12px; font-size: .8rem; font-weight: 600; }
+.status.searching { background: #fef3c7; color: #92400e; }
+.status.transit   { background: #dbeafe; color: #1e40af; }
+.status.done      { background: #dcfce7; color: #166534; }
+
+.card-footer { border-top: 1px dashed #e2e8f0; margin-top: 16px; padding-top: 14px; }
+.price { font-size: 1.6rem; font-weight: 800; color: #2563eb; }
+.date  { color: #94a3b8; font-size: .85rem; }
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: hidden;
+}
+
+.yb-shell {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100vh;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
+
+.yb-content {
+    display: block;
+    width: 100%;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+}

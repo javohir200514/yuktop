@@ -1,0 +1,108 @@
+/* Profil chipi tagida ochiladigan menyu */
+
+.nu-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.nu-wrap .navbar-user {
+  cursor: pointer;
+}
+
+.nu-wrap .navbar-user:focus-visible {
+  outline: 2px solid #ffd97a;
+  outline-offset: 2px;
+}
+
+.nu-wrap .navbar-user-arrow {
+  display: inline-flex;
+  transition: transform 0.15s ease;
+}
+
+.nu-wrap.nu-open .navbar-user-arrow {
+  transform: rotate(180deg);
+}
+
+.nu-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 1000;
+  min-width: 240px;
+  max-width: calc(100vw - 32px);
+  padding: 6px;
+  color: #15294b;
+  font-family: "Manrope", system-ui, sans-serif;
+  background: #fff;
+  border: 1px solid #d5e0f2;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(21, 41, 75, 0.14);
+}
+
+.nu-wrap.nu-open .nu-dropdown {
+  display: block;
+}
+
+.nu-head {
+  margin-bottom: 4px;
+  padding: 8px 10px 10px;
+  border-bottom: 1px solid #e6edf8;
+}
+
+.nu-head-name {
+  display: block;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.nu-head-sub {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.8125rem;
+  color: #52627f;
+  overflow-wrap: anywhere;
+}
+
+.nu-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 44px;
+  padding: 0 10px;
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #15294b;
+  text-align: left;
+  text-decoration: none;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.nu-item:hover {
+  background: #f1f5fd;
+}
+
+.nu-item:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: -2px;
+}
+
+.nu-sep {
+  height: 1px;
+  margin: 4px 0;
+  background: #e6edf8;
+}
+
+.nu-item--danger {
+  color: #d92d20;
+}
+
+.nu-item--danger:hover {
+  color: #b42318;
+  background: #fef3f2;
+}

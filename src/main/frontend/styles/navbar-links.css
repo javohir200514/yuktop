@@ -1,0 +1,46 @@
+.main-navbar .navbar-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: inherit;
+  text-decoration: none;
+  padding: 6px 2px;
+}
+
+/* Ikonka: matn bilan bir xil balandlikda */
+.main-navbar .navbar-link-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+/* Joriy sahifa tagidagi chiziq */
+.main-navbar .navbar-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -4px;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.2s ease;
+}
+
+.main-navbar .navbar-link:hover::after {
+  transform: scaleX(0.5);
+  opacity: 0.6;
+}
+
+.main-navbar .navbar-link--active {
+  font-weight: 600;
+}
+
+.main-navbar .navbar-link--active::after {
+  transform: scaleX(1);
+  opacity: 1;
+}

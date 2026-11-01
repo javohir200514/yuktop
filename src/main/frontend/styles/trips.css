@@ -1,0 +1,182 @@
+.tv-page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+  box-sizing: border-box;
+  color: #111;
+}
+
+.tv-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 0 6px;
+}
+
+.tv-subtitle {
+  margin: 0 0 20px;
+  color: #555;
+}
+
+.tv-list {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.tv-card {
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 16px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tv-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.tv-route {
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.tv-departure {
+  font-size: 13px;
+  color: #111;
+  background: #f2f2f2;
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.tv-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tv-tag {
+  font-size: 12px;
+  padding: 3px 9px;
+  border: 1px solid #111;
+  border-radius: 999px;
+}
+
+.tv-transport {
+  font-size: 14px;
+  color: #555;
+}
+
+.tv-note {
+  margin: 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.tv-call {
+  display: block;
+  text-align: center;
+  padding: 11px 14px;
+  border-radius: 12px;
+  background: #111;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.tv-empty {
+  color: #555;
+}
+
+.tv-pager {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.tv-page-btn {
+  padding: 8px 14px;
+  border: 1px solid #111;
+  background: #fff;
+  color: #111;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.tv-page-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.tv-page-label {
+  font-size: 14px;
+  color: #555;
+}
+
+@media (max-width: 480px) {
+  .tv-list {
+    grid-template-columns: 1fr;
+  }
+}
+.tv-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.tv-title-box {
+  min-width: 0;
+}
+
+.tv-create {
+  white-space: nowrap;
+}
+.tv-side-name {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  color: #111;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0 0 10px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: right;
+}
+.tv-phone-box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: min(320px, 80vw);
+}
+
+.tv-phone-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.tv-phone-number {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #111;
+}
+
+.tv-phone-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}

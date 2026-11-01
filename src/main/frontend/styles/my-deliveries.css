@@ -1,0 +1,623 @@
+/* YukBor: "Mening yuklarim" sahifasi. Sinflar md- bilan boshlanadi. */
+
+.md-page,
+.md-dialog {
+  --md-blue: #2563eb;
+  --md-ink: #15294b;
+  --md-muted: #52627f;
+  --md-line: #d5e0f2;
+  --md-bg: #f5f8fe;
+  --md-accent: #ffd97a;
+  --md-danger: #d92d20;
+  color: var(--md-ink);
+  font-family: "Manrope", system-ui, sans-serif;
+}
+
+.md-page {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 28px 16px 56px;
+}
+
+.md-page *,
+.md-page *::before,
+.md-page *::after,
+.md-dialog,
+.md-dialog *,
+.md-dialog *::before,
+.md-dialog *::after {
+  box-sizing: border-box;
+}
+
+/* Sarlavha */
+.md-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.md-title,
+.md-empty-title,
+.md-dialog-title {
+  font-family: "Bricolage Grotesque", "Manrope", system-ui, sans-serif;
+  color: inherit;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.md-title {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.md-subtitle {
+  margin: 6px 0 0;
+  font-size: 1rem;
+  color: var(--md-muted);
+}
+
+/* Asosiy tugma */
+.md-primary {
+  min-height: 44px;
+  padding: 0 20px;
+  font: inherit;
+  font-weight: 700;
+  color: #fff;
+  background: var(--md-blue);
+  border: 1px solid var(--md-blue);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.md-primary:hover {
+  background: #1d4fd0;
+}
+
+.md-primary:focus-visible,
+.md-filter:focus-visible,
+.md-page-btn:focus-visible,
+.md-btn:focus-visible {
+  outline: 2px solid var(--md-blue);
+  outline-offset: 2px;
+}
+
+@media (max-width: 639px) {
+  .md-title {
+    font-size: 1.625rem;
+  }
+  .md-head .md-primary,
+  .md-empty .md-primary {
+    width: 100%;
+  }
+}
+
+/* Filtr: tablar. Faqat shu qator o'zi gorizontal aylanadi, sahifa emas */
+.md-filters {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--md-line);
+  scrollbar-width: thin;
+}
+
+.md-filter {
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding: 0 16px;
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--md-muted);
+  background: transparent;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+}
+
+.md-filter:hover {
+  color: var(--md-ink);
+}
+
+.md-filter--active {
+  color: var(--md-blue);
+  border-bottom-color: var(--md-blue);
+}
+
+.md-alert {
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  font-size: 0.9375rem;
+  color: #7a271a;
+  background: #fef3f2;
+  border: 1px solid #f1b7b2;
+  border-radius: 8px;
+}
+
+.md-total {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 0.875rem;
+  color: var(--md-muted);
+}
+
+.md-total:empty {
+  display: none;
+}
+
+/* Kartochkalar */
+.md-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.md-card {
+  padding: 18px 20px;
+  background: #fff;
+  border: 1px solid var(--md-line);
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(21, 41, 75, 0.05);
+}
+
+.md-card:hover {
+  border-color: #b9cdf0;
+}
+
+.md-card--cancelled {
+  background: #fafbfd;
+}
+
+@media (max-width: 479px) {
+  .md-card {
+    padding: 16px;
+  }
+}
+
+.md-card-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 12px;
+}
+
+.md-route {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  font-family: "Bricolage Grotesque", "Manrope", system-ui, sans-serif;
+  font-size: 1.375rem;
+  font-weight: 700;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.md-route-arrow {
+  color: var(--md-blue);
+}
+
+@media (max-width: 479px) {
+  .md-route {
+    font-size: 1.1875rem;
+  }
+}
+
+/* Teglar */
+.md-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.md-tag {
+  padding: 3px 10px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--md-muted);
+  background: var(--md-bg);
+  border: 1px solid var(--md-line);
+  border-radius: 999px;
+}
+
+/* Holat belgisi: rang + nuqta + matn */
+.md-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 12px 4px 10px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  border-radius: 999px;
+}
+
+.md-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.md-badge--created {
+  color: #6b4e00;
+  background: #fff1c7;
+}
+
+.md-badge--matched {
+  color: #1e40af;
+  background: #dbeafe;
+}
+
+.md-badge--picked_up {
+  color: #1d4fd0;
+  background: #e3ecff;
+}
+
+.md-badge--delivered {
+  color: #0f5132;
+  background: #d8f1e1;
+}
+
+.md-badge--cancelled {
+  color: #475467;
+  background: #eaecf0;
+}
+
+.md-badge--disputed {
+  color: #7a271a;
+  background: #fee4e2;
+}
+
+/* Bosqichlar chizig'i */
+.md-track {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 20px 0 6px;
+}
+
+.md-step {
+  position: relative;
+  padding-top: 22px;
+  font-size: 0.75rem;
+  line-height: 1.3;
+  text-align: center;
+  color: var(--md-muted);
+}
+
+.md-step::before {
+  content: "";
+  position: absolute;
+  top: 6px;
+  left: -50%;
+  width: 100%;
+  height: 2px;
+  background: var(--md-line);
+}
+
+.md-step:first-child::before {
+  display: none;
+}
+
+.md-step::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  margin-left: -7px;
+  background: #fff;
+  border: 2px solid var(--md-line);
+  border-radius: 50%;
+}
+
+.md-step--done::before {
+  background: var(--md-blue);
+}
+
+.md-step--done::after {
+  background: var(--md-blue);
+  border-color: var(--md-blue);
+}
+
+.md-step--current {
+  font-weight: 700;
+  color: var(--md-ink);
+}
+
+.md-step--current::after {
+  box-shadow: 0 0 0 3px #dce8ff;
+}
+
+@media (min-width: 640px) {
+  .md-step {
+    font-size: 0.8125rem;
+  }
+}
+
+/* Bekor qilingan / nizoli yuk uchun izoh */
+.md-note {
+  margin-top: 14px;
+  padding: 8px 12px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 8px;
+}
+
+.md-note--cancelled {
+  color: #475467;
+  background: #eaecf0;
+}
+
+.md-note--disputed {
+  color: #7a271a;
+  background: #fee4e2;
+}
+
+/* Manzil bloklari */
+.md-blocks {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--md-line);
+}
+
+@media (min-width: 720px) {
+  .md-blocks {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+  }
+}
+
+.md-block {
+  min-width: 0;
+}
+
+.md-block-label {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--md-muted);
+}
+
+.md-block-value {
+  display: block;
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+/* Pastki qator */
+.md-card-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 12px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--md-line);
+}
+
+.md-date {
+  font-size: 0.8125rem;
+  color: var(--md-muted);
+}
+
+.md-reward {
+  font-family: "Bricolage Grotesque", "Manrope", system-ui, sans-serif;
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--md-blue);
+}
+
+/* Amallar: tahrirlash va bekor qilish */
+.md-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--md-line);
+}
+
+.md-btn {
+  min-height: 44px;
+  padding: 0 18px;
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.md-btn:disabled {
+  cursor: progress;
+  opacity: 0.6;
+}
+
+.md-btn--outline {
+  color: var(--md-blue);
+  background: #fff;
+  border: 1px solid var(--md-blue);
+}
+
+.md-btn--outline:hover:not(:disabled) {
+  background: #eef4ff;
+}
+
+.md-btn--danger {
+  color: var(--md-danger);
+  background: #fff;
+  border: 1px solid #f1b7b2;
+}
+
+.md-btn--danger:hover:not(:disabled) {
+  color: #b42318;
+  background: #fef3f2;
+  border-color: var(--md-danger);
+}
+
+.md-btn--danger-solid {
+  color: #fff;
+  background: var(--md-danger);
+  border: 1px solid var(--md-danger);
+}
+
+.md-btn--danger-solid:hover:not(:disabled) {
+  background: #b42318;
+}
+
+@media (max-width: 479px) {
+  .md-actions .md-btn {
+    flex: 1 1 100%;
+  }
+}
+
+/* Bekor qilish oynasi */
+.md-dialog {
+  width: min(460px, calc(100vw - 64px));
+}
+
+.md-dialog-title {
+  margin: 0 0 8px;
+  font-size: 1.25rem;
+}
+
+.md-dialog-text {
+  margin: 0 0 16px;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--md-muted);
+}
+
+.md-dialog-error {
+  margin-top: 10px;
+  padding: 8px 12px;
+  font-size: 0.875rem;
+  color: #7a271a;
+  background: #fef3f2;
+  border: 1px solid #f1b7b2;
+  border-radius: 8px;
+}
+
+.md-dialog-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+@media (max-width: 479px) {
+  .md-dialog-actions .md-btn {
+    flex: 1 1 100%;
+  }
+}
+
+/* Bo'sh holat */
+.md-empty {
+  padding: 40px 16px;
+  text-align: center;
+  background: #fff;
+  border: 1px dashed var(--md-line);
+  border-radius: 10px;
+}
+
+.md-empty-title {
+  margin: 0 0 8px;
+  font-size: 1.25rem;
+}
+
+.md-empty-text {
+  max-width: 420px;
+  margin: 0 auto 16px;
+  line-height: 1.5;
+  color: var(--md-muted);
+}
+
+/* Sahifalash */
+.md-pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.md-page-btn {
+  min-height: 44px;
+  padding: 0 16px;
+  font: inherit;
+  font-weight: 600;
+  color: var(--md-blue);
+  background: #fff;
+  border: 1px solid var(--md-blue);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.md-page-btn:disabled {
+  color: var(--md-muted);
+  border-color: var(--md-line);
+  cursor: not-allowed;
+}
+
+.md-page-label {
+  font-size: 0.9375rem;
+  color: var(--md-muted);
+}
+/* Jonli yangilanish: o'zgargan kartochka qisqa vaqt ajralib turadi (tekis rang, glowsiz) */
+.md-card--updated {
+  animation: md-updated 2.6s ease-out 1;
+}
+
+@keyframes md-updated {
+  0% {
+    background: #fff6d8;
+    border-color: var(--md-accent);
+  }
+  100% {
+    background: #fff;
+    border-color: var(--md-line);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .md-card--updated {
+    animation: none;
+    border-color: var(--md-accent);
+  }
+}
+
+/* Faqat ekran o'qish dasturlari uchun */
+.md-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.md-pickup-wait {
+  font-size: 14px;
+  color: #555;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #f5f5f5;
+}

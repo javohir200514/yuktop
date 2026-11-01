@@ -1,0 +1,84 @@
+.tv-page {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 24px 16px;
+  box-sizing: border-box;
+  color: #000;
+}
+
+.tv-wrap {
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  border: 1px solid #000;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.tv-card {
+  gap: 16px;
+}
+
+.tv-title {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #000;
+}
+
+.tv-status {
+  margin: 0;
+  color: #000;
+}
+
+.tv-digits {
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.tv-digit {
+  width: 3rem;
+}
+
+.tv-digit input {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #000;
+}
+
+.tv-digit::part(input-field) {
+  background: #fff;
+  border: 1px solid #000;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.tv-digit:focus-within::part(input-field) {
+  border: 2px solid #000;
+}
+
+.tv-error {
+  margin: 0;
+  color: #000;
+  font-weight: 600;
+}
+
+.tv-btn {
+  border-radius: 0;
+  height: 48px;
+}
+
+.tv-btn-primary {
+  background: #000 !important;
+  color: #fff !important;
+}
+
+.tv-btn-outline {
+  background: #fff !important;
+  color: #000 !important;
+  border: 1px solid #000;
+}
