@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import uz.onetimecourier.one_time_courier.config.CurrentUser;
 import uz.onetimecourier.one_time_courier.config.CustomUserDetails;
 import uz.onetimecourier.one_time_courier.dto.CourierOpenDeliveryDto;
 import uz.onetimecourier.one_time_courier.dto.DeliveryPublicDto;
@@ -100,7 +101,8 @@ public class DeliveriesView extends Div {
         this.deliveryService = deliveryService;
         this.feed = feed;
 
-        CustomUserDetails user = authContext.getAuthenticatedUser(CustomUserDetails.class).orElse(null);
+        // Google (OAuth2) foydalanuvchisi bo'lsa ham xato bermaydi: u holda user == null
+        CustomUserDetails user = CurrentUser.details().orElse(null);
         this.userId = user == null ? null : user.getId();
         if (user != null) {
             String role = String.valueOf(user.getRole());
@@ -130,10 +132,10 @@ public class DeliveriesView extends Div {
         filters.addClassName("dm-filter-bar");
         add(filters);
 
-        // ---- faqat kirmagan foydalanuvchiga: kuryer bo'lib ro'yxatdan o'tishga chaqiriq
+        /*// ---- faqat kirmagan foydalanuvchiga: kuryer bo'lib ro'yxatdan o'tishga chaqiriq
         if (viewer == Viewer.ANONYMOUS) {
             add(gate());
-        }
+        }*/
 
         alert.addClassName("dm-alert");
         alert.getElement().setAttribute("role", "alert");

@@ -16,11 +16,11 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
-import com.vaadin.flow.spring.security.AuthenticationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import uz.onetimecourier.one_time_courier.config.CurrentUser;
 import uz.onetimecourier.one_time_courier.config.CustomUserDetails;
 import uz.onetimecourier.one_time_courier.dto.TripDto;
 import uz.onetimecourier.one_time_courier.enums.Region;
@@ -76,10 +76,11 @@ public class CouriersView extends Div {
 
     private int page = 0;
 
-    public CouriersView(CourierTripService tripService, AuthenticationContext authContext) {
+    public CouriersView(CourierTripService tripService) {
         this.tripService = tripService;
 
-        CustomUserDetails user = authContext.getAuthenticatedUser(CustomUserDetails.class).orElse(null);
+        // Google (OAuth2) foydalanuvchisi bo'lsa ham xato bermaydi: u holda kuryer emas
+        CustomUserDetails user = CurrentUser.details().orElse(null);
         this.isCourier = user != null && "COURIER".equals(String.valueOf(user.getRole()));
 
         addClassNames("md-page", "dm-page");

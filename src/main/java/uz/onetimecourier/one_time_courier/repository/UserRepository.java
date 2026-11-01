@@ -17,6 +17,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     Optional<UserEntity> findByPhone(String phone);
     boolean existsByPhone(String phone);
     Optional<UserEntity> findByGoogleId(String googleId);
+    Optional<UserEntity> findByEmail(String email);
     Optional<UserEntity> findByTelegramId(Long telegramId);
     @Query(value = """
         select new uz.onetimecourier.one_time_courier.dto.PublicCourierDto(

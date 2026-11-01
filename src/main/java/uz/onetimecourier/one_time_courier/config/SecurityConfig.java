@@ -26,10 +26,12 @@ public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
     private final OAuthLoginSuccessHandler oauthLoginSuccessHandler;
+    private final GoogleOAuth2UserService googleOAuth2UserService;
+
     public static final String[] PUBLIC_ENDPOINTS = {
             "/actuator/health", "/api/public/**", "/styles.css", "/images/**",
             "/oauth2/**", "/login/oauth2/**",
-            "/login","/register","/about"
+            "/login", "/register", "/about"
     };
 
     @Bean
@@ -53,8 +55,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth.requestMatchers(PUBLIC_ENDPOINTS).permitAll());
 
+        // Google login: foydalanuvchi CustomUserDetails sifatida yuklanadi
         http.oauth2Login(oauth -> oauth
                 .loginPage("/login")
+                .userInfoEndpoint(info -> info.userService(googleOAuth2UserService))
                 .successHandler(oauthLoginSuccessHandler));
 
         http.with(VaadinSecurityConfigurer.vaadin(), configurer ->
