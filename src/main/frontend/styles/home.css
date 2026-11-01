@@ -712,26 +712,6 @@
     margin-bottom: 18px;
 }
 
-.home-footer-logo {
-    display: flex;
-    flex-shrink: 0;
-    align-items: center;
-    justify-content: center;
-
-    width: 44px;
-    height: 44px;
-    padding: 8px;
-
-    border-radius: 14px;
-    background: #fff;
-}
-
-.home-footer-logo svg {
-    display: block;
-    width: 100%;
-    height: 100%;
-}
-
 .home-footer-brand-name {
     color: #ffffffb5;
     font-size: 20px;
@@ -842,36 +822,6 @@
     font-size: 13px;
 }
 
-/* Planshet */
-@media (max-width: 1050px) {
-    .home-footer-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .home-footer-brand {
-        grid-column: 1 / -1;
-    }
-}
-
-/* Telefon */
-@media (max-width: 640px) {
-    .home-footer-inner {
-        padding-top: 48px;
-        padding-bottom: 36px;
-    }
-
-    .home-footer-grid {
-        grid-template-columns: minmax(0, 1fr);
-        gap: 32px;
-    }
-
-    .home-footer-bottom-inner {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-    }
-}
-
 /* =====================================================
    TABLET — 1050px
    ===================================================== */
@@ -907,6 +857,14 @@
 
     .home-cta-panel {
         padding: 50px 40px;
+    }
+
+    .home-footer-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .home-footer-brand {
+        grid-column: 1 / -1;
     }
 }
 
@@ -971,6 +929,7 @@
     .home-hero-content {
         width: 100%;
         max-width: 100%;
+        text-align: center;
     }
 
     .home-eyebrow {
@@ -985,12 +944,17 @@
         font-size: clamp(35px, 8vw, 48px);
         line-height: 1.12;
         letter-spacing: -1.5px;
+        align-items: center;
+        text-align: center;
     }
 
     .home-lead {
+        margin-left: auto;
+        margin-right: auto;
         margin-bottom: 25px;
         font-size: 15px;
         line-height: 1.7;
+        text-align: center;
     }
 
     .home-actions {
@@ -1007,11 +971,13 @@
     .home-stats {
         display: grid;
         grid-template-columns: 1fr;
+        justify-items: center;
         gap: 18px;
         margin-top: 32px;
     }
 
     .home-stat {
+        justify-content: center;
         padding-right: 0;
         border-right: none;
     }
@@ -1061,8 +1027,14 @@
     }
 
     .home-cta-panel {
+        align-items: center;
+        text-align: center;
         padding: 38px 25px;
         border-radius: 23px;
+    }
+
+    .home-cta-content {
+        text-align: center;
     }
 
     .home-cta-content h2 {
@@ -1080,6 +1052,45 @@
 
     .home-cta-button {
         width: 100%;
+    }
+
+    /* Footer mobil: markazda */
+    .home-footer-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 32px;
+        text-align: center;
+    }
+
+    .home-footer-logo-row {
+        justify-content: center;
+    }
+
+    .home-footer-text {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .home-footer-social {
+        justify-content: center;
+    }
+
+    .home-footer-links {
+        align-items: center;
+    }
+
+    .home-footer-link {
+        width: auto;
+    }
+
+    .home-footer-link:hover {
+        padding-left: 0;
+    }
+
+    .home-footer-bottom-inner {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 8px;
     }
 }
 
@@ -1124,6 +1135,28 @@
 
     .home-cta-panel {
         padding: 32px 20px;
+    }
+}
+
+/* =====================================================
+   FOOTER — yuqori padding (oxirida, boshqa qoidalarni bekor qiladi)
+   ===================================================== */
+
+.home-footer .home-footer-inner {
+    padding-top: 64px;
+    padding-bottom: 48px;
+}
+
+@media (max-width: 1050px) {
+    .home-footer .home-footer-inner {
+        padding-top: 56px;
+    }
+}
+
+@media (max-width: 700px) {
+    .home-footer .home-footer-inner {
+        padding-top: 48px;
+        padding-bottom: 36px;
     }
 }
 

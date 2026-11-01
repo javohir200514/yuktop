@@ -56,7 +56,6 @@ public class AboutView extends Div {
         lead.addClassName("ab-lead");
 
         Div actions = new Div(
-                button("/register", "Ro‘yxatdan o‘tish", "ab-btn-amber"),
                 link("#how", "Qanday ishlashini ko‘rish ↓"));
         actions.addClassName("ab-actions");
 

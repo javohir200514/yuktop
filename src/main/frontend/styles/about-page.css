@@ -106,6 +106,7 @@ html:has(.ab-page) body::-webkit-scrollbar {
     font-size: 15px;
     font-weight: 800;
     text-decoration: none;
+    text-align: center;
 }
 
 /* Asosiy tugma (nomi eski, rangi endi ko'k) */
@@ -422,7 +423,7 @@ html:has(.ab-page) body::-webkit-scrollbar {
     line-height: 1.1;
 }
 
-/* ---------- Planshet va telefon ---------- */
+/* ---------- Planshet va telefon (900px) ---------- */
 @media (max-width: 900px) {
     .ab-route-svg {
         display: none;
@@ -432,6 +433,36 @@ html:has(.ab-page) body::-webkit-scrollbar {
         padding: 64px 20px;
     }
 
+    /* Matn markazda */
+    .ab-hero-text,
+    .ab-strip-row,
+    .ab-section-title,
+    .ab-cta-box,
+    .ab-cta-box h2,
+    .ab-roles .ab-section-title {
+        text-align: center;
+    }
+
+    .ab-kicker,
+    .ab-lead {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .ab-hero h1,
+    .ab-cta h2 {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .ab-actions {
+        justify-content: center;
+    }
+
+    .ab-strip-row {
+        justify-content: center;
+    }
+
     .ab-hero .ab-container {
         grid-template-columns: 1fr;
         gap: 56px;
@@ -439,12 +470,35 @@ html:has(.ab-page) body::-webkit-scrollbar {
         padding-bottom: 72px;
     }
 
+    /* Rasm markazda, soyasi ham simmetrik */
+    .ab-frame {
+        margin: 0 auto 18px;
+        width: calc(100% - 18px);
+        max-width: 560px;
+    }
+
     .ab-panels {
         grid-template-columns: 1fr;
     }
 
     .ab-panel {
+        align-items: center;
+        text-align: center;
         padding: 32px 24px;
+    }
+
+    .ab-panel ul {
+        width: 100%;
+    }
+
+    .ab-panel li {
+        padding-left: 0;
+    }
+
+    .ab-panel li::before {
+        position: static;
+        display: inline-block;
+        margin-right: 8px;
     }
 
     .ab-strip .ab-container {
@@ -456,24 +510,63 @@ html:has(.ab-page) body::-webkit-scrollbar {
         padding-top: 56px;
         padding-bottom: 64px;
     }
+
+    .ab-cta-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .ab-cta-box .ab-actions {
+        width: 100%;
+    }
+
+    .ab-note {
+        text-align: center;
+    }
 }
 
+/* ---------- Telefon (480px) ---------- */
 @media (max-width: 480px) {
+    .ab-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
     .ab-actions .ab-btn {
         width: 100%;
     }
 
-    .ab-stop {
-        padding-left: 68px;
+    .ab-link {
+        align-self: center;
     }
 
+    /* Bekatlar: raqam yuqorida, matn markazda */
     .ab-route::before {
-        left: 19px;
+        display: none;
+    }
+
+    .ab-stop {
+        padding: 0 0 36px;
+        text-align: center;
+    }
+
+    .ab-stop:last-child {
+        padding-bottom: 0;
     }
 
     .ab-dot {
+        position: relative;
+        top: auto;
+        left: auto;
+        margin: 0 auto 14px;
         width: 40px;
         height: 40px;
         font-size: 18px;
+    }
+
+    .ab-stop h3 {
+        padding-top: 0;
+        font-size: 21px;
     }
 }

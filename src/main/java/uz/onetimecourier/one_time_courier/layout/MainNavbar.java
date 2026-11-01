@@ -227,10 +227,10 @@ public class MainNavbar extends Div {
             dropdown.add(head);
         }
 
-        Anchor profileItem = new Anchor("/profile", "Profil");
+        /*Anchor profileItem = new Anchor("/profile", "Profil");
         profileItem.addClassName("nu-item");
         profileItem.getElement().setAttribute("role", "menuitem");
-        dropdown.add(profileItem);
+        dropdown.add(profileItem);*/
 
         if (isSender()) {
             Anchor deliveriesItem = new Anchor("/deliveries/mine", "Yuklarimning holati");

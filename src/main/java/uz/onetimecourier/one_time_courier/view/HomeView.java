@@ -150,8 +150,8 @@ public class HomeView extends Div {
         H1 title = new H1();
         title.addClassName("home-title");
 
-        Span mainTitle = new Span("Yo'lingiz — kimningdir yetkazmasi.");
-        Span accent = new Span("Sizning mukofotingiz.");
+        Span mainTitle = new Span("Yo'lingizda yuk olib keting.");
+        Span accent = new Span("Qo'shimcha daromad oling.");
         accent.addClassName("home-title-accent");
         title.add(mainTitle, accent);
 
@@ -485,6 +485,7 @@ public class HomeView extends Div {
         header.add(label, heading, text);
         return header;
     }
+
     private Footer footer() {
 
         Footer footer = new Footer();

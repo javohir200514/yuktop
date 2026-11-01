@@ -27,6 +27,7 @@ import org.springframework.data.domain.PageRequest;
 import uz.onetimecourier.one_time_courier.config.CustomUserDetails;
 import uz.onetimecourier.one_time_courier.dto.CourierOpenDeliveryDto;
 import uz.onetimecourier.one_time_courier.dto.DeliveryPublicDto;
+import uz.onetimecourier.one_time_courier.enums.DeliveryStatus;
 import uz.onetimecourier.one_time_courier.enums.Region;
 import uz.onetimecourier.one_time_courier.exps.BusinessException;
 import uz.onetimecourier.one_time_courier.layout.PageLayout;
@@ -35,6 +36,7 @@ import uz.onetimecourier.one_time_courier.service.DeliveryService;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import static uz.onetimecourier.one_time_courier.view.DeliveryViewSupport.formatDate;
 import static uz.onetimecourier.one_time_courier.view.DeliveryViewSupport.formatMoney;
 import static uz.onetimecourier.one_time_courier.view.DeliveryViewSupport.sizeLabel;
@@ -53,6 +55,7 @@ import static uz.onetimecourier.one_time_courier.view.DeliveryViewSupport.weight
 @CssImport("./styles/deliveries-feed.css")
 @CssImport("./styles/deliveries-modern.css")
 @CssImport("./styles/deliveries-responsive.css")
+@CssImport("./styles/page-head.css")
 public class DeliveriesView extends Div {
 
     private static final Logger log = LoggerFactory.getLogger(DeliveriesView.class);
@@ -61,12 +64,13 @@ public class DeliveriesView extends Div {
     private static final String GENERIC_ERROR =
             "Kutilmagan xato yuz berdi. Birozdan keyin qayta urinib ko'ring.";
 
-    /** Karta chapidagi quti ikonkasi (SVG). */
-    private static final String BOX_SVG =
-            "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" "
+    /** Karta chapidagi quti ikonkasi (inline SVG, tashqi kutubxonasiz). */
+    private static final String BOX_ICON =
+            "<span class=\"dm-card-icon\" aria-hidden=\"true\">"
+                    + "<svg viewBox=\"0 0 24 24\" width=\"26\" height=\"26\" fill=\"none\" stroke=\"currentColor\" "
                     + "stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\">"
                     + "<path d=\"M21 8l-9-5-9 5 9 5 9-5z\"/><path d=\"M3 8v8l9 5 9-5V8\"/><path d=\"M12 13v8\"/>"
-                    + "</svg>";
+                    + "</svg></span>";
 
     private enum Viewer { ANONYMOUS, SENDER, COURIER, OTHER }
 
@@ -108,7 +112,16 @@ public class DeliveriesView extends Div {
 
         addClassNames("md-page", "dm-page");
 
-        // ---- filtr paneli (sahifa shu bilan boshlanadi)
+        // ---- sahifa sarlavhasi (Kuryerlar sahifasidagi kabi)
+        H2 title = new H2("Yuklar");
+        title.addClassName("dm-page-title");
+        Paragraph subtitle = new Paragraph("Siz shu yuklarni yetkazib berishingiz mumkin.");
+        subtitle.addClassName("dm-page-sub");
+        Div head = new Div(title, subtitle);
+        head.addClassName("dm-page-head");
+        add(head);
+
+        // ---- filtr paneli
         configureFilters();
         Span filterArrow = new Span("⇄");
         filterArrow.addClassName("dm-filter-arrow");
@@ -142,9 +155,7 @@ public class DeliveriesView extends Div {
     protected void onAttach(AttachEvent attachEvent) {
         super.onAttach(attachEvent);
         if (feedRegistration == null) {
-            feedRegistration = feed.register(attachEvent.getUI(),
-                    DeliveryFeedBroadcaster.OPEN_FEED,
-                    () -> updateBanner.setVisible(true));
+            feedRegistration = feed.register(attachEvent.getUI(), () -> updateBanner.setVisible(true));
         }
     }
 
@@ -361,15 +372,12 @@ public class DeliveriesView extends Div {
         return card(d.delivery(), extra, () -> confirmAccept(d));
     }
 
-    /**
-     * Karta: ikonka | yo'nalish, teglar, sana | holat, narx, tugma.
-     * Kengda bir qator, telefonda ikonka + matn, pastda holat/narx/tugma.
-     */
+    /** Uzun gorizontal karta: ikonka | yo'nalish, teglar, sana | status va narx. */
     private Div card(DeliveryPublicDto d, Div extra, Runnable onDeliver) {
         Div card = new Div();
         card.addClassName("dm-card");
 
-        Div icon = iconBox();
+        Html icon = new Html(BOX_ICON);
 
         Span from = new Span(d.fromRegion().getLabel());
         Span line = new Span();
@@ -391,17 +399,15 @@ public class DeliveriesView extends Div {
         Div main = new Div(route, tags, date);
         main.addClassName("dm-card-main");
 
-        Div badge = openStatusBadge();
+        Component badge = DeliveryViewSupport.statusBadge(DeliveryStatus.CREATED);
         Span reward = new Span(formatMoney(d.reward()));
         reward.addClassName("dm-reward");
-
         NativeButton deliver = new NativeButton("Yetkazib berish");
         deliver.addClassNames("dm-btn", "dm-btn--solid", "dm-deliver");
         deliver.getElement().setAttribute("type", "button");
         deliver.getElement().setAttribute("aria-label", "Yukni yetkazib berish: "
                 + d.fromRegion().getLabel() + " → " + d.toRegion().getLabel());
         deliver.addClickListener(e -> onDeliver.run());
-
         Div side = new Div(badge, reward, deliver);
         side.addClassName("dm-card-side");
 
@@ -411,26 +417,6 @@ public class DeliveriesView extends Div {
             card.add(extra);
         }
         return card;
-    }
-    private static Div iconBox() {
-        Div box = new Div();
-        box.addClassName("dm-card-icon");
-        box.getElement().setAttribute("aria-hidden", "true");
-        box.getElement().setProperty("innerHTML", BOX_SVG);
-        return box;
-    }
-
-    /** "Kuryer qidirilmoqda" belgisi: yashil, yumaloq nuqta bilan. */
-    private static Div openStatusBadge() {
-        Span dot = new Span();
-        dot.addClassName("dm-status-dot");
-        dot.getElement().setAttribute("aria-hidden", "true");
-
-        Span text = new Span("Kuryer qidirilmoqda");
-
-        Div badge = new Div(dot, text);
-        badge.addClassNames("dm-status", "dm-status--created");
-        return badge;
     }
 
     // ---------------------------------------------------------------- qabul qilish
@@ -459,26 +445,15 @@ public class DeliveriesView extends Div {
         });
     }
 
-    /**
-     * Kuryer bo'lmagan foydalanuvchi uchun. Kirmagan foydalanuvchi ro'yxatdan o'tish sahifasiga yo'naltiriladi.
-     * Kirgan jo'natuvchi/boshqa rol uchun tushuntirish ko'rsatiladi.
-     */
+    /** Kuryer bo'lmaganlar (kirmagan yoki jo'natuvchi) uchun: xabar ko'rsatib, ro'yxatdan o'tishga yo'naltiradi. */
     private void promptCourierRegistration() {
-        if (viewer == Viewer.ANONYMOUS) {
-            DeliveryViewSupport.confirm(
-                    "Avval kuryer sifatida ro'yxatdan o'ting",
-                    "Yukni yetkazib berish uchun kuryer hisobi kerak. Ro'yxatdan o'tish sahifasiga o'tasiz.",
-                    "Ro'yxatdan o'tish", false, () -> {
-                        UI.getCurrent().getPage().setLocation("/register");
-                        return null;
-                    });
-            return;
-        }
         DeliveryViewSupport.confirm(
-                "Bu hisob bilan yuk qabul qilib bo'lmaydi",
-                "Yukni yetkazib berish uchun kuryer hisobi kerak. Joriy hisob jo'natuvchi hisobi, "
-                        + "shuning uchun boshqa telefon raqami bilan kuryer sifatida ro'yxatdan o'ting.",
-                "Tushunarli", false, () -> null);
+                "Avval kuryer sifatida ro'yxatdan o'ting",
+                "Yukni yetkazib berish uchun kuryer hisobi kerak. Ro'yxatdan o'tish sahifasiga o'tasiz.",
+                "Ro'yxatdan o'tish", false, () -> {
+                    UI.getCurrent().getPage().setLocation("/register");
+                    return null;
+                });
     }
 
     private void showAlert(String message) {
