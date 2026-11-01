@@ -688,7 +688,9 @@
     background: linear-gradient(90deg, #2563eb, #60a5fa, #2563eb);
 }
 
-.home-footer-inner {
+/* Yuqori padding: .home-container dagi padding shorthand ni bekor qilmasligi uchun
+   ikki klass bilan yozilgan (specificity yuqori) */
+.home-footer .home-footer-inner {
     padding-top: 64px;
     padding-bottom: 48px;
 }
@@ -859,6 +861,10 @@
         padding: 50px 40px;
     }
 
+    .home-footer .home-footer-inner {
+        padding-top: 56px;
+    }
+
     .home-footer-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
@@ -968,18 +974,52 @@
         min-height: 52px;
     }
 
+    /* Statistika: 3 ta bir qatorda, markazda */
     .home-stats {
         display: grid;
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         justify-items: center;
-        gap: 18px;
-        margin-top: 32px;
+        align-items: start;
+        gap: 0;
+        margin-top: 28px;
     }
 
     .home-stat {
-        justify-content: center;
-        padding-right: 0;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        min-width: 0;
+        padding: 4px 6px;
+        text-align: center;
         border-right: none;
+    }
+
+    .home-stat:not(:last-child) {
+        border-right: 1px solid #cbdcf2;
+    }
+
+    .home-stat-icon {
+        width: 30px;
+        height: 30px;
+    }
+
+    .home-stat-text {
+        align-items: center;
+        gap: 3px;
+        min-width: 0;
+    }
+
+    .home-stat-value {
+        font-size: 15px;
+        line-height: 1.2;
+        white-space: nowrap;
+    }
+
+    .home-stat-label {
+        font-size: 11px;
+        line-height: 1.35;
     }
 
     .home-container {
@@ -1054,32 +1094,68 @@
         width: 100%;
     }
 
-    /* Footer mobil: markazda */
+    /* ---------- Footer mobil: hammasi markazda, bo'limlar chiziq bilan ajratilgan ---------- */
+
+    .home-footer .home-footer-inner {
+        padding-top: 48px;
+        padding-bottom: 36px;
+    }
+
     .home-footer-grid {
         grid-template-columns: minmax(0, 1fr);
-        gap: 32px;
+        gap: 0;
         text-align: center;
+    }
+
+    .home-footer-brand {
+        padding-bottom: 28px;
+        border-bottom: 1px solid rgba(255, 255, 255, .08);
     }
 
     .home-footer-logo-row {
         justify-content: center;
+        margin-bottom: 14px;
+    }
+
+    .home-footer-brand-name {
+        font-size: 22px;
     }
 
     .home-footer-text {
-        margin-left: auto;
-        margin-right: auto;
+        margin: 0 auto 20px;
+        max-width: 420px;
+        font-size: 14px;
     }
 
     .home-footer-social {
+        display: flex;
         justify-content: center;
+        width: fit-content;
+        margin: 0 auto;
+    }
+
+    .home-footer-col {
+        padding: 24px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, .08);
+    }
+
+    .home-footer-col:last-child {
+        border-bottom: none;
+    }
+
+    .home-footer-title {
+        margin-bottom: 14px;
+        text-align: center;
     }
 
     .home-footer-links {
         align-items: center;
+        gap: 10px;
     }
 
     .home-footer-link {
         width: auto;
+        font-size: 15px;
     }
 
     .home-footer-link:hover {
@@ -1120,6 +1196,19 @@
         font-size: 14px;
     }
 
+    .home-stat-value {
+        font-size: 14px;
+    }
+
+    .home-stat-label {
+        font-size: 10px;
+    }
+
+    .home-stat-icon {
+        width: 26px;
+        height: 26px;
+    }
+
     .home-container {
         padding: 0 16px;
     }
@@ -1135,28 +1224,6 @@
 
     .home-cta-panel {
         padding: 32px 20px;
-    }
-}
-
-/* =====================================================
-   FOOTER — yuqori padding (oxirida, boshqa qoidalarni bekor qiladi)
-   ===================================================== */
-
-.home-footer .home-footer-inner {
-    padding-top: 64px;
-    padding-bottom: 48px;
-}
-
-@media (max-width: 1050px) {
-    .home-footer .home-footer-inner {
-        padding-top: 56px;
-    }
-}
-
-@media (max-width: 700px) {
-    .home-footer .home-footer-inner {
-        padding-top: 48px;
-        padding-bottom: 36px;
     }
 }
 
