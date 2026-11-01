@@ -1,29 +1,39 @@
-/* Sahifa sarlavhasi: Yuklar va Kuryerlar uchun umumiy, hamma ekranda markazda */
+/* Sahifa sarlavhasi: Yuklar va Kuryerlar uchun umumiy.
+   Kompyuterda chapda, telefon ekranida (720px dan kichik) markazda.
+   Ranglar Vaadin mavzusidan olinadi, shuning uchun sahifa fonida doim o'qiladi. */
 .dm-page-head {
   margin: 0 0 20px;
-  padding: 0 8px;
-  text-align: center;
+  padding: 0;
+  text-align: left;
 }
 
 .dm-page-title {
   margin: 0 0 6px;
-  color: #102b50;
+  color: var(--lumo-header-text-color, #102b50);
   font-size: clamp(24px, 3vw, 32px);
   font-weight: 850;
   line-height: 1.2;
 }
 
 .dm-page-sub {
-  margin: 0 auto;
+  margin: 0;
   max-width: 560px;
-  color: #647895;
+  color: var(--lumo-secondary-text-color, #647895);
   font-size: 15px;
   line-height: 1.5;
 }
 
+/* Bo'sh "Jami" tugmasi ko'rinmasin (qora nuqta bo'lib qolmasin) */
+.dm-page .dm-total:empty {
+  display: none;
+}
+
+/* Telefon: sarlavha va matn markazda */
 @media (max-width: 720px) {
   .dm-page-head {
     margin-bottom: 16px;
+    padding: 0 8px;
+    text-align: center;
   }
 
   .dm-page-title {
@@ -31,17 +41,7 @@
   }
 
   .dm-page-sub {
+    margin: 0 auto;
     font-size: 14px;
-  }
-}
-
-/* Qorong'i rejim: sarlavha ko'rinib tursin */
-@media (prefers-color-scheme: dark) {
-  .dm-page-title {
-    color: #f1f5ff;
-  }
-
-  .dm-page-sub {
-    color: #9fb0c9;
   }
 }
