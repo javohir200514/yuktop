@@ -1,6 +1,15 @@
-/* Sahifa sarlavhasi: Yuklar va Kuryerlar uchun umumiy.
-   Kompyuterda chapda, telefon ekranida (720px dan kichik) markazda.
-   Ranglar Vaadin mavzusidan olinadi, shuning uchun sahifa fonida doim o'qiladi. */
+/* Sahifa sarlavhasi va umumiy ranglar: Yuklar va Kuryerlar uchun.
+   Kompyuterda (yorug' rejim) brend navy rangi, telefonda (qorong'u rejim) avvalgi ko'rinish saqlanadi. */
+
+/* Yorug' rejim: qora o'rniga navy */
+@media (prefers-color-scheme: light) {
+  .dm-page {
+    --dm-black: #102b50;
+    --dm-accent: #1764ed;
+  }
+}
+
+/* Sarlavha: Vaadin mavzusidan olinadi, shuning uchun har ikki rejimda o'qiladi */
 .dm-page-head {
   margin: 0 0 20px;
   padding: 0;
@@ -23,7 +32,7 @@
   line-height: 1.5;
 }
 
-/* Bo'sh "Jami" tugmasi ko'rinmasin (qora nuqta bo'lib qolmasin) */
+/* Bo'sh "Jami" tugmasi ko'rinmasin */
 .dm-page .dm-total:empty {
   display: none;
 }

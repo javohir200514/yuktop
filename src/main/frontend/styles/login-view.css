@@ -45,7 +45,8 @@ body {
 
 .yb-content .login-card,
 .yb-content .register-card {
-    /* margin:auto: joy bo'lsa markazda, bo'lmasa tepadan boshlanib scroll bo'ladi */
+    margin-top:10px;
+    margin-bottom:10px;
     margin: auto;
     flex: 0 0 auto;
     width: 100%;
