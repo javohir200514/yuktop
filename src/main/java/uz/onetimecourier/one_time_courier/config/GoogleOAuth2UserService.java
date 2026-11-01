@@ -1,7 +1,5 @@
 package uz.onetimecourier.one_time_courier.config;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
@@ -21,11 +19,14 @@ import java.util.Optional;
  * Qaytaradigan principal CustomUserDetails bo'ladi.
  */
 @Service
-@RequiredArgsConstructor
-public class GoogleOAuth2UserService implements OAuth2UserService<OAuth2UserRequest> {
+public class GoogleOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     private final UserRepository userRepository;
     private final DefaultOAuth2UserService delegate = new DefaultOAuth2UserService();
+
+    public GoogleOAuth2UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     @Transactional
@@ -51,7 +52,7 @@ public class GoogleOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         if (found.isPresent()) {
             user = found.get();
         } else {
-            // Yangi Google foydalanuvchi. Rol keyinroq tanlanadi; hozircha SENDER.
+            // Yangi Google foydalanuvchi. Rol hozircha SENDER; keyin o'zgartirish mumkin.
             user = new UserEntity();
             user.setRole(Role.SENDER);
             user.setFullName(name != null && !name.isBlank() ? name : "Foydalanuvchi");
