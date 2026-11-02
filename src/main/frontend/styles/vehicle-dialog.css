@@ -1,0 +1,103 @@
+/* Transport dialogi: maydonlar to'rda, plastinka ko'rinishi rangli */
+
+.vd-body {
+  padding: 4px 2px 2px;
+}
+
+.vd-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 16px;
+  align-items: start;
+}
+
+.vd-full {
+  grid-column: 1 / -1;
+}
+
+.vd-plate-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.vd-plate-row vaadin-checkbox {
+  margin-top: 2px;
+}
+
+/* Davlat raqami plastinkasi */
+.vd-plate {
+  display: flex;
+  align-items: stretch;
+  height: 60px;
+  border: 2px solid #111827;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #0f172a;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, .12);
+}
+
+.vd-plate-band {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  background: #1d4ed8;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: .5px;
+}
+
+.vd-plate-text {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Arial Black", "Segoe UI", sans-serif;
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  white-space: nowrap;
+}
+
+.vd-plate-empty {
+  opacity: .3;
+}
+
+/* Yuridik shaxs raqami: boshqa rang */
+.vd-plate--legal {
+  border-color: #854d0e;
+  background: #fde047;
+}
+
+.vd-plate--legal .vd-plate-band {
+  background: #15803d;
+}
+
+.vd-error {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 14px;
+}
+
+.vd-dialog .vd-cancel {
+  margin-right: auto;
+}
+
+/* Telefon */
+@media (max-width: 560px) {
+  .vd-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .vd-plate-text {
+    font-size: 19px;
+    letter-spacing: 1px;
+  }
+}
