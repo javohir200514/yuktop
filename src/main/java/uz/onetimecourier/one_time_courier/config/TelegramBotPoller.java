@@ -5,9 +5,10 @@ import jakarta.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import uz.onetimecourier.one_time_courier.service.TelegramPhoneVerificationService;
+import uz.onetimecourier.one_time_courier.service.TelegramPhoneVerificationService.BotReply;
 import uz.onetimecourier.one_time_courier.telegram.TelegramBotClient;
 import uz.onetimecourier.one_time_courier.telegram.TelegramUpdateHandler;
-
 
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ public class TelegramBotPoller {
     private static final Logger log = LoggerFactory.getLogger(TelegramBotPoller.class);
 
     private final TelegramLoginSessionStore store;
+    private final TelegramPhoneVerificationService phoneVerification;
     private final TelegramBotClient bot;
     private final TelegramUpdateHandler handler;
 
@@ -25,9 +27,11 @@ public class TelegramBotPoller {
     private Thread thread;
 
     public TelegramBotPoller(TelegramLoginSessionStore store,
+                             TelegramPhoneVerificationService phoneVerification,
                              TelegramBotClient bot,
                              TelegramUpdateHandler handler) {
         this.store = store;
+        this.phoneVerification = phoneVerification;
         this.bot = bot;
         this.handler = handler;
     }
@@ -70,7 +74,6 @@ public class TelegramBotPoller {
                     try {
                         handle(update);
                     } catch (RuntimeException e) {
-                        // Bitta xato butun navbatni to'xtatmasin
                         log.warn("Telegram yangilanishi qayta ishlanmadi: {}", bot.safe(e));
                     }
                 }
@@ -101,22 +104,59 @@ public class TelegramBotPoller {
         Map<String, Object> message = map(update.get("message"));
         Map<String, Object> chat = map(message.get("chat"));
         Map<String, Object> from = map(message.get("from"));
-        Object text = message.get("text");
-        if (!"private".equals(chat.get("type")) || !(text instanceof String t)
-                || chat.get("id") == null || from.get("id") == null) {
+        if (!"private".equals(chat.get("type")) || chat.get("id") == null || from.get("id") == null) {
+            return;
+        }
+        long chatId = longOf(chat.get("id"));
+        long fromId = longOf(from.get("id"));
+
+        // Telefon kontakti: foydalanuvchi "Raqamni yuborish" tugmasini bosganda
+        Map<String, Object> contact = map(message.get("contact"));
+        if (!contact.isEmpty()) {
+            Long contactUserId = contact.get("user_id") == null ? null : longOf(contact.get("user_id"));
+            BotReply reply = phoneVerification.onContact(
+                    chatId, fromId, contactUserId, str(contact.get("phone_number")));
+            sendReply(chatId, reply);
             return;
         }
 
-        long chatId = longOf(chat.get("id"));
+        Object text = message.get("text");
+        if (!(text instanceof String t)) {
+            return;
+        }
         String trimmed = t.trim();
+
         if (trimmed.startsWith("/start")) {
             String[] parts = trimmed.split("\\s+", 2);
             if (parts.length >= 2) {
-                login(chatId, parts[1], from);
+                String token = parts[1];
+                // Avval telefon tasdiqlash oqimi, u tanimasa login oqimi
+                BotReply reply = phoneVerification.onStart(token, chatId);
+                if (reply != null) {
+                    sendReply(chatId, reply);
+                    return;
+                }
+                login(chatId, token, from);
                 return;
             }
         }
         handler.onMessage(chatId, trimmed);
+    }
+
+    /** Telefon oqimi javobi. askContact bo'lsa, "Raqamni yuborish" tugmasi chiqadi, aks holda klaviatura yopiladi. */
+    private void sendReply(long chatId, BotReply reply) {
+        if (reply == null) return;
+        Map<String, Object> markup;
+        if (reply.askContact()) {
+            Map<String, Object> button = Map.of("text", "Raqamni yuborish", "request_contact", true);
+            markup = Map.of(
+                    "keyboard", List.of(List.of(button)),
+                    "resize_keyboard", true,
+                    "one_time_keyboard", true);
+        } else {
+            markup = Map.of("remove_keyboard", true);
+        }
+        bot.sendMessage(chatId, reply.text(), markup);
     }
 
     private void login(long chatId, String loginToken, Map<String, Object> from) {
