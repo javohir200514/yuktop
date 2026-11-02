@@ -1,3 +1,4 @@
+
 package uz.onetimecourier.one_time_courier.service;
 
 import org.slf4j.Logger;
@@ -21,22 +22,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-/**
- * Holat o'zgarganda Telegram xabarlari.
- * AFTER_COMMIT: xabar faqat ma'lumot bazaga yozilgandan keyin ketadi.
- */
 @Service
 public class TelegramNotificationService {
 
-    private static final Logger log = LoggerFactory.getLogger(TelegramNotificationService.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(TelegramNotificationService.class);
 
     private final DeliveryRepository deliveries;
     private final CourierRouteSubscriptionRepository subscriptions;
     private final TelegramBotClient bot;
 
-    public TelegramNotificationService(DeliveryRepository deliveries,
-                                       CourierRouteSubscriptionRepository subscriptions,
-                                       TelegramBotClient bot) {
+    public TelegramNotificationService(
+            DeliveryRepository deliveries,
+            CourierRouteSubscriptionRepository subscriptions,
+            TelegramBotClient bot) {
         this.deliveries = deliveries;
         this.subscriptions = subscriptions;
         this.bot = bot;
@@ -46,77 +45,161 @@ public class TelegramNotificationService {
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public void onDeliveryStatusChanged(DeliveryStatusChangedEvent event) {
         if (!bot.enabled()) return;
+
         try {
             deliveries.findById(event.deliveryId())
                     .ifPresent(d -> dispatch(d, event.status()));
         } catch (RuntimeException e) {
-            log.warn("Telegram bildirishnoma yuborilmadi (yuk {}): {}", event.deliveryId(), e.getMessage());
+            log.warn("Telegram bildirishnomasi yuborilmadi (yuk {}): {}",
+                    event.deliveryId(), e.getMessage());
         }
     }
 
     private void dispatch(DeliveryEntity d, DeliveryStatus status) {
         switch (status) {
             case CREATED -> notifyCouriers(d);
+
             case MATCHED -> notifySenderMatched(d);
-            case PICKED_UP -> notifySender(d, "🚚 Yuk #" + d.getId() + " olib ketildi va yo'lda.");
-            case DELIVERED -> notifySender(d, "📦 Yuk #" + d.getId() + " yetkazildi. Rahmat!");
+
+            case PICKED_UP -> notifySender(
+                    d,
+                    "🚚 YUK YO'LGA CHIQDI!\n\n"
+                            + "Sizning #" + d.getId() + "-raqamli yukingiz kuryer tomonidan olib ketildi.\n"
+                            + "Hozirda yuk manzil tomon yetkazilmoqda.\n\n"
+                            + "📍 Yukingiz xavfsiz yetkazilishini tilaymiz!"
+            );
+
+            case DELIVERED -> notifySender(
+                    d,
+                    "🎉 YUK MUVAFFAQIYATLI YETKAZILDI!\n\n"
+                            + "Sizning #" + d.getId() + "-raqamli yukingiz belgilangan manzilga yetkazildi.\n\n"
+                            + "🤝 Xizmatimizdan foydalanganingiz uchun rahmat!\n"
+                            + "Yana xizmatimizdan foydalanishingizdan mamnun bo'lamiz."
+            );
+
             default -> { }
         }
     }
 
-    /** Yangi yuk: mos yo'nalishdagi kuryerlarga, "Qabul qilish" tugmasi bilan. */
+    /**
+     * Yangi yuk haqida mos yo'nalishdagi kuryerlarga xabar yuborish.
+     */
     private void notifyCouriers(DeliveryEntity d) {
         List<UserEntity> couriers = subscriptions.findCouriersForRoute(
-                d.getFromRegion(), d.getToRegion(), Role.COURIER);
+                d.getFromRegion(),
+                d.getToRegion(),
+                Role.COURIER
+        );
+
         if (couriers.isEmpty()) return;
 
-        Long senderId = d.getSender() == null ? null : d.getSender().getId();
-        String text = "🆕 Yangi yuk #" + d.getId() + "\n"
-                + "Yo'nalish: " + TelegramUpdateHandler.routeLabel(d.getFromRegion(), d.getToRegion()) + "\n"
-                + "Olib ketish: " + Objects.toString(d.getPickupAddress(), "-") + "\n"
-                + "Yetkazish: " + Objects.toString(d.getDropoffAddress(), "-") + "\n"
-                + "Hajm: " + Objects.toString(d.getPackageSize(), "-")
-                + ", og'irligi: " + Objects.toString(d.getWeightKg(), "-") + " kg\n"
-                + "Haq: " + Objects.toString(d.getReward(), "-");
+        Long senderId = d.getSender() == null
+                ? null
+                : d.getSender().getId();
 
-        Map<String, Object> markup = TelegramBotClient.keyboard(List.of(List.of(
-                TelegramBotClient.button("✅ Qabul qilish", "acc:" + d.getId()))));
+        String text =
+                "🆕 YANGI YUK BUYURTMASI!\n\n"
+                        + "Sizning yo'nalishingiz bo'yicha yangi yuk mavjud.\n"
+                        + "Agar ushbu buyurtmani bajarish imkoniyatingiz bo'lsa, uni qabul qilishingiz mumkin.\n\n"
+                        + "━━━━━━━━━━━━━━━━━━\n"
+                        + "📦 Buyurtma raqami: #" + d.getId() + "\n\n"
+                        + "🛣 Yo'nalish: "
+                        + TelegramUpdateHandler.routeLabel(
+                        d.getFromRegion(), d.getToRegion()
+                ) + "\n\n"
+                        + "📍 Olib ketish manzili:\n"
+                        + Objects.toString(d.getPickupAddress(), "Ko'rsatilmagan") + "\n\n"
+                        + "🏁 Yetkazish manzili:\n"
+                        + Objects.toString(d.getDropoffAddress(), "Ko'rsatilmagan") + "\n\n"
+                        + "📐 Yuk hajmi: "
+                        + Objects.toString(d.getPackageSize(), "Ko'rsatilmagan") + "\n"
+                        + "⚖️ Og'irligi: "
+                        + Objects.toString(d.getWeightKg(), "Ko'rsatilmagan") + " kg\n\n"
+                        + "💰 Kuryer haqi: "
+                        + Objects.toString(d.getReward(), "Ko'rsatilmagan") + "\n"
+                        + "━━━━━━━━━━━━━━━━━━\n\n"
+                        + "Buyurtmani qabul qilish uchun quyidagi tugmani bosing.";
+
+        Map<String, Object> markup = TelegramBotClient.keyboard(
+                List.of(List.of(
+                        TelegramBotClient.button(
+                                "✅ Buyurtmani qabul qilish",
+                                "acc:" + d.getId()
+                        )
+                ))
+        );
 
         for (UserEntity courier : couriers) {
             if (courier.getTelegramId() == null) continue;
-            if (courier.getId().equals(senderId)) continue; // o'z yukini o'zi olmasin
+
+            if (Objects.equals(courier.getId(), senderId)) continue;
+
             bot.sendMessage(courier.getTelegramId(), text, markup);
         }
     }
 
-    /** Kuryer qabul qildi: jo'natuvchiga kuryer va transport ma'lumoti. */
+    /**
+     * Kuryer buyurtmani qabul qilganda jo'natuvchiga xabar yuborish.
+     */
     private void notifySenderMatched(DeliveryEntity d) {
         UserEntity courier = d.getCourier();
-        String who = courier == null ? "-" : Objects.toString(courier.getFullName(), "-");
-        String vehicle = courier == null ? "-" : vehicle(courier);
-        notifySender(d, "✅ Yuk #" + d.getId() + " uchun kuryer topildi.\n"
-                + "Kuryer: " + who + "\n"
-                + "Transport: " + vehicle);
+
+        String who = courier == null
+                ? "Ma'lumot mavjud emas"
+                : Objects.toString(courier.getFullName(), "Ma'lumot mavjud emas");
+
+        String vehicle = courier == null
+                ? "Ma'lumot mavjud emas"
+                : vehicle(courier);
+
+        notifySender(
+                d,
+                "✅ KURYER TOPILDI!\n\n"
+                        + "Yaxshi yangilik! Sizning #" + d.getId()
+                        + "-raqamli yuk buyurtmangizni kuryer qabul qildi.\n\n"
+                        + "👤 Kuryer haqida ma'lumot:\n"
+                        + "Ismi: " + who + "\n"
+                        + "🚗 Transporti: " + vehicle + "\n\n"
+                        + "📦 Tez orada kuryer yukingizni olib ketish uchun yo'lga chiqadi.\n\n"
+                        + "Xizmatimizdan foydalanganingiz uchun rahmat!"
+        );
     }
 
+    /**
+     * Jo'natuvchiga Telegram orqali xabar yuborish.
+     */
     private void notifySender(DeliveryEntity d, String text) {
         UserEntity sender = d.getSender();
+
         if (sender == null || sender.getTelegramId() == null) return;
+
         bot.sendMessage(sender.getTelegramId(), text, null);
     }
 
+    /**
+     * Kuryer transporti haqida ma'lumot.
+     */
     private static String vehicle(UserEntity c) {
         StringBuilder sb = new StringBuilder();
-        for (Object part : new Object[]{c.getVehicleType(), c.getVehicleBrand(), c.getVehicleModel()}) {
+
+        for (Object part : new Object[]{
+                c.getVehicleType(),
+                c.getVehicleBrand(),
+                c.getVehicleModel()
+        }) {
             if (part != null) {
                 if (sb.length() > 0) sb.append(' ');
                 sb.append(part);
             }
         }
+
         if (c.getVehicleColor() != null) {
             if (sb.length() > 0) sb.append(", rang: ");
             sb.append(c.getVehicleColor());
         }
-        return sb.length() == 0 ? "ko'rsatilmagan" : sb.toString();
+
+        return sb.length() == 0
+                ? "Ko'rsatilmagan"
+                : sb.toString();
     }
 }
