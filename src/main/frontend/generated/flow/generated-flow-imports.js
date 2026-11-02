@@ -5,13 +5,15 @@ import $cssFromFile_0 from 'Frontend/styles/navbar-user-menu.css?inline';
 import $cssFromFile_1 from 'Frontend/styles/navbar-links.css?inline';
 import $cssFromFile_2 from 'Frontend/styles/about-page.css?inline';
 import $cssFromFile_3 from 'Frontend/styles/create-delivery.css?inline';
-import $cssFromFile_4 from 'Frontend/styles/my-deliveries.css?inline';
-import $cssFromFile_5 from 'Frontend/styles/deliveries-feed.css?inline';
-import $cssFromFile_6 from 'Frontend/styles/deliveries-modern.css?inline';
-import $cssFromFile_7 from 'Frontend/styles/trips.css?inline';
-import $cssFromFile_8 from 'Frontend/styles/deliveries-responsive.css?inline';
-import $cssFromFile_9 from 'Frontend/styles/home.css?inline';
-import $cssFromFile_10 from 'Frontend/styles/login-view.css?inline';
+import $cssFromFile_4 from 'Frontend/styles/page-head.css?inline';
+import $cssFromFile_5 from 'Frontend/styles/deliveries-responsive.css?inline';
+import $cssFromFile_6 from 'Frontend/styles/couriers-page.css?inline';
+import $cssFromFile_7 from 'Frontend/styles/my-deliveries.css?inline';
+import $cssFromFile_8 from 'Frontend/styles/deliveries-feed.css?inline';
+import $cssFromFile_9 from 'Frontend/styles/deliveries-modern.css?inline';
+import $cssFromFile_10 from 'Frontend/styles/home.css?inline';
+import $cssFromFile_11 from 'Frontend/styles/login-view.css?inline';
+import $cssFromFile_12 from 'Frontend/styles/vehicle-dialog.css?inline';
 import '@vaadin/field-highlighter/src/vaadin-field-highlighter.js';
 import '@vaadin/common-frontend/ConnectionIndicator.js';
 import '@vaadin/accordion/src/vaadin-accordion.js';
@@ -149,6 +151,10 @@ injectGlobalCss($cssFromFile_8.toString(), 'CSSImport end', document);
 injectGlobalCss($cssFromFile_9.toString(), 'CSSImport end', document);
 
 injectGlobalCss($cssFromFile_10.toString(), 'CSSImport end', document);
+
+injectGlobalCss($cssFromFile_11.toString(), 'CSSImport end', document);
+
+injectGlobalCss($cssFromFile_12.toString(), 'CSSImport end', document);
 const loadOnDemand = (key) => { return Promise.resolve(0); }
 window.Vaadin = window.Vaadin || {};
 window.Vaadin.Flow = window.Vaadin.Flow || {};
