@@ -10,6 +10,7 @@ import uz.onetimecourier.one_time_courier.enums.Role;
 import uz.onetimecourier.one_time_courier.exps.BusinessException;
 import uz.onetimecourier.one_time_courier.repository.CourierRouteSubscriptionRepository;
 import uz.onetimecourier.one_time_courier.repository.UserRepository;
+import uz.onetimecourier.one_time_courier.service.AuthService;
 import uz.onetimecourier.one_time_courier.service.DeliveryService;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Bot buyruqlari va inline tugmalar.
+ * Bot buyruqlari, inline tugmalar va hisobni Telegram'ga ulash.
  * Klass @Transactional emas: DeliveryService o'z tranzaksiyasiga ega, xatoni shu yerda yutish
  * tashqi tranzaksiyani rollback-only qilib qo'ymasligi uchun.
  */
@@ -31,6 +32,7 @@ public class TelegramUpdateHandler {
     static final int MAX_SUBSCRIPTIONS = 10;
     private static final String ANY = "*";
     private static final int MAX_ANSWER_LENGTH = 190;
+    private static final Map<String, Object> REMOVE_KEYBOARD = Map.of("remove_keyboard", true);
 
     private final TelegramBotClient bot;
     private final UserRepository userRepository;
@@ -52,45 +54,93 @@ public class TelegramUpdateHandler {
     public void onMessage(long chatId, String text) {
         String command = text.split("\\s+", 2)[0].toLowerCase(Locale.ROOT);
         switch (command) {
-            case "/start" -> bot.sendMessage(chatId,
-                    "Salom! YukBor botiga xush kelibsiz.\n\n"
-                            + "Saytga kirish uchun saytdagi \"Telegram orqali kirish\" tugmasini bosing.\n"
-                            + "Kuryer bo'lsangiz: /bildirishnoma",
-                    null);
-            case "/bildirishnoma" -> showMenu(chatId);
-            default -> bot.sendMessage(chatId, "Buyruqlar: /bildirishnoma", null);
+            case "/start" -> onStart(chatId);
+            case "/bildirishnoma" -> showRouteMenu(chatId);
+            default -> bot.sendMessage(chatId,
+                    "Buyruqlar:\n/start - hisobni ulash\n/bildirishnoma - yo'nalishlar", null);
         }
     }
 
-    private void showMenu(long chatId) {
-        if (courierByChat(chatId).isEmpty()) {
-            bot.sendMessage(chatId,
-                    "Bu buyruq faqat kuryer hisobi uchun. Saytda kuryer sifatida ro'yxatdan o'ting.",
-                    null);
+    private void onStart(long chatId) {
+        Optional<UserEntity> user = userByChat(chatId);
+        if (user.isPresent()) {
+            bot.sendMessage(chatId, "Xush kelibsiz! Hisobingiz Telegram'ga ulangan.", REMOVE_KEYBOARD);
+            if (user.get().getRole() == Role.COURIER) {
+                showRouteMenu(chatId);
+            }
             return;
         }
         bot.sendMessage(chatId,
-                "Bildirishnomalar. Yangi yuk siz tanlagan yo'nalishda chiqsa, sizga xabar yuboriladi.",
-                TelegramBotClient.keyboard(List.of(
-                        List.of(TelegramBotClient.button("➕ Yo'nalish qo'shish", "sub:new")),
-                        List.of(TelegramBotClient.button("📋 Yo'nalishlarim", "sub:list")))));
+                "Hisobingizni ulash uchun pastdagi \"Raqamni yuborish\" tugmasini bosing. "
+                        + "Raqam saytda ro'yxatdan o'tgan raqam bilan bir xil bo'lishi kerak.",
+                contactKeyboard());
+    }
+
+    // ================================================================ hisobni ulash
+
+    /**
+     * Telefon kontakti: agar bu saytda ro'yxatdan o'tgan hisobning raqami bo'lsa, telegramId saqlanadi.
+     * true qaytsa, xabar shu yerda qayta ishlangan. false bo'lsa, telefon tasdiqlash oqimi davom etadi.
+     */
+    public boolean tryLinkContact(long chatId, long fromId, Long contactUserId, String rawPhone) {
+        if (contactUserId == null || contactUserId != fromId) {
+            return false; // boshqa odamning kontakti
+        }
+        String phone = normalize(rawPhone);
+        if (phone == null) {
+            return false;
+        }
+        Optional<UserEntity> found = userRepository.findByPhone(phone);
+        if (found.isEmpty()) {
+            return false; // yangi ro'yxatdan o'tayotgan foydalanuvchi
+        }
+
+        UserEntity user = found.get();
+        if (user.getTelegramId() != null) {
+            String message = user.getTelegramId() == fromId
+                    ? "Hisobingiz allaqachon ulangan."
+                    : "Bu hisob boshqa Telegram akkauntga ulangan.";
+            bot.sendMessage(chatId, message, REMOVE_KEYBOARD);
+            return true;
+        }
+
+        user.setTelegramId(fromId);
+        userRepository.save(user);
+        bot.sendMessage(chatId, "✅ Hisobingiz Telegram'ga ulandi.", REMOVE_KEYBOARD);
+        if (user.getRole() == Role.COURIER) {
+            showRouteMenu(chatId);
+        }
+        return true;
+    }
+
+    private static String normalize(String raw) {
+        if (raw == null || raw.isBlank()) {
+            return null;
+        }
+        try {
+            return AuthService.normalizePhone(raw);
+        } catch (RuntimeException e) {
+            return null;
+        }
     }
 
     // ================================================================ tugmalar
 
     /**
      * Callback ma'lumot formatlari:
-     *   sub:new            - yo'nalish qo'shish boshlanishi
-     *   sub:list           - yo'nalishlar ro'yxati
-     *   f:<kod>            - jo'nash hududi (kod: ordinal yoki *)
-     *   t:<from>:<to>      - yetkazish hududi, yo'nalish saqlanadi
-     *   del:<id>           - yo'nalishni o'chirish
-     *   acc:<deliveryId>   - yukni qabul qilish
+     *   sub:new / sub:list        - yo'nalish qo'shish / ro'yxat
+     *   f:<kod>                   - jo'nash hududi
+     *   t:<from>:<to>             - yetkazish hududi, yo'nalish saqlanadi
+     *   del:<id>                  - yo'nalishni o'chirish
+     *   acc:<id>                  - yukni qabul qilish
+     *   pick:<id>                 - yuk olib ketildi ("Ha")
+     *   dlv:<id>                  - yuk yetkazildi ("Ha")
+     *   no:<id>                   - "Yo'q", keyinroq eslatiladi
      */
     public void onCallback(String callbackId, long fromId, String data) {
         try {
-            Optional<UserEntity> courier = courierByChat(fromId);
-            if (courier.isEmpty()) {
+            Optional<UserEntity> user = userByChat(fromId);
+            if (user.isEmpty() || user.get().getRole() != Role.COURIER) {
                 answer(callbackId, "Bu amal faqat kuryer hisobi uchun");
                 return;
             }
@@ -98,24 +148,30 @@ public class TelegramUpdateHandler {
                 answer(callbackId, null);
                 return;
             }
-            UserEntity c = courier.get();
+            UserEntity courier = user.get();
 
             if (data.equals("sub:new")) {
                 answer(callbackId, null);
                 fromMenu(fromId);
             } else if (data.equals("sub:list")) {
                 answer(callbackId, null);
-                listSubscriptions(fromId, c);
+                listSubscriptions(fromId, courier);
             } else if (data.startsWith("f:")) {
                 answer(callbackId, null);
                 toMenu(fromId, data.substring(2));
             } else if (data.startsWith("t:")) {
                 String[] p = data.substring(2).split(":", 2);
-                subscribe(callbackId, fromId, c, regionOf(p[0]), regionOf(p[1]));
+                subscribe(callbackId, fromId, courier, regionOf(p[0]), regionOf(p[1]));
             } else if (data.startsWith("del:")) {
-                delete(callbackId, c, Long.parseLong(data.substring(4)));
+                delete(callbackId, courier, Long.parseLong(data.substring(4)));
             } else if (data.startsWith("acc:")) {
-                accept(callbackId, fromId, c, Long.parseLong(data.substring(4)));
+                accept(callbackId, fromId, courier, Long.parseLong(data.substring(4)));
+            } else if (data.startsWith("pick:")) {
+                pickUp(callbackId, fromId, courier, Long.parseLong(data.substring(5)));
+            } else if (data.startsWith("dlv:")) {
+                deliver(callbackId, fromId, courier, Long.parseLong(data.substring(4)));
+            } else if (data.startsWith("no:")) {
+                answer(callbackId, "Yaxshi, keyinroq eslataman");
             } else {
                 answer(callbackId, null);
             }
@@ -126,6 +182,14 @@ public class TelegramUpdateHandler {
     }
 
     // ================================================================ yo'nalishlar
+
+    private void showRouteMenu(long chatId) {
+        bot.sendMessage(chatId,
+                "Bildirishnomalar. Yangi yuk siz tanlagan yo'nalishda chiqsa, sizga xabar yuboriladi.",
+                TelegramBotClient.keyboard(List.of(
+                        List.of(TelegramBotClient.button("➕ Yo'nalish qo'shish", "sub:new")),
+                        List.of(TelegramBotClient.button("📋 Yo'nalishlarim", "sub:list")))));
+    }
 
     private void fromMenu(long chatId) {
         List<Map<String, Object>> buttons = new ArrayList<>();
@@ -193,11 +257,10 @@ public class TelegramUpdateHandler {
                 () -> answer(callbackId, "Yo'nalish topilmadi"));
     }
 
-    // ================================================================ qabul qilish
+    // ================================================================ yuk holati
 
     private void accept(String callbackId, long chatId, UserEntity courier, long deliveryId) {
         try {
-            // DeliveryService o'zi holat, limit va kuryer huquqini tekshiradi
             deliveryService.accept(courier.getId(), deliveryId);
         } catch (BusinessException e) {
             answer(callbackId, e.getMessage());
@@ -205,15 +268,40 @@ public class TelegramUpdateHandler {
         }
         answer(callbackId, "Yuk sizga biriktirildi");
         bot.sendMessage(chatId,
-                "✅ Yuk #" + deliveryId + " sizga biriktirildi. Yetkazish tafsilotlarini YukBor saytida ko'ring.",
-                null);
+                "✅ Yuk #" + deliveryId + " sizga biriktirildi. Olib ketganingizda pastdagi tugmani bosing.",
+                TelegramBotClient.keyboard(List.of(List.of(
+                        TelegramBotClient.button("🚚 Olib ketdim", "pick:" + deliveryId)))));
+    }
+
+    private void pickUp(String callbackId, long chatId, UserEntity courier, long deliveryId) {
+        try {
+            deliveryService.pickUp(courier.getId(), deliveryId);
+        } catch (BusinessException e) {
+            answer(callbackId, e.getMessage());
+            return;
+        }
+        answer(callbackId, "Yuk olib ketildi");
+        bot.sendMessage(chatId,
+                "🚚 Yuk #" + deliveryId + " olib ketildi. Yetkazganingizda pastdagi tugmani bosing.",
+                TelegramBotClient.keyboard(List.of(List.of(
+                        TelegramBotClient.button("🏁 Yetkazdim", "dlv:" + deliveryId)))));
+    }
+
+    private void deliver(String callbackId, long chatId, UserEntity courier, long deliveryId) {
+        try {
+            deliveryService.deliver(courier.getId(), deliveryId);
+        } catch (BusinessException e) {
+            answer(callbackId, e.getMessage());
+            return;
+        }
+        answer(callbackId, "Yetkazildi");
+        bot.sendMessage(chatId, "🎉 Yuk #" + deliveryId + " yetkazildi. Rahmat!", null);
     }
 
     // ================================================================ yordamchilar
 
-    private Optional<UserEntity> courierByChat(long chatId) {
-        return userRepository.findByTelegramId(chatId)
-                .filter(u -> u.getRole() == Role.COURIER);
+    private Optional<UserEntity> userByChat(long chatId) {
+        return userRepository.findByTelegramId(chatId);
     }
 
     private void answer(String callbackId, String text) {
@@ -223,11 +311,19 @@ public class TelegramUpdateHandler {
         bot.answerCallback(callbackId, trimmed);
     }
 
+    /** Telefon raqamini so'rovchi reply klaviatura. */
+    private static Map<String, Object> contactKeyboard() {
+        Map<String, Object> button = Map.of("text", "Raqamni yuborish", "request_contact", true);
+        return Map.of(
+                "keyboard", List.of(List.of(button)),
+                "resize_keyboard", true,
+                "one_time_keyboard", true);
+    }
+
     private static Region regionOf(String code) {
         return ANY.equals(code) ? null : Region.values()[Integer.parseInt(code)];
     }
 
-    /** Tugmalarni ikki ustunli qatorlarga bo'ladi. */
     private static List<List<Map<String, Object>>> grid(List<Map<String, Object>> buttons) {
         List<List<Map<String, Object>>> rows = new ArrayList<>();
         for (int i = 0; i < buttons.size(); i += 2) {

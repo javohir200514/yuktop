@@ -26,6 +26,8 @@ public class TelegramPhoneVerificationService {
         final String phone;
         final Instant expiresAt = Instant.now().plus(SESSION_TTL);
         Long chatId;
+        /** Kontakt yuborgan foydalanuvchining Telegram ID si (onContact da tekshirilgan). */
+        Long telegramId;
         String code;
         Instant codeExpiresAt;
         int attempts;
@@ -88,6 +90,7 @@ public class TelegramPhoneVerificationService {
         }
         String code = String.format("%06d", random.nextInt(1_000_000));
         synchronized (s) {
+            s.telegramId = fromId;   // ro'yxatdan o'tishda users.telegram_id ga yoziladi
             s.code = code;
             s.codeExpiresAt = Instant.now().plus(CODE_TTL);
             s.attempts = 0;
@@ -124,6 +127,20 @@ public class TelegramPhoneVerificationService {
             }
             s.verified = true;
             return true;
+        }
+    }
+
+    /**
+     * Sayt: ro'yxatdan o'tishda Telegram ID ni olish. discard dan OLDIN chaqirilishi kerak.
+     * Kontakt tasdiqlanmagan bo'lsa null qaytaradi.
+     */
+    public Long telegramIdOf(String token) {
+        Session s = token == null ? null : sessions.get(token);
+        if (s == null) {
+            return null;
+        }
+        synchronized (s) {
+            return s.telegramId;
         }
     }
 

@@ -14,6 +14,7 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 
 import uz.onetimecourier.one_time_courier.dto.VehicleInfo;
 import uz.onetimecourier.one_time_courier.enums.VehicleType;
+import uz.onetimecourier.one_time_courier.service.FormatVehicleVerificationService;
 import uz.onetimecourier.one_time_courier.service.VehicleVerificationService;
 import uz.onetimecourier.one_time_courier.service.VehicleVerificationService.VerificationResult;
 
@@ -205,9 +206,8 @@ public class VehicleVerificationDialog extends Dialog {
                 || OTHER.equals(modelSelect.getValue())));
     }
 
-    /** Velosiped turini aniqlaydi. Enum nomida BIKE, BICYCLE yoki VELO bo'lsa velosiped hisoblanadi. */
     private static boolean isBicycle(VehicleType t) {
-        return t != null && t.name().toUpperCase(Locale.ROOT).matches(".*(BIKE|BICYCLE|VELO).*");
+        return FormatVehicleVerificationService.isLightVehicle(t);
     }
 
     // ---------------------------------------------------------------- davlat raqami

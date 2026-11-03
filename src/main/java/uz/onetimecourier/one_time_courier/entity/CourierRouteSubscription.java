@@ -38,6 +38,10 @@ public class CourierRouteSubscription {
     @Column(name = "to_region", length = 40)
     private Region toRegion;
 
+    /** false bo'lsa, yo'nalish saqlanadi, lekin bildirishnoma yuborilmaydi. */
+    @Column(name = "enabled", nullable = false, columnDefinition = "boolean not null default true")
+    private boolean enabled = true;
+
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
@@ -48,6 +52,7 @@ public class CourierRouteSubscription {
         this.courier = courier;
         this.fromRegion = fromRegion;
         this.toRegion = toRegion;
+        this.enabled = true;
         this.createdAt = LocalDateTime.now();
     }
 
@@ -58,6 +63,10 @@ public class CourierRouteSubscription {
     public Region getFromRegion() { return fromRegion; }
 
     public Region getToRegion() { return toRegion; }
+
+    public boolean isEnabled() { return enabled; }
+
+    public void setEnabled(boolean enabled) { this.enabled = enabled; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
 }

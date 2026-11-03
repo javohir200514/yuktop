@@ -17,17 +17,18 @@ public interface CourierRouteSubscriptionRepository extends JpaRepository<Courie
 
     List<CourierRouteSubscription> findByCourierIdOrderByIdAsc(Long courierId);
 
-    /** Null qiymatlar "istalgan" sifatida saqlanadi, shuning uchun Spring Data "is null" qiladi. */
+    /** Null qiymatlar "istalgan" sifatida saqlanadi, Spring Data "is null" qiladi. */
     Optional<CourierRouteSubscription> findFirstByCourierIdAndFromRegionAndToRegion(Long courierId,
                                                                                     Region fromRegion,
                                                                                     Region toRegion);
 
     Optional<CourierRouteSubscription> findByIdAndCourierId(Long id, Long courierId);
 
-    /** Berilgan yo'nalishga mos, bildirishnoma yoqqan kuryerlar (takrorlanmasdan). */
+    /** Berilgan yo'nalishga mos, yoqilgan yo'nalishli kuryerlar (takrorlanmasdan). */
     @Query("""
             select distinct s.courier from CourierRouteSubscription s
-             where (s.fromRegion is null or s.fromRegion = :fromRegion)
+             where s.enabled = true
+               and (s.fromRegion is null or s.fromRegion = :fromRegion)
                and (s.toRegion is null or s.toRegion = :toRegion)
                and s.courier.role = :role
                and s.courier.telegramId is not null

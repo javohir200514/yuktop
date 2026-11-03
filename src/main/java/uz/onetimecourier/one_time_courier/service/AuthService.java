@@ -15,8 +15,8 @@ import uz.onetimecourier.one_time_courier.entity.UserEntity;
 import uz.onetimecourier.one_time_courier.enums.Language;
 import uz.onetimecourier.one_time_courier.enums.Role;
 import uz.onetimecourier.one_time_courier.exps.BusinessException;
-import uz.onetimecourier.one_time_courier.repository.UserRepository;
 import uz.onetimecourier.one_time_courier.mapper.UserMapper;
+import uz.onetimecourier.one_time_courier.repository.UserRepository;
 
 @Service
 @Validated
@@ -33,6 +33,11 @@ public class AuthService {
         }
         String digits = raw.replaceAll("\\D", "");
         return digits.isEmpty() ? "" : "+" + digits;
+    }
+
+    /** Bo'sh yoki null matnni null qiladi, aks holda probelsiz qaytaradi. */
+    private static String clean(String s) {
+        return s == null || s.isBlank() ? null : s.trim();
     }
 
     @Transactional
@@ -66,8 +71,18 @@ public class AuthService {
         return userRepository.existsByPhone(normalizePhone(rawPhone));
     }
 
+    /** Eski chaqiruvlar uchun: Telegram ID siz ro'yxatdan o'tkazish. */
     @Transactional
     public UserDto registerVerified(@Valid RegisterRequestDto dto, VehicleInfo vehicle) {
+        return registerVerified(dto, vehicle, null);
+    }
+
+    /**
+     * Telefon tasdiqlangandan keyin ro'yxatdan o'tkazadi.
+     * telegramId botdagi kontakt orqali olingan Telegram ID; bildirishnomalar shu orqali yuboriladi.
+     */
+    @Transactional
+    public UserDto registerVerified(@Valid RegisterRequestDto dto, VehicleInfo vehicle, Long telegramId) {
         if (dto.role() == Role.ADMIN) {
             throw new BusinessException("Bu rolni tanlab bo'lmaydi");
         }
@@ -83,6 +98,10 @@ public class AuthService {
             throw new BusinessException("Bu telefon raqam allaqachon ro'yxatdan o'tgan");
         }
 
+        if (telegramId != null && userRepository.findByTelegramId(telegramId).isPresent()) {
+            throw new BusinessException("Bu Telegram hisob boshqa akkauntga bog'langan");
+        }
+
         UserEntity user = new UserEntity();
         user.setPhone(phone);
         user.setFullName(dto.fullName().trim());
@@ -90,13 +109,15 @@ public class AuthService {
         user.setRole(dto.role());
         user.setLanguage(dto.language() != null ? dto.language() : Language.UZ);
         user.setPhoneVerified(true);
+        user.setTelegramId(telegramId);
 
         if (vehicle != null) {
+            // Velosiped va mototsikl uchun marka/model/raqam bo'lmasligi mumkin
             user.setVehicleType(vehicle.type());
-            user.setVehicleBrand(vehicle.brand().trim());
-            user.setVehicleModel(vehicle.model().trim());
-            user.setVehicleColor(vehicle.color().trim());
-            user.setPlateNumber(vehicle.plateNumber());
+            user.setVehicleBrand(clean(vehicle.brand()));
+            user.setVehicleModel(clean(vehicle.model()));
+            user.setVehicleColor(clean(vehicle.color()));
+            user.setPlateNumber(clean(vehicle.plateNumber()));
         }
 
         try {

@@ -110,13 +110,14 @@ public class TelegramBotPoller {
         long chatId = longOf(chat.get("id"));
         long fromId = longOf(from.get("id"));
 
-        // Telefon kontakti: foydalanuvchi "Raqamni yuborish" tugmasini bosganda
+        // Telefon kontakti: avval mavjud hisobni ulash, bo'lmasa telefon tasdiqlash oqimi
         Map<String, Object> contact = map(message.get("contact"));
         if (!contact.isEmpty()) {
             Long contactUserId = contact.get("user_id") == null ? null : longOf(contact.get("user_id"));
-            BotReply reply = phoneVerification.onContact(
-                    chatId, fromId, contactUserId, str(contact.get("phone_number")));
-            sendReply(chatId, reply);
+            String phone = str(contact.get("phone_number"));
+            if (!handler.tryLinkContact(chatId, fromId, contactUserId, phone)) {
+                sendReply(chatId, phoneVerification.onContact(chatId, fromId, contactUserId, phone));
+            }
             return;
         }
 

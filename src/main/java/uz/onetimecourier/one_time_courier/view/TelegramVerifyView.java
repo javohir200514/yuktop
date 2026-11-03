@@ -490,12 +490,13 @@ public class TelegramVerifyView extends VerticalLayout implements BeforeEnterObs
 
     private void finish(VehicleInfo vehicle) {
         try {
+            Long telegramId = phoneVerification.telegramIdOf(pending.token()); // discard dan oldin
             authService.registerVerified(new RegisterRequestDto(
                     pending.phone(),
                     pending.fullName(),
                     pending.password(),
                     pending.role(),
-                    Language.UZ), vehicle);
+                    Language.UZ), vehicle, telegramId);
         } catch (BusinessException ex) {
             showError(ex.getMessage());
             return;

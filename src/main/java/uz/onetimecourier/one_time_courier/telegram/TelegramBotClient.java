@@ -1,14 +1,18 @@
 package uz.onetimecourier.one_time_courier.telegram;
 
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.JdkClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
+import java.net.http.HttpClient;
 import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -19,15 +23,21 @@ import java.util.Map;
 public class TelegramBotClient {
 
     private static final Logger log = LoggerFactory.getLogger(TelegramBotClient.class);
+    private static final TypeReference<Map<String, Object>> MAP_TYPE = new TypeReference<>() {};
 
     private final String token;
     private final RestClient client;
+    private final ObjectMapper json = new ObjectMapper();
 
     public TelegramBotClient(@Value("${telegram.bot.token:}") String token) {
         this.token = token == null ? "" : token;
-        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-        factory.setConnectTimeout(Duration.ofSeconds(10));
+
+        HttpClient http = HttpClient.newBuilder()
+                .connectTimeout(Duration.ofSeconds(10))
+                .build();
+        JdkClientHttpRequestFactory factory = new JdkClientHttpRequestFactory(http);
         factory.setReadTimeout(Duration.ofSeconds(40)); // long polling (25s) dan uzunroq
+
         this.client = RestClient.builder()
                 .baseUrl("https://api.telegram.org")
                 .requestFactory(factory)
@@ -38,17 +48,46 @@ public class TelegramBotClient {
         return !token.isBlank();
     }
 
+    /**
+     * Telegram metodini chaqiradi. Javob avval matn sifatida olinadi, shunda
+     * noto'g'ri content-type yoki HTML javob bo'lsa, sababi log'da ko'rinadi.
+     */
     public Map<String, Object> call(String method, Map<String, Object> body) {
-        Map<String, Object> response = client.post()
+        ResponseEntity<String> resp = client.post()
                 .uri("/bot{token}/{method}", token, method)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(body)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(body == null ? Map.of() : body)
                 .retrieve()
-                .body(new ParameterizedTypeReference<Map<String, Object>>() {});
-        if (response == null || !Boolean.TRUE.equals(response.get("ok"))) {
-            throw new IllegalStateException("Telegram API: ok=false (" + method + ")");
+                .toEntity(String.class);
+
+        String raw = resp.getBody();
+        String contentType = resp.getHeaders().getFirst("Content-Type");
+
+        if (raw == null || raw.isBlank()) {
+            throw new IllegalStateException("Telegram bo'sh javob qaytardi (" + method
+                    + ", status=" + resp.getStatusCode() + ")");
+        }
+
+        Map<String, Object> response;
+        try {
+            response = json.readValue(raw, MAP_TYPE);
+        } catch (Exception e) {
+            throw new IllegalStateException("Telegram JSON emas (" + method
+                    + ", status=" + resp.getStatusCode()
+                    + ", content-type=" + contentType
+                    + ", javob=" + head(raw) + ")", e);
+        }
+
+        if (!Boolean.TRUE.equals(response.get("ok"))) {
+            throw new IllegalStateException("Telegram API: ok=false (" + method
+                    + ", description=" + response.get("description") + ")");
         }
         return response;
+    }
+
+    private static String head(String s) {
+        return s.length() > 300 ? s.substring(0, 300) : s;
     }
 
     /** Xato matnida token bo'lishi mumkin, logga yozishdan oldin yashiramiz. */

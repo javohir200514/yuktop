@@ -14,7 +14,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @StyleSheet("styles.css")
 @EnableScheduling
 public class OneTimeCourierApplication implements AppShellConfigurator {
-
     public static void main(String[] args) {
         SpringApplication.run(OneTimeCourierApplication.class, args);
     }

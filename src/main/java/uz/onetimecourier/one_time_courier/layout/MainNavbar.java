@@ -98,7 +98,7 @@ public class MainNavbar extends Div {
             menu.add(link("Yuk joylash", "/deliveries/new", VaadinIcon.PLUS));
         }
         if (isLoggedIn() && isCourier()) {
-            menu.add(link("Mening yetkazishlarim", "/courier/deliveries", null));
+            menu.add(link("Mening yetkazishlarim", "/courier/deliveries", VaadinIcon.CLIPBOARD_CHECK));
         }
         menu.addClassName("navbar-menu");
 
@@ -243,6 +243,11 @@ public class MainNavbar extends Div {
             courierItem.addClassName("nu-item");
             courierItem.getElement().setAttribute("role", "menuitem");
             dropdown.add(courierItem);
+
+            Anchor notificationsItem = new Anchor("/kuryer/bildirishnoma", "Bildirishnomalar");
+            notificationsItem.addClassName("nu-item");
+            notificationsItem.getElement().setAttribute("role", "menuitem");
+            dropdown.add(notificationsItem);
         }
 
         Div separator = new Div();
