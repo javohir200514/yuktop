@@ -1,0 +1,352 @@
+/* =====================================================
+   YUKBOR — FOOTER
+   SiteFooter.java bilan bog'liq. Faqat footer uslublari.
+   ===================================================== */
+
+
+/* ---------- Asosiy konteyner ---------- */
+
+.home-footer {
+    position: relative;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+
+    background: #102b50;
+    color: #cbd5e1;
+    font-family: inherit;
+}
+
+/* Tepadagi yupqa ko'k chiziq */
+.home-footer::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #2563eb, #60a5fa, #2563eb);
+}
+
+/* Ikki klassli tanlovchi: .home-container dagi padding shorthand ni bekor qiladi */
+.home-footer .home-footer-inner {
+    padding-top: 64px;
+    padding-bottom: 48px;
+    padding-left: 28px;
+    padding-right: 28px;
+}
+
+
+/* ---------- Ustunlar to'ri (desktop) ---------- */
+
+.home-footer .home-footer-grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr 1fr;
+    gap: 40px;
+}
+
+.home-footer .home-footer-col,
+.home-footer .home-footer-brand {
+    min-width: 0;
+}
+
+
+/* ---------- Brend ---------- */
+
+.home-footer .home-footer-logo-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.home-footer .home-footer-brand-name {
+    color: rgba(255, 255, 255, .71);
+    font-size: 20px;
+    font-weight: 650;
+    letter-spacing: -.5px;
+}
+
+.home-footer .home-footer-text {
+    max-width: 330px;
+    margin: 0 0 22px;
+
+    color: #94a3b8;
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+/* Telegram tugmasi */
+.home-footer .home-footer-social {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 10px 16px;
+    border: 1px solid rgba(255, 255, 255, .14);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, .04);
+
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+
+    transition: background .25s ease, border-color .25s ease, transform .25s ease;
+}
+
+.home-footer .home-footer-social:hover {
+    background: rgba(255, 255, 255, .1);
+    border-color: rgba(96, 165, 250, .6);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.home-footer .home-footer-social-icon {
+    display: flex;
+    width: 20px;
+    height: 20px;
+}
+
+.home-footer .home-footer-social-icon svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+
+/* ---------- Ustunlar (Platforma, Kuryerlar uchun, Hisob) ---------- */
+
+.home-footer .home-footer-title {
+    display: block;
+    margin-bottom: 18px;
+
+    color: #fff;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    text-align: left;
+}
+
+.home-footer .home-footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.home-footer .home-footer-link {
+    display: inline-block;
+    width: fit-content;
+
+    color: #94a3b8;
+    font-size: 14px;
+    text-decoration: none;
+
+    transition: color .2s ease, padding-left .2s ease;
+}
+
+.home-footer .home-footer-link:hover {
+    color: #fff;
+    padding-left: 4px;
+}
+
+
+/* ---------- Pastki chiziq ---------- */
+
+.home-footer .home-footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, .08);
+    background: #0b1f3b;
+}
+
+.home-footer .home-footer-bottom-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left: 28px;
+    padding-right: 28px;
+}
+
+.home-footer .home-footer-copy,
+.home-footer .home-footer-note {
+    color: #64748b;
+    font-size: 13px;
+}
+
+
+/* =====================================================
+   FULL-BLEED: footer brauzer chetigacha chiqadi.
+   Scroll konteynerlariga (.yb-content, html, body) tegilmaydi.
+   ===================================================== */
+
+.home-footer.home-footer-bleed {
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: 0;
+    margin-top: 56px;
+    margin-bottom: 0;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    align-self: stretch;
+}
+
+/* Yuklar va Kuryerlar sahifalari: footerni kesib qo'yayotgan markaziy konteyner */
+.md-page:has(> .home-footer-bleed),
+.dm-page:has(> .home-footer-bleed) {
+    overflow: visible !important;
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+
+/* =====================================================
+   PLANSHET — 1050px
+   ===================================================== */
+
+@media (max-width: 1050px) {
+    .home-footer .home-footer-inner {
+        padding-top: 56px;
+    }
+
+    .home-footer .home-footer-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .home-footer .home-footer-brand {
+        grid-column: 1 / -1;
+    }
+}
+
+
+/* =====================================================
+   MOBIL — 720px
+   Ustunlar chapga tekislanadi, 2 ustunli to'r.
+   Brend to'liq kenglikda, pastki chiziq markazda.
+   ===================================================== */
+
+@media (max-width: 720px) {
+    .home-footer .home-footer-inner {
+        padding-top: 40px;
+        padding-bottom: 28px;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .home-footer .home-footer-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 28px 20px;
+        text-align: left;
+        justify-items: start;
+    }
+
+    .home-footer .home-footer-brand {
+        grid-column: 1 / -1;
+        padding-bottom: 24px;
+        border-bottom: 1px solid rgba(255, 255, 255, .08);
+        text-align: left;
+    }
+
+    .home-footer .home-footer-logo-row {
+        justify-content: flex-start;
+        margin-bottom: 12px;
+    }
+
+    .home-footer .home-footer-brand-name {
+        font-size: 22px;
+    }
+
+    .home-footer .home-footer-text {
+        max-width: 100%;
+        margin-bottom: 18px;
+        font-size: 14px;
+        text-align: left;
+    }
+
+    .home-footer .home-footer-social {
+        align-self: flex-start;
+    }
+
+    .home-footer .home-footer-col {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .home-footer .home-footer-title {
+        margin-bottom: 14px;
+        font-size: 11px;
+        letter-spacing: 1.4px;
+        text-align: left;
+    }
+
+    .home-footer .home-footer-links {
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .home-footer .home-footer-link {
+        font-size: 15px;
+    }
+
+    .home-footer .home-footer-link:hover {
+        padding-left: 0;
+    }
+
+    .home-footer .home-footer-bottom-inner {
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        padding-top: 18px;
+        padding-bottom: 18px;
+        padding-left: 20px;
+        padding-right: 20px;
+        text-align: center;
+    }
+}
+
+
+/* =====================================================
+   KICHIK MOBIL — 420px
+   Ustunlar bitta qatorga o'tadi.
+   ===================================================== */
+
+@media (max-width: 420px) {
+    .home-footer .home-footer-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 24px;
+    }
+
+    .home-footer .home-footer-inner {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .home-footer .home-footer-bottom-inner {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}
+/* Kontent qismi kamida bir ekran balandlikda bo'ladi,
+   shuning uchun footer birinchi ekrandan pastda turadi */
+.page-fold {
+    box-sizing: border-box;
+    min-height: calc(100vh - 98px); /* 98px: navbar balandligi */
+}
+/* Footerdan pastdagi bo'shliqni olib tashlash (faqat Ishonchli kuryerlar sahifasi) */
+.home-footer.home-footer-bleed {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+.tc-page:has(> .home-footer-bleed),
+.yb-content:has(.tc-page) {
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+}

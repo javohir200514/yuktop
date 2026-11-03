@@ -114,6 +114,10 @@ public class DeliveriesView extends Div {
 
         addClassNames("md-page", "dm-page");
 
+        // Kontent bir ekran balandlikda turadi, footer undan pastda (scroll qilganda ko'rinadi)
+        Div main = new Div();
+        main.addClassName("page-fold");
+
         // ---- sahifa sarlavhasi (Kuryerlar sahifasidagi kabi)
         H2 title = new H2("Yuklar");
         title.addClassName("dm-page-title");
@@ -121,7 +125,7 @@ public class DeliveriesView extends Div {
         subtitle.addClassName("dm-page-sub");
         Div head = new Div(title, subtitle);
         head.addClassName("dm-page-head");
-        add(head);
+        main.add(head);
 
         // ---- filtr paneli
         configureFilters();
@@ -130,11 +134,11 @@ public class DeliveriesView extends Div {
         filterArrow.getElement().setAttribute("aria-hidden", "true");
         Div filters = new Div(fromFilter, filterArrow, toFilter, clearButton);
         filters.addClassName("dm-filter-bar");
-        add(filters);
+        main.add(filters);
 
         /*// ---- faqat kirmagan foydalanuvchiga: kuryer bo'lib ro'yxatdan o'tishga chaqiriq
         if (viewer == Viewer.ANONYMOUS) {
-            add(gate());
+            main.add(gate());
         }*/
 
         alert.addClassName("dm-alert");
@@ -147,7 +151,9 @@ public class DeliveriesView extends Div {
         listBox.addClassName("dm-list");
         buildPager();
 
-        add(alert, updateBanner, totalLabel, listBox, pager);
+        main.add(alert, updateBanner, totalLabel, listBox, pager);
+
+        add(main, new SiteFooter());
         load();
     }
 

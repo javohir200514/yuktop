@@ -1,0 +1,633 @@
+.tc-page {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 32px 16px 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  color: #1e293b;
+}
+
+/* ---------- sarlavha ---------- */
+
+.tc-hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+  padding: 28px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #12294d 0%, #1e3a6e 55%, #2563eb 130%);
+  box-shadow: 0 10px 30px rgba(18, 41, 77, 0.18);
+}
+
+.tc-hero::after {
+  content: "";
+  position: absolute;
+  right: -48px;
+  top: -48px;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  pointer-events: none;
+}
+
+.tc-hero .tc-hero-title {
+  color: #ffffff;
+}
+
+.tc-hero-sub {
+  margin: 6px 0 0;
+  max-width: 560px;
+  color: #cbd5e1;
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.tc-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.tc-stat {
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.tc-stat-value {
+  display: block;
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.tc-stat-label {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.78rem;
+  color: #cbd5e1;
+}
+
+/* ---------- umumiy kartochka ---------- */
+
+.tc-card {
+  box-sizing: border-box;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.tc-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
+}
+
+.tc-section-title {
+  display: block;
+  margin: 4px 0 -6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ---------- podium (top 3) ---------- */
+
+.tc-podium {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  align-items: end;
+}
+
+.tc-podium-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 14px;
+  text-align: center;
+}
+
+/* 1-o'rin o'rtada va balandroq: DOM tartibi 1,2,3 */
+.tc-podium-card:nth-child(1) { order: 2; }
+.tc-podium-card:nth-child(2) { order: 1; }
+.tc-podium-card:nth-child(3) { order: 3; }
+
+.tc-podium-card--first {
+  padding-top: 30px;
+  border-color: #fcd34d;
+  background: linear-gradient(180deg, #fffbeb 0%, #ffffff 60%);
+  box-shadow: 0 10px 28px rgba(245, 158, 11, 0.16);
+}
+
+.tc-medal {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.tc-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.tc-vehicle {
+  font-size: 0.82rem;
+  color: #64748b;
+}
+
+.tc-meta {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+/* ---------- avatar ---------- */
+
+.tc-avatar {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #ffffff;
+  background: linear-gradient(135deg, #2563eb, #60a5fa);
+}
+
+.tc-avatar--lg {
+  width: 60px;
+  height: 60px;
+  font-size: 1.15rem;
+}
+
+.tc-avatar--gold   { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+.tc-avatar--silver { background: linear-gradient(135deg, #64748b, #94a3b8); }
+.tc-avatar--bronze { background: linear-gradient(135deg, #c2410c, #fb923c); }
+.tc-avatar--plain  { background: linear-gradient(135deg, #2563eb, #60a5fa); }
+
+/* ---------- yulduz ---------- */
+
+.tc-stars {
+  color: #d97706;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.tc-stars--lg {
+  font-size: 1.1rem;
+}
+
+/* ---------- ro'yxat ---------- */
+
+.tc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tc-row {
+  display: grid;
+  grid-template-columns: 40px 44px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+}
+
+.tc-rank {
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #94a3b8;
+}
+
+.tc-row-main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tc-row-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.tc-chip {
+  align-self: flex-start;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 0.78rem;
+}
+
+.tc-row-stats {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.tc-bar {
+  width: 120px;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e5e7eb;
+}
+
+.tc-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+}
+
+/* ---------- bo'sh holat ---------- */
+
+.tc-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 40px 20px;
+  text-align: center;
+  border-style: dashed;
+  border-color: #cbd5e1;
+  box-shadow: none;
+}
+
+.tc-empty:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.tc-empty-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 4px;
+  border-radius: 50%;
+  background: #eff6ff;
+  font-size: 1.9rem;
+}
+
+.tc-empty-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.tc-empty-text {
+  max-width: 420px;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: #64748b;
+}
+
+/* ---------- mobil ekran ---------- */
+
+@media (max-width: 640px) {
+  .tc-page {
+    padding: 20px 16px 40px;
+    gap: 18px;
+  }
+
+  .tc-hero {
+    padding: 22px 20px;
+  }
+
+  .tc-stats {
+    gap: 8px;
+  }
+
+  .tc-stat {
+    padding: 10px;
+  }
+
+  .tc-stat-value {
+    font-size: 1.1rem;
+  }
+
+  .tc-podium {
+    grid-template-columns: 1fr;
+  }
+
+  .tc-podium-card,
+  .tc-podium-card:nth-child(1),
+  .tc-podium-card:nth-child(2),
+  .tc-podium-card:nth-child(3) {
+    order: initial;
+  }
+
+  .tc-row {
+    grid-template-columns: 30px 44px minmax(0, 1fr);
+    padding: 12px 14px;
+  }
+
+  .tc-row-stats {
+    grid-column: 2 / -1;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .tc-bar {
+    width: 100%;
+    flex: 1;
+    margin: 0 10px;
+  }
+}
+.tc-steps {
+    margin-top: 32px;
+}
+
+.tc-steps-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.tc-step {
+    padding: 24px;
+}
+
+.tc-step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: #1764ed;
+    color: #fff;
+    font-weight: 800;
+}
+
+.tc-step-title {
+    display: block;
+    margin: 14px 0 6px;
+    color: #102b50;
+    font-weight: 800;
+}
+
+.tc-step-text {
+    margin: 0;
+    color: #647895;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+@media (max-width: 640px) {
+    .tc-steps-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+/* ---------- Qanday ishlaydi (jonli dizayn) ---------- */
+
+.tc-steps {
+    margin-top: 40px;
+    padding: 32px;
+    border: 1px solid #e3ebf6;
+    border-radius: 24px;
+    background: linear-gradient(135deg, #ffffff 0%, #f0f6ff 100%);
+    box-shadow: 0 10px 30px rgba(30, 70, 120, .06);
+}
+
+.tc-steps-kicker {
+    display: block;
+    color: #1764ed;
+    font-size: 12px;
+    font-weight: 850;
+    letter-spacing: 1.8px;
+}
+
+.tc-steps-title {
+    margin: 8px 0 24px;
+    color: #102b50;
+    font-size: clamp(22px, 2.6vw, 30px);
+    font-weight: 850;
+    letter-spacing: -.8px;
+}
+
+.tc-steps-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.tc-step {
+    padding: 24px;
+    border: 1px solid #e6eefa;
+    border-radius: 20px;
+    background: #fff;
+    transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.tc-step:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 16px 34px rgba(30, 70, 120, .1);
+}
+
+.tc-step-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+}
+
+.tc-step-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    font-size: 24px;
+}
+
+.tc-step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.tc-step--blue .tc-step-icon { background: #e6f0ff; }
+.tc-step--blue .tc-step-num { background: #1764ed; }
+
+.tc-step--amber .tc-step-icon { background: #fff4db; }
+.tc-step--amber .tc-step-num { background: #f59e0b; }
+
+.tc-step--green .tc-step-icon { background: #e3f9ec; }
+.tc-step--green .tc-step-num { background: #16a34a; }
+
+.tc-step-title {
+    display: block;
+    margin-bottom: 8px;
+    color: #102b50;
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.tc-step-text {
+    margin: 0;
+    color: #647895;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+@media (max-width: 900px) {
+    .tc-steps {
+        padding: 22px;
+    }
+
+    .tc-steps-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+/* ---------- Qanday ishlaydi (xotirjam dizayn) ---------- */
+
+.tc-steps {
+    margin-top: 40px;
+    padding: 32px;
+    border: 1px solid #e3ebf6;
+    border-radius: 20px;
+    background: #fff;
+    box-shadow: 0 8px 28px rgba(30, 70, 120, .05);
+}
+
+.tc-steps-kicker {
+    display: block;
+    color: #1764ed;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1.6px;
+}
+
+.tc-steps-title {
+    margin: 8px 0 24px;
+    color: #102b50;
+    font-size: clamp(22px, 2.4vw, 28px);
+    font-weight: 800;
+    letter-spacing: -.6px;
+}
+
+.tc-steps-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.tc-step {
+    padding: 22px;
+    border: 1px solid #e6eefa;
+    border-radius: 16px;
+    background: #fff;
+}
+
+.tc-step-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.tc-step-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: #eef4ff;
+    color: #1764ed;
+}
+
+.tc-step-icon svg {
+    display: block;
+    width: 24px;
+    height: 24px;
+}
+
+.tc-step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #102b50;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.tc-step--amber .tc-step-icon { background: #fdf6e7; color: #b7791f; }
+.tc-step--green .tc-step-icon { background: #ebf8f1; color: #2f855a; }
+
+.tc-step-title {
+    display: block;
+    margin-bottom: 6px;
+    color: #102b50;
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.tc-step-text {
+    margin: 0;
+    color: #647895;
+    font-size: 14px;
+    line-height: 1.65;
+}
+
+/* Bo'sh holat ikonkasi */
+.tc-empty-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 12px;
+    border-radius: 16px;
+    background: #eef4ff;
+    color: #1764ed;
+}
+
+.tc-empty-icon svg {
+    display: block;
+    width: 28px;
+    height: 28px;
+}
+
+@media (max-width: 900px) {
+    .tc-steps {
+        padding: 22px;
+    }
+
+    .tc-steps-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}

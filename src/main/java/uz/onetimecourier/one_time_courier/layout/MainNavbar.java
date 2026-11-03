@@ -92,6 +92,7 @@ public class MainNavbar extends Div {
         Div menu = new Div(
                 link("Yuklar", "/deliveries", VaadinIcon.PACKAGE),
                 link("Kuryerlar", "/couriers", VaadinIcon.TRUCK, "/trips"),
+                link("Ishonchli kuryerlar", "/reyting/kuryerlar", VaadinIcon.TROPHY),
                 link("Biz haqimizda", "/about", VaadinIcon.INFO_CIRCLE)
         );
         if (isLoggedIn() && isSender()) {

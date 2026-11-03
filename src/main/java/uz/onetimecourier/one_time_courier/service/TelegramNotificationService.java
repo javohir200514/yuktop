@@ -17,6 +17,7 @@ import uz.onetimecourier.one_time_courier.repository.DeliveryRepository;
 import uz.onetimecourier.one_time_courier.telegram.TelegramBotClient;
 import uz.onetimecourier.one_time_courier.telegram.TelegramUpdateHandler;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -66,16 +67,49 @@ public class TelegramNotificationService {
                             + "Hozirda yuk manzil tomon yetkazilmoqda.\n\n"
                             + "📍 Yukingiz xavfsiz yetkazilishini tilaymiz!");
 
-            case DELIVERED -> notifySender(d,
-                    "🎉 YUK MUVAFFAQIYATLI YETKAZILDI!\n\n"
-                            + "Sizning #" + d.getId() + "-raqamli yukingiz belgilangan manzilga yetkazildi.\n\n"
-                            + "🤝 Xizmatimizdan foydalanganingiz uchun rahmat!\n"
-                            + "Yana xizmatimizdan foydalanishingizdan mamnun bo'lamiz.");
+            case DELIVERED -> {
+                notifySender(d,
+                        "🎉 YUK MUVAFFAQIYATLI YETKAZILDI!\n\n"
+                                + "Sizning #" + d.getId() + "-raqamli yukingiz belgilangan manzilga yetkazildi.\n\n"
+                                + "🤝 Xizmatimizdan foydalanganingiz uchun rahmat!");
+                askRatings(d);
+            }
 
             case CANCELLED -> notifyCourierCancelled(d);
 
             default -> { }
         }
+    }
+
+    // ---------------------------------------------------------------- baholash
+
+    /** Yetkazilgandan keyin ikki tomonga ham baholash tugmalari yuboriladi. */
+    private void askRatings(DeliveryEntity d) {
+        if (d.getSender() != null) {
+            send(d.getSender(),
+                    "⭐ KURYERNI BAHOLANG\n\n"
+                            + "Yuk #" + d.getId() + " bo'yicha kuryer xizmatini baholang.\n"
+                            + "1 — yomon, 5 — a'lo.",
+                    ratingKeyboard(d.getId()),
+                    "baholash (jo'natuvchi), yuk #" + d.getId());
+        }
+        if (d.getCourier() != null) {
+            send(d.getCourier(),
+                    "⭐ JO'NATUVCHINI BAHOLANG\n\n"
+                            + "Yuk #" + d.getId() + " bo'yicha jo'natuvchini baholang.\n"
+                            + "1 — yomon, 5 — a'lo.",
+                    ratingKeyboard(d.getId()),
+                    "baholash (kuryer), yuk #" + d.getId());
+        }
+    }
+
+    /** 1 dan 5 gacha yulduzli tugmalar. callback_data: rt:<yuk_id>:<baho>. */
+    private static Map<String, Object> ratingKeyboard(Long deliveryId) {
+        List<Map<String, Object>> row = new ArrayList<>();
+        for (int stars = 1; stars <= 5; stars++) {
+            row.add(TelegramBotClient.button("⭐".repeat(stars), "rt:" + deliveryId + ":" + stars));
+        }
+        return TelegramBotClient.keyboard(List.of(row));
     }
 
     // ---------------------------------------------------------------- kuryerlarga
@@ -132,7 +166,7 @@ public class TelegramNotificationService {
     private void notifyCourierCancelled(DeliveryEntity d) {
         UserEntity courier = d.getCourier();
         if (courier == null) {
-            return; // kuryer hali biriktirilmagan, xabar kerak emas
+            return; // kuryer hali biriktirilmagan
         }
         send(courier,
                 "❌ YUK BEKOR QILINDI\n\n"

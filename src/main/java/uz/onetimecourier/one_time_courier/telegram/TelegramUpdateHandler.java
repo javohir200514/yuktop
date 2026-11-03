@@ -12,6 +12,7 @@ import uz.onetimecourier.one_time_courier.repository.CourierRouteSubscriptionRep
 import uz.onetimecourier.one_time_courier.repository.UserRepository;
 import uz.onetimecourier.one_time_courier.service.AuthService;
 import uz.onetimecourier.one_time_courier.service.DeliveryService;
+import uz.onetimecourier.one_time_courier.service.RatingService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,15 +39,18 @@ public class TelegramUpdateHandler {
     private final UserRepository userRepository;
     private final CourierRouteSubscriptionRepository subscriptions;
     private final DeliveryService deliveryService;
+    private final RatingService ratingService;
 
     public TelegramUpdateHandler(TelegramBotClient bot,
                                  UserRepository userRepository,
                                  CourierRouteSubscriptionRepository subscriptions,
-                                 DeliveryService deliveryService) {
+                                 DeliveryService deliveryService,
+                                 RatingService ratingService) {
         this.bot = bot;
         this.userRepository = userRepository;
         this.subscriptions = subscriptions;
         this.deliveryService = deliveryService;
+        this.ratingService = ratingService;
     }
 
     // ================================================================ buyruqlar
@@ -128,6 +132,7 @@ public class TelegramUpdateHandler {
 
     /**
      * Callback ma'lumot formatlari:
+     *   rt:<yuk>:<baho>           - yetkazilgan yukni baholash (kuryer ham, jo'natuvchi ham bosadi)
      *   sub:new / sub:list        - yo'nalish qo'shish / ro'yxat
      *   f:<kod>                   - jo'nash hududi
      *   t:<from>:<to>             - yetkazish hududi, yo'nalish saqlanadi
@@ -139,6 +144,12 @@ public class TelegramUpdateHandler {
      */
     public void onCallback(String callbackId, long fromId, String data) {
         try {
+            // Baholash kuryer va jo'natuvchi uchun umumiy, shuning uchun kuryer tekshiruvidan oldin
+            if (data != null && data.startsWith("rt:")) {
+                rate(callbackId, fromId, data);
+                return;
+            }
+
             Optional<UserEntity> user = userByChat(fromId);
             if (user.isEmpty() || user.get().getRole() != Role.COURIER) {
                 answer(callbackId, "Bu amal faqat kuryer hisobi uchun");
@@ -178,6 +189,40 @@ public class TelegramUpdateHandler {
         } catch (RuntimeException e) {
             log.warn("Telegram tugma xatosi: {}", e.getMessage());
             answer(callbackId, "Xato yuz berdi. Qayta urinib ko'ring.");
+        }
+    }
+
+    // ================================================================ baholash
+
+    /** rt:<yuk_id>:<baho>. Baholovchi Telegram ID bo'yicha topiladi. */
+    private void rate(String callbackId, long fromId, String data) {
+        String[] parts = data.split(":");
+        if (parts.length != 3) {
+            answer(callbackId, "Noto'g'ri so'rov");
+            return;
+        }
+
+        final long deliveryId;
+        final int stars;
+        try {
+            deliveryId = Long.parseLong(parts[1]);
+            stars = Integer.parseInt(parts[2]);
+        } catch (NumberFormatException e) {
+            answer(callbackId, "Noto'g'ri so'rov");
+            return;
+        }
+
+        Optional<UserEntity> user = userByChat(fromId);
+        if (user.isEmpty()) {
+            answer(callbackId, "Hisobingiz Telegram'ga ulanmagan");
+            return;
+        }
+
+        try {
+            ratingService.rate(user.get().getId(), deliveryId, stars, null);
+            answer(callbackId, "✅ Rahmat! Bahoyingiz saqlandi");
+        } catch (BusinessException e) {
+            answer(callbackId, e.getMessage());
         }
     }
 

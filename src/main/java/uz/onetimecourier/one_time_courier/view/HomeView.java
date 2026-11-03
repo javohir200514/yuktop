@@ -14,7 +14,7 @@ import uz.onetimecourier.one_time_courier.layout.AuthLayout;
 @AnonymousAllowed
 @CssImport("./styles/home.css")
 public class HomeView extends Div {
-    private static final String SUPPORT_TELEGRAM_URL = "https://t.me/Javohir_05_08";
+
     // ================= RANGLI IKONKALAR (inline SVG) =================
 
     private static final String ICON_PACKAGE = """
@@ -120,7 +120,7 @@ public class HomeView extends Div {
                 features(),
                 faq(),
                 ctaBand(),
-                footer()
+                new SiteFooter()
         );
     }
 
@@ -484,104 +484,5 @@ public class HomeView extends Div {
 
         header.add(label, heading, text);
         return header;
-    }
-
-    private Footer footer() {
-
-        Footer footer = new Footer();
-        footer.addClassName("home-footer");
-
-        // ---- Asosiy qism: 4 ustun ----
-        Div inner = new Div();
-        inner.addClassNames("home-container", "home-footer-inner");
-
-        Div grid = new Div(
-                brandColumn(),
-                footerColumn("Platforma",
-                        footerLink("Yuklar", "/deliveries"),
-                        footerLink("Kuryerlar", "/couriers"),
-                        footerLink("Biz haqimizda", "/about"),
-                        footerLink("Yuk joylash", "/deliveries/new")),
-                footerColumn("Kuryerlar uchun",
-                        footerLink("Kuryer bo'lish", "/register"),
-                        footerLink("Safar e'lon qilish", "/trips/new")),
-                footerColumn("Hisob",
-                        footerLink("Kirish", "/login"),
-                        footerLink("Ro'yxatdan o'tish", "/register"))
-        );
-        grid.addClassName("home-footer-grid");
-        inner.add(grid);
-
-        // ---- Pastki chiziq ----
-        Div bottom = new Div();
-        bottom.addClassName("home-footer-bottom");
-
-        Div bottomInner = new Div();
-        bottomInner.addClassNames("home-container", "home-footer-bottom-inner");
-
-        Span copy = new Span("© 2026 YukBor. Barcha huquqlar himoyalangan.");
-        copy.addClassName("home-footer-copy");
-
-        Span note = new Span("Yo'lingiz. Kimningdir yetkazmasi.");
-        note.addClassName("home-footer-note");
-
-        bottomInner.add(copy, note);
-        bottom.add(bottomInner);
-
-        footer.add(inner, bottom);
-        return footer;
-    }
-
-    private Div brandColumn() {
-
-        Div col = new Div();
-        col.addClassName("home-footer-brand");
-
-        Div logoRow = new Div();
-        logoRow.addClassName("home-footer-logo-row");
-
-        Span brandName = new Span("YukBor");
-        brandName.addClassName("home-footer-brand-name");
-
-        logoRow.add(brandName);
-
-        Paragraph text = new Paragraph(
-                "Shahar ichida va viloyatlararo yetkazish uchun ishonchli platforma. "
-                        + "Jo'natuvchi va kuryerni bir joyga yig'amiz."
-        );
-        text.addClassName("home-footer-text");
-
-        Anchor telegram = new Anchor(SUPPORT_TELEGRAM_URL);
-        telegram.addClassName("home-footer-social");
-        telegram.setTarget("_blank");
-        telegram.getElement().setAttribute("rel", "noopener noreferrer");
-        telegram.add(
-                svgBox(ICON_TELEGRAM, "home-footer-social-icon"),
-                new Span("Telegram'da yozing")
-        );
-
-        col.add(logoRow, text, telegram);
-        return col;
-    }
-
-    private Div footerColumn(String title, Anchor... links) {
-
-        Div col = new Div();
-        col.addClassName("home-footer-col");
-
-        Span heading = new Span(title);
-        heading.addClassName("home-footer-title");
-
-        Div list = new Div(links);
-        list.addClassName("home-footer-links");
-
-        col.add(heading, list);
-        return col;
-    }
-
-    private Anchor footerLink(String text, String href) {
-        Anchor a = new Anchor(href, text);
-        a.addClassName("home-footer-link");
-        return a;
     }
 }

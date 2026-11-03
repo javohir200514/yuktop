@@ -123,7 +123,11 @@ public class CouriersView extends Div {
         listBox.addClassName("dm-list");
         buildPager();
 
-        add(head, filters, toolbar, alert, listBox, pager);
+        // Kontent bir ekran balandlikda turadi, footer undan pastda (scroll qilganda ko'rinadi)
+        Div main = new Div(head, filters, toolbar, alert, listBox, pager);
+        main.addClassName("page-fold");
+
+        add(main, new SiteFooter());
         load();
     }
 

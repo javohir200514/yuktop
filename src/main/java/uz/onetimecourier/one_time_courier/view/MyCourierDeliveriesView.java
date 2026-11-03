@@ -28,6 +28,7 @@ import uz.onetimecourier.one_time_courier.exps.BusinessException;
 import uz.onetimecourier.one_time_courier.layout.PageLayout;
 import uz.onetimecourier.one_time_courier.service.DeliveryFeedBroadcaster;
 import uz.onetimecourier.one_time_courier.service.DeliveryService;
+import uz.onetimecourier.one_time_courier.service.RatingService;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -44,7 +45,7 @@ import static uz.onetimecourier.one_time_courier.view.DeliveryViewSupport.text;
 import static uz.onetimecourier.one_time_courier.view.DeliveryViewSupport.typeLabel;
 import static uz.onetimecourier.one_time_courier.view.DeliveryViewSupport.weightText;
 
-/** Kuryer qabul qilgan yuklar: to'liq ma'lumot va "Olib ketdim" / "Yetkazdim" tugmalari. */
+/** Kuryer qabul qilgan yuklar: to'liq ma'lumot, "Olib ketdim" / "Yetkazdim" va jo'natuvchini baholash. */
 @Route(value = "courier/deliveries", layout = PageLayout.class)
 @PageTitle("Mening yetkazishlarim | YukBor")
 @RolesAllowed("COURIER")
@@ -73,6 +74,7 @@ public class MyCourierDeliveriesView extends Div {
 
     private final DeliveryService deliveryService;
     private final DeliveryFeedBroadcaster feed;
+    private final RatingService ratingService;
 
     /** Foydalanuvchi ID'si view yaratilganda olinadi (push oqimida SecurityContext bo'lmasligi mumkin). */
     private final Long userId;
@@ -92,9 +94,11 @@ public class MyCourierDeliveriesView extends Div {
 
     public MyCourierDeliveriesView(DeliveryService deliveryService,
                                    AuthenticationContext authContext,
-                                   DeliveryFeedBroadcaster feed) {
+                                   DeliveryFeedBroadcaster feed,
+                                   RatingService ratingService) {
         this.deliveryService = deliveryService;
         this.feed = feed;
+        this.ratingService = ratingService;
         this.userId = authContext.getAuthenticatedUser(CustomUserDetails.class)
                 .map(CustomUserDetails::getId)
                 .orElse(null);
@@ -341,6 +345,17 @@ public class MyCourierDeliveriesView extends Div {
             deliver.getElement().setAttribute("type", "button");
             deliver.addClickListener(e -> confirmStep(d, false));
             actions.add(deliver);
+        }
+
+        // Yetkazilgan yuk: jo'natuvchini baholash (har bir yuk uchun bir marta)
+        if (d.status() == DeliveryStatus.DELIVERED && userId != null
+                && !ratingService.hasRated(d.id(), userId)) {
+            NativeButton rate = new NativeButton("Jo'natuvchini baholash");
+            rate.addClassNames("md-btn", "md-btn--ghost");
+            rate.getElement().setAttribute("type", "button");
+            rate.addClickListener(e ->
+                    new RatingDialog(ratingService, userId, d.id(), this::load).open());
+            actions.add(rate);
         }
 
         if (actions.getChildren().findAny().isPresent()) {

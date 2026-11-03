@@ -37,7 +37,7 @@ public class AboutView extends Div {
 
     public AboutView() {
         addClassName("ab-page");
-        add(hero(), strip(), how(), roles(), cta());
+        add(hero(), strip(), how(), roles(), cta(),new SiteFooter());
     }
 
     // ---------- Hero ----------
