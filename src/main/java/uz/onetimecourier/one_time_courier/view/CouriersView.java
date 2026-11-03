@@ -41,8 +41,11 @@ import static uz.onetimecourier.one_time_courier.view.DeliveryViewSupport.tag;
 @RouteAlias(value = "trips", layout = PageLayout.class)
 @PageTitle("Kuryerlar | YukBor")
 @AnonymousAllowed
-@CssImport("./styles/page-head.css")
+@CssImport("./styles/my-deliveries.css")
+@CssImport("./styles/deliveries-feed.css")
+@CssImport("./styles/deliveries-modern.css")
 @CssImport("./styles/deliveries-responsive.css")
+@CssImport("./styles/page-head.css")
 @CssImport("./styles/couriers-page.css")
 public class CouriersView extends Div {
 
