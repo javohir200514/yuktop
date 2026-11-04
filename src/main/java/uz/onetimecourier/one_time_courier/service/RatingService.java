@@ -25,7 +25,7 @@ import java.util.Objects;
 public class RatingService {
 
     /** Eng ishonchli ro'yxatga kirish uchun kamida shuncha baho kerak. */
-    public static final int MIN_RATINGS_FOR_TOP = 3;
+    public static final int MIN_RATINGS_FOR_TOP = 1;
     public static final int MAX_COMMENT = 500;
 
     private final DeliveryRatingRepository ratings;

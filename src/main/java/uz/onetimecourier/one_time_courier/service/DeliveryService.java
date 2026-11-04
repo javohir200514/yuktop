@@ -500,7 +500,8 @@ public class DeliveryService {
         if (own != null) {
             entity.setSenderContactPhone(own);
             entity.setSenderContactTelegram(null);
-            entity.setSenderContactVerified(false);
+            // Hisob telefoni ro'yxatdan o'tishda Telegram orqali tasdiqlangan bo'ladi
+            entity.setSenderContactVerified(sender.getTelegramId() != null);
             return;
         }
 
