@@ -1,5 +1,8 @@
 package uz.onetimecourier.one_time_courier.view;
 
+import com.vaadin.flow.component.AttachEvent;
+import com.vaadin.flow.component.DetachEvent;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
@@ -9,6 +12,9 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
+import com.vaadin.flow.shared.Registration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uz.onetimecourier.one_time_courier.dto.TopCourierDto;
 import uz.onetimecourier.one_time_courier.layout.PageLayout;
 import uz.onetimecourier.one_time_courier.service.RatingService;
@@ -16,12 +22,20 @@ import uz.onetimecourier.one_time_courier.service.RatingService;
 import java.util.List;
 import java.util.Locale;
 
-/** Eng ishonchli kuryerlar: sarlavha, statistika, top-3 podium, ro'yxat va qanday ishlashi. */
+/**
+ * Eng ishonchli kuryerlar: sarlavha, statistika, top-3 podium, ro'yxat va qanday ishlashi.
+ * Sahifa ochiq turganda ma'lumot davriy yangilanadi.
+ */
 @Route(value = "reyting/kuryerlar", layout = PageLayout.class)
 @PageTitle("Eng ishonchli kuryerlar | YukBor")
 @AnonymousAllowed
 @CssImport("./styles/top-couriers.css")
 public class TopCouriersView extends Div {
+
+    private static final Logger log = LoggerFactory.getLogger(TopCouriersView.class);
+
+    private static final int LIMIT = 20;
+    private static final int POLL_MS = 10_000;
 
     private static final String[] MEDALS = {"1", "2", "3"};
     private static final String[] TONES = {"gold", "silver", "bronze"};
@@ -53,16 +67,65 @@ public class TopCouriersView extends Div {
             </svg>
             """;
 
+    private final RatingService service;
+
+    /** Ro'yxat shu konteynerda qayta chiziladi. Footer bir marta qo'shiladi. */
+    private final Div content = new Div();
+
+    /** Oxirgi chizilgan ma'lumot. O'zgarmagan bo'lsa qayta chizilmaydi. */
+    private List<TopCourierDto> shown;
+
+    private Registration pollRegistration;
+
     public TopCouriersView(RatingService service) {
+        this.service = service;
         addClassName("tc-page");
+        add(content, new SiteFooter());
+    }
 
-        List<TopCourierDto> list = service.topCouriers(20);
+    @Override
+    protected void onAttach(AttachEvent attachEvent) {
+        super.onAttach(attachEvent);
+        load();
 
-        Div main = new Div();
-        main.add(hero(list));
+        UI ui = attachEvent.getUI();
+        ui.setPollInterval(POLL_MS);
+        pollRegistration = ui.addPollListener(e -> load());
+    }
+
+    @Override
+    protected void onDetach(DetachEvent detachEvent) {
+        if (pollRegistration != null) {
+            pollRegistration.remove();
+            pollRegistration = null;
+        }
+        detachEvent.getUI().setPollInterval(-1);
+        super.onDetach(detachEvent);
+    }
+
+    // ---------------------------------------------------------------- yuklash va chizish
+
+    private void load() {
+        List<TopCourierDto> list;
+        try {
+            list = service.topCouriers(LIMIT);
+        } catch (RuntimeException e) {
+            log.warn("Ishonchli kuryerlar ro'yxatini yuklashda xato: {}", e.getMessage());
+            return;
+        }
+        if (list.equals(shown)) {
+            return;
+        }
+        shown = list;
+        render(list);
+    }
+
+    private void render(List<TopCourierDto> list) {
+        content.removeAll();
+        content.add(hero(list));
 
         if (list.isEmpty()) {
-            main.add(emptyState());
+            content.add(emptyState());
         } else {
             Div podium = new Div();
             podium.addClassName("tc-podium");
@@ -70,7 +133,7 @@ public class TopCouriersView extends Div {
             for (int i = 0; i < topCount; i++) {
                 podium.add(podiumCard(i, list.get(i)));
             }
-            main.add(podium);
+            content.add(podium);
 
             if (list.size() > 3) {
                 Span section = new Span("Boshqa kuryerlar");
@@ -81,13 +144,11 @@ public class TopCouriersView extends Div {
                 for (int i = 3; i < list.size(); i++) {
                     rows.add(row(i + 1, list.get(i)));
                 }
-                main.add(section, rows);
+                content.add(section, rows);
             }
         }
 
-        main.add(howItWorks());
-
-        add(main, new SiteFooter());
+        content.add(howItWorks());
     }
 
     // ---------------------------------------------------------------- sarlavha va statistika
