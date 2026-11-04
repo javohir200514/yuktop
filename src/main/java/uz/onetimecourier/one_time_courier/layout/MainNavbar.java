@@ -91,7 +91,7 @@ public class MainNavbar extends Div {
         // MENYU
         Div menu = new Div(
                 link("Yuklar", "/deliveries", VaadinIcon.PACKAGE),
-                link("Kuryerlar", "/couriers", VaadinIcon.TRUCK, "/trips"),
+                link("Safarlar", "/couriers", VaadinIcon.TRUCK, "/trips"),
                 link("Ishonchli kuryerlar", "/reyting/kuryerlar", VaadinIcon.TROPHY),
                 link("Biz haqimizda", "/about", VaadinIcon.INFO_CIRCLE)
         );
