@@ -175,12 +175,16 @@ public class MyDeliveriesView extends Div {
         super.onDetach(detachEvent);
     }
 
-    /** UI.access ichida chaqiriladi (broadcaster orqali). */
     private void onStatusChanged(DeliveryStatusChangedEvent event) {
         try {
             if (event.status() == DeliveryStatus.MATCHED && isPickupAwaitingSender(event.deliveryId())) {
                 highlightId = event.deliveryId();
                 showPickupToast(event.deliveryId());
+            } else if (event.status() == DeliveryStatus.PICKED_UP
+                    && userId != null
+                    && deliveryService.awaitingDeliveryConfirmation(userId, event.deliveryId())) {
+                highlightId = event.deliveryId();
+                showDeliveryToast(event.deliveryId());
             } else if (isCourierDriven(event.status())) {
                 highlightId = event.deliveryId();
                 String text = "Yuk holati yangilandi: " + statusLabel(event.status());
@@ -191,6 +195,45 @@ public class MyDeliveriesView extends Div {
         } catch (RuntimeException e) {
             log.warn("Jonli yangilanishda xato: {}", e.getClass().getSimpleName());
         }
+    }
+    private void showDeliveryToast(Long deliveryId) {
+        Notification n = new Notification();
+        n.setDuration(0);
+        n.setPosition(Notification.Position.TOP_CENTER);
+
+        Span text = new Span("Kuryer yukni yetkazganini bildirdi. Tasdiqlaysizmi?");
+
+        NativeButton ok = new NativeButton("Ha, yetkazildi");
+        ok.addClassNames("md-btn", "md-btn--solid");
+        ok.getElement().setAttribute("type", "button");
+        ok.addClickListener(e -> {
+            n.close();
+            confirmDelivery(deliveryId);
+        });
+
+        NativeButton later = new NativeButton("Keyinroq");
+        later.addClassNames("md-btn", "md-btn--outline");
+        later.getElement().setAttribute("type", "button");
+        later.addClickListener(e -> n.close());
+
+        n.add(new Div(text, new Div(ok, later)));
+        n.open();
+    }
+
+    private void confirmDelivery(Long deliveryId) {
+        try {
+            deliveryService.confirmDeliveryBySender(userId, deliveryId);
+            Notification.show("Tasdiqlandi. Yuk «Yetkazildi» holatiga o'tdi",
+                    4000, Notification.Position.TOP_CENTER);
+        } catch (BusinessException e) {
+            Notification.show(e.getMessage(), 4000, Notification.Position.TOP_CENTER)
+                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
+        } catch (RuntimeException e) {
+            log.error("Yetkazish tasdiqlashda xato", e);
+            Notification.show(GENERIC_ERROR, 4000, Notification.Position.TOP_CENTER)
+                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
+        }
+        load();
     }
 
     private static boolean isCourierDriven(DeliveryStatus status) {
@@ -475,6 +518,15 @@ public class MyDeliveriesView extends Div {
             rate.addClickListener(e ->
                     new RatingDialog(ratingService, userId, d.id(), this::load).open());
             actions.add(rate);
+            hasActions = true;
+        }
+        if (d.status() == DeliveryStatus.PICKED_UP && userId != null
+                && deliveryService.awaitingDeliveryConfirmation(userId, d.id())) {
+            NativeButton confirmDelivery = new NativeButton("Yetkazilganini tasdiqlayman");
+            confirmDelivery.addClassNames("md-btn", "md-btn--solid");
+            confirmDelivery.getElement().setAttribute("type", "button");
+            confirmDelivery.addClickListener(e -> confirmDelivery(d.id()));
+            actions.add(confirmDelivery);
             hasActions = true;
         }
 

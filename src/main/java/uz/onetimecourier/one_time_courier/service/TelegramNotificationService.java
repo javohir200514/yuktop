@@ -59,19 +59,16 @@ public class TelegramNotificationService {
         switch (status) {
             case CREATED -> notifyCouriers(d);
 
-            // MATCHED ikki xil hodisa: kuryer qabul qildi, yoki kuryer "olib ketdim" dedi
+            // MATCHED: kuryer qabul qildi, yoki kuryer "olib ketdim" dedi
             case MATCHED -> notifyMatched(d);
 
-            case PICKED_UP -> notifySender(d,
-                    "🚚 YUK YO'LGA CHIQDI!\n\n"
-                            + "Sizning #" + d.getId() + "-raqamli yukingiz kuryer tomonidan olib ketildi.\n"
-                            + "Hozirda yuk manzil tomon yetkazilmoqda.\n\n"
-                            + "📍 Yukingiz xavfsiz yetkazilishini tilaymiz!");
+            // PICKED_UP: yuk yo'lga chiqdi, yoki kuryer "yetkazdim" dedi (tasdiqlash kutilmoqda)
+            case PICKED_UP -> notifyPickedUp(d);
 
             case DELIVERED -> {
                 notifySender(d,
                         "🎉 YUK MUVAFFAQIYATLI YETKAZILDI!\n\n"
-                                + "Sizning #" + d.getId() + "-raqamli yukingiz belgilangan manzilga yetkazildi.\n\n"
+                                + title(d) + " yo'nalishidagi yukingiz tasdiqlandi.\n\n"
                                 + "🤝 Xizmatimizdan foydalanganingiz uchun rahmat!");
                 askRating(d);
             }
@@ -81,6 +78,8 @@ public class TelegramNotificationService {
             default -> { }
         }
     }
+
+    // ---------------------------------------------------------------- holat xabarlari
 
     /**
      * MATCHED hodisasi ikki holatda chiqadi:
@@ -93,9 +92,30 @@ public class TelegramNotificationService {
         } else if (d.getSenderPickupConfirmedAt() == null) {
             notifySender(d,
                     "📦 KURYER YUKNI OLGANINI BILDIRDI\n\n"
-                            + "Yuk #" + d.getId() + " bo'yicha kuryer yukni olganini bildirdi.\n"
-                            + "Iltimos, saytda «Mening yuklarim» bo'limiga kirib, "
-                            + "«Yuk olinganini tasdiqlayman» tugmasini bosing.");
+                            + title(d) + " yo'nalishidagi yuk bo'yicha kuryer yukni olganini bildirdi.\n"
+                            + "Iltimos, saytda «Mening yuklarim» bo'limida «Yuk olinganini tasdiqlayman» "
+                            + "tugmasini bosing.");
+        }
+    }
+
+    /**
+     * PICKED_UP hodisasi ikki holatda chiqadi:
+     * 1) jo'natuvchi olib ketishni tasdiqladi — yuk yo'lga chiqdi;
+     * 2) kuryer "yetkazdim" dedi — jo'natuvchi yetkazilganini tasdiqlashi kerak.
+     */
+    private void notifyPickedUp(DeliveryEntity d) {
+        if (d.getCourierDeliveryAt() == null) {
+            notifySender(d,
+                    "🚚 YUK YO'LGA CHIQDI!\n\n"
+                            + title(d) + " yo'nalishidagi yukingiz kuryer tomonidan olib ketildi.\n"
+                            + "Hozirda yuk manzil tomon yetkazilmoqda.\n\n"
+                            + "📍 Yukingiz xavfsiz yetkazilishini tilaymiz!");
+        } else if (d.getSenderDeliveryConfirmedAt() == null) {
+            notifySender(d,
+                    "📬 YUK YETKAZILDIMI?\n\n"
+                            + "Kuryer " + title(d) + " yo'nalishidagi yukni yetkazganini bildirdi.\n"
+                            + "Iltimos, saytda «Mening yuklarim» bo'limida «Yetkazilganini tasdiqlayman» "
+                            + "tugmasini bosing.");
         }
     }
 
@@ -108,7 +128,7 @@ public class TelegramNotificationService {
         }
         send(d.getSender(),
                 "⭐ KURYERNI BAHOLANG\n\n"
-                        + "Yuk #" + d.getId() + " bo'yicha kuryer xizmatini baholang.\n"
+                        + title(d) + " yo'nalishidagi yuk bo'yicha kuryer xizmatini baholang.\n"
                         + "1 — yomon, 5 — a'lo.",
                 ratingKeyboard(d.getId()),
                 "baholash (jo'natuvchi), yuk #" + d.getId());
@@ -142,7 +162,6 @@ public class TelegramNotificationService {
                         + "Sizning yo'nalishingiz bo'yicha yangi yuk mavjud.\n"
                         + "Agar ushbu buyurtmani bajarish imkoniyatingiz bo'lsa, uni qabul qilishingiz mumkin.\n\n"
                         + "━━━━━━━━━━━━━━━━━━\n"
-                        + "📦 Buyurtma raqami: #" + d.getId() + "\n\n"
                         + "🛣 Yo'nalish: "
                         + TelegramUpdateHandler.routeLabel(d.getFromRegion(), d.getToRegion()) + "\n\n"
                         + "📍 Olib ketish manzili:\n"
@@ -153,8 +172,7 @@ public class TelegramNotificationService {
                         + Objects.toString(d.getPackageSize(), "Ko'rsatilmagan") + "\n"
                         + "⚖️ Og'irligi: "
                         + Objects.toString(d.getWeightKg(), "Ko'rsatilmagan") + " kg\n\n"
-                        + "💰 Kuryer haqi: "
-                        + Objects.toString(d.getReward(), "Ko'rsatilmagan") + "\n"
+                        + "💰 Kuryer haqi: " + formatReward(d) + "\n"
                         + "━━━━━━━━━━━━━━━━━━\n\n"
                         + "Buyurtmani qabul qilish uchun quyidagi tugmani bosing.";
 
@@ -181,9 +199,9 @@ public class TelegramNotificationService {
         }
         send(courier,
                 "❌ YUK BEKOR QILINDI\n\n"
-                        + "Siz qabul qilgan #" + d.getId() + "-raqamli yuk jo'natuvchi tomonidan bekor qilindi.",
+                        + title(d) + " yo'nalishidagi yuk jo'natuvchi tomonidan bekor qilindi.",
                 null,
-                "bekor qilish #" + d.getId());
+                "bekor qilish, yuk #" + d.getId());
     }
 
     // ---------------------------------------------------------------- jo'natuvchiga
@@ -200,8 +218,7 @@ public class TelegramNotificationService {
 
         notifySender(d,
                 "✅ KURYER TOPILDI!\n\n"
-                        + "Yaxshi yangilik! Sizning #" + d.getId()
-                        + "-raqamli yuk buyurtmangizni kuryer qabul qildi.\n\n"
+                        + "Yaxshi yangilik! " + title(d) + " yo'nalishidagi yukingizni kuryer qabul qildi.\n\n"
                         + "👤 Kuryer haqida ma'lumot:\n"
                         + "Ismi: " + who + "\n"
                         + "🚗 Transporti: " + vehicle + "\n\n"
@@ -219,6 +236,18 @@ public class TelegramNotificationService {
     }
 
     // ---------------------------------------------------------------- yordamchilar
+
+    /** Foydalanuvchiga ko'rsatiladigan yuk nomi: yo'nalish va narx. ID ishlatilmaydi. */
+    private static String title(DeliveryEntity d) {
+        return "«" + TelegramUpdateHandler.routeLabel(d.getFromRegion(), d.getToRegion()) + "»";
+    }
+
+    private static String formatReward(DeliveryEntity d) {
+        if (d.getReward() == null) {
+            return "Ko'rsatilmagan";
+        }
+        return d.getReward().stripTrailingZeros().toPlainString() + " so'm";
+    }
 
     /**
      * Bitta foydalanuvchiga xabar yuboradi. Telegram ID yo'q bo'lsa yoki yuborish xato bersa,

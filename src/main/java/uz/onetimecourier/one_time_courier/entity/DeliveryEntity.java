@@ -114,9 +114,19 @@ public class DeliveryEntity extends BaseEntity {
     @Column(name = "sender_contact_verified", nullable = false)
     private boolean senderContactVerified;
 
+    /** Kuryer "Olib ketdim" degan vaqt. */
     @Column(name = "courier_pickup_at")
     private LocalDateTime courierPickupAt;
 
+    /** Jo'natuvchi kuryer olib ketganini tasdiqlagan vaqt. */
     @Column(name = "sender_pickup_confirmed_at")
     private LocalDateTime senderPickupConfirmedAt;
+
+    /** Kuryer "Yetkazdim" degan vaqt. */
+    @Column(name = "courier_delivery_at")
+    private LocalDateTime courierDeliveryAt;
+
+    /** Jo'natuvchi yetkazilganini tasdiqlagan vaqt. */
+    @Column(name = "sender_delivery_confirmed_at")
+    private LocalDateTime senderDeliveryConfirmedAt;
 }

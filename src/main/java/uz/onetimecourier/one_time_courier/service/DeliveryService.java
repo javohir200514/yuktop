@@ -44,6 +44,8 @@ public class DeliveryService {
     public static final int MAX_CANCEL_REASON = 300;
     static final String SENDER_CONFIRM_FAILED =
             "Tasdiqlab bo'lmadi. Kuryer hali yuk olganini bildirmagan bo'lishi mumkin.";
+    static final String SENDER_DELIVERY_CONFIRM_FAILED =
+            "Tasdiqlab bo'lmadi. Kuryer hali yuk yetkazilganini bildirmagan bo'lishi mumkin.";
     /** O'zbekiston hududini qamrab oluvchi taxminiy to'rtburchak. */
     public static final double MIN_LAT = 37.1;
     public static final double MAX_LAT = 45.6;
@@ -59,8 +61,12 @@ public class DeliveryService {
             "Bu yukni qabul qilib bo'lmadi. Uni boshqa kuryer olgan yoki bekor qilingan bo'lishi mumkin.";
     static final String PICK_UP_FAILED =
             "Yukni «Yo'lda» holatiga o'tkazib bo'lmadi. Yuk sizga biriktirilmagan yoki holati o'zgargan.";
+    static final String PICK_UP_ALREADY =
+            "Siz allaqachon olganingizni bildirgansiz. Jo'natuvchi tasdig'ini kuting.";
     static final String DELIVER_FAILED =
-            "Yukni «Yetkazildi» holatiga o'tkazib bo'lmadi. Yuk sizga biriktirilmagan yoki holati o'zgargan.";
+            "Yukni yetkazildi deb belgilab bo'lmadi. Yuk sizga biriktirilmagan yoki holati o'zgargan.";
+    static final String DELIVER_ALREADY =
+            "Siz allaqachon yetkazganingizni bildirgansiz. Jo'natuvchi tasdig'ini kuting.";
     static final String CONTACT_REQUIRED =
             "Aloqa uchun telefon raqami yoki Telegram username kiriting";
 
@@ -186,6 +192,18 @@ public class DeliveryService {
                 d.getSenderPickupConfirmedAt() != null));
     }
 
+    /**
+     * Jo'natuvchi yetkazilganini tasdiqlashi kerakmi: kuryer "Yetkazdim" degan, lekin jo'natuvchi hali tasdiqlamagan.
+     */
+    @Transactional(readOnly = true)
+    public boolean awaitingDeliveryConfirmation(@NotNull Long senderId, @NotNull Long id) {
+        return deliveryRepository.findByIdAndSenderId(id, senderId)
+                .map(d -> d.getStatus() == DeliveryStatus.PICKED_UP
+                        && d.getCourierDeliveryAt() != null
+                        && d.getSenderDeliveryConfirmedAt() == null)
+                .orElse(false);
+    }
+
     /** Forma uchun: kontakt so'ralishi kerakmi va oxirgi kiritilgan kontakt. */
     @Transactional(readOnly = true)
     public SenderContactInfoDto contactInfo(@NotNull Long senderId) {
@@ -297,9 +315,7 @@ public class DeliveryService {
         publishChange(id, DeliveryStatus.MATCHED);
     }
 
-    /**
-     * Kuryer "Olib ketdim" deydi. Holat hali MATCHED; jo'natuvchi tasdiqlagach PICKED_UP bo'ladi.
-     */
+    /** Kuryer "Olib ketdim" deydi. Holat hali MATCHED; jo'natuvchi tasdiqlagach PICKED_UP bo'ladi. */
     public void pickUp(@NotNull Long courierId, @NotNull Long id) {
         requireCourier(courierId);
         DeliveryEntity d = lockDelivery(id);
@@ -310,7 +326,7 @@ public class DeliveryService {
             throw new BusinessException(PICK_UP_FAILED);
         }
         if (d.getCourierPickupAt() != null) {
-            throw new BusinessException("Siz allaqachon olganingizni bildirgansiz. Jo'natuvchi tasdig'ini kuting.");
+            throw new BusinessException(PICK_UP_ALREADY);
         }
 
         d.setCourierPickupAt(LocalDateTime.now());
@@ -338,6 +354,47 @@ public class DeliveryService {
         publishChange(d.getId(), d.getStatus());
     }
 
+    /**
+     * Kuryer "Yetkazdim" deydi. Holat hali PICKED_UP; jo'natuvchi tasdiqlagach DELIVERED bo'ladi.
+     */
+    public void deliver(@NotNull Long courierId, @NotNull Long id) {
+        requireCourier(courierId);
+        DeliveryEntity d = lockDelivery(id);
+
+        if (d.getStatus() != DeliveryStatus.PICKED_UP
+                || d.getCourier() == null
+                || !courierId.equals(d.getCourier().getId())) {
+            throw new BusinessException(DELIVER_FAILED);
+        }
+        if (d.getCourierDeliveryAt() != null) {
+            throw new BusinessException(DELIVER_ALREADY);
+        }
+
+        d.setCourierDeliveryAt(LocalDateTime.now());
+        finishDeliveryIfReady(d);
+        publishChange(d.getId(), d.getStatus());
+    }
+
+    /** Jo'natuvchi yukning yetkazilganini tasdiqlaydi. Ikkala tomon tasdiqlagach holat DELIVERED bo'ladi. */
+    public void confirmDeliveryBySender(@NotNull Long senderId, @NotNull Long id) {
+        requireSender(senderId);
+        DeliveryEntity d = lockDelivery(id);
+
+        if (d.getSender() == null || !senderId.equals(d.getSender().getId())) {
+            throw new BusinessException(NOT_FOUND);
+        }
+        if (d.getStatus() != DeliveryStatus.PICKED_UP || d.getCourierDeliveryAt() == null) {
+            throw new BusinessException(SENDER_DELIVERY_CONFIRM_FAILED);
+        }
+        if (d.getSenderDeliveryConfirmedAt() != null) {
+            throw new BusinessException("Siz allaqachon tasdiqlagansiz.");
+        }
+
+        d.setSenderDeliveryConfirmedAt(LocalDateTime.now());
+        finishDeliveryIfReady(d);
+        publishChange(d.getId(), d.getStatus());
+    }
+
     /** Yuk qatorini qulflaydi, shunda ikki tomonning bir vaqtdagi tasdig'i to'qnashmaydi. */
     private DeliveryEntity lockDelivery(Long id) {
         DeliveryEntity d = entityManager.find(DeliveryEntity.class, id, LockModeType.PESSIMISTIC_WRITE);
@@ -356,20 +413,13 @@ public class DeliveryService {
         }
     }
 
-    /** PICKED_UP → DELIVERED. Faqat shu yukka biriktirilgan kuryer. */
-    public void deliver(@NotNull Long courierId, @NotNull Long id) {
-        advanceByCourier(courierId, id, DeliveryStatus.PICKED_UP, DeliveryStatus.DELIVERED, DELIVER_FAILED);
-    }
-
-    private void advanceByCourier(Long courierId, Long id,
-                                  DeliveryStatus expected, DeliveryStatus next, String failMessage) {
-        requireCourier(courierId);
-
-        int updated = deliveryRepository.advanceByCourier(id, courierId, expected, next);
-        if (updated == 0) {
-            throw new BusinessException(failMessage);
+    /** Ikkala tomon ham belgilagan bo'lsa, holat DELIVERED ga o'tadi. */
+    private static void finishDeliveryIfReady(DeliveryEntity d) {
+        if (d.getStatus() == DeliveryStatus.PICKED_UP
+                && d.getCourierDeliveryAt() != null
+                && d.getSenderDeliveryConfirmedAt() != null) {
+            d.setStatus(DeliveryStatus.DELIVERED);
         }
-        publishChange(id, next);
     }
 
     private void publishChange(Long deliveryId, DeliveryStatus status) {
