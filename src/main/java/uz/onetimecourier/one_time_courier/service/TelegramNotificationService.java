@@ -59,7 +59,8 @@ public class TelegramNotificationService {
         switch (status) {
             case CREATED -> notifyCouriers(d);
 
-            case MATCHED -> notifySenderMatched(d);
+            // MATCHED ikki xil hodisa: kuryer qabul qildi, yoki kuryer "olib ketdim" dedi
+            case MATCHED -> notifyMatched(d);
 
             case PICKED_UP -> notifySender(d,
                     "🚚 YUK YO'LGA CHIQDI!\n\n"
@@ -72,7 +73,7 @@ public class TelegramNotificationService {
                         "🎉 YUK MUVAFFAQIYATLI YETKAZILDI!\n\n"
                                 + "Sizning #" + d.getId() + "-raqamli yukingiz belgilangan manzilga yetkazildi.\n\n"
                                 + "🤝 Xizmatimizdan foydalanganingiz uchun rahmat!");
-                askRatings(d);
+                askRating(d);
             }
 
             case CANCELLED -> notifyCourierCancelled(d);
@@ -81,26 +82,36 @@ public class TelegramNotificationService {
         }
     }
 
+    /**
+     * MATCHED hodisasi ikki holatda chiqadi:
+     * 1) kuryer yukni qabul qildi (olib ketish belgisi yo'q) — jo'natuvchiga "kuryer topildi";
+     * 2) kuryer "olib ketdim" dedi (olib ketish belgisi bor) — jo'natuvchi tasdiqlashi kerak.
+     */
+    private void notifyMatched(DeliveryEntity d) {
+        if (d.getCourierPickupAt() == null) {
+            notifySenderMatched(d);
+        } else if (d.getSenderPickupConfirmedAt() == null) {
+            notifySender(d,
+                    "📦 KURYER YUKNI OLGANINI BILDIRDI\n\n"
+                            + "Yuk #" + d.getId() + " bo'yicha kuryer yukni olganini bildirdi.\n"
+                            + "Iltimos, saytda «Mening yuklarim» bo'limiga kirib, "
+                            + "«Yuk olinganini tasdiqlayman» tugmasini bosing.");
+        }
+    }
+
     // ---------------------------------------------------------------- baholash
 
-    /** Yetkazilgandan keyin ikki tomonga ham baholash tugmalari yuboriladi. */
-    private void askRatings(DeliveryEntity d) {
-        if (d.getSender() != null) {
-            send(d.getSender(),
-                    "⭐ KURYERNI BAHOLANG\n\n"
-                            + "Yuk #" + d.getId() + " bo'yicha kuryer xizmatini baholang.\n"
-                            + "1 — yomon, 5 — a'lo.",
-                    ratingKeyboard(d.getId()),
-                    "baholash (jo'natuvchi), yuk #" + d.getId());
+    /** Yetkazilgandan keyin faqat jo'natuvchiga baholash tugmalari yuboriladi. */
+    private void askRating(DeliveryEntity d) {
+        if (d.getSender() == null) {
+            return;
         }
-        if (d.getCourier() != null) {
-            send(d.getCourier(),
-                    "⭐ JO'NATUVCHINI BAHOLANG\n\n"
-                            + "Yuk #" + d.getId() + " bo'yicha jo'natuvchini baholang.\n"
-                            + "1 — yomon, 5 — a'lo.",
-                    ratingKeyboard(d.getId()),
-                    "baholash (kuryer), yuk #" + d.getId());
-        }
+        send(d.getSender(),
+                "⭐ KURYERNI BAHOLANG\n\n"
+                        + "Yuk #" + d.getId() + " bo'yicha kuryer xizmatini baholang.\n"
+                        + "1 — yomon, 5 — a'lo.",
+                ratingKeyboard(d.getId()),
+                "baholash (jo'natuvchi), yuk #" + d.getId());
     }
 
     /** 1 dan 5 gacha yulduzli tugmalar. callback_data: rt:<yuk_id>:<baho>. */

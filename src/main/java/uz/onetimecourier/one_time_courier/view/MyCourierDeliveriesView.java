@@ -347,16 +347,6 @@ public class MyCourierDeliveriesView extends Div {
             actions.add(deliver);
         }
 
-        // Yetkazilgan yuk: jo'natuvchini baholash (har bir yuk uchun bir marta)
-        if (d.status() == DeliveryStatus.DELIVERED && userId != null
-                && !ratingService.hasRated(d.id(), userId)) {
-            NativeButton rate = new NativeButton("Jo'natuvchini baholash");
-            rate.addClassNames("md-btn", "md-btn--ghost");
-            rate.getElement().setAttribute("type", "button");
-            rate.addClickListener(e ->
-                    new RatingDialog(ratingService, userId, d.id(), this::load).open());
-            actions.add(rate);
-        }
 
         if (actions.getChildren().findAny().isPresent()) {
             card.add(actions);

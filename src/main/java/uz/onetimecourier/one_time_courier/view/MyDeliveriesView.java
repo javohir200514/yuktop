@@ -36,6 +36,7 @@ import uz.onetimecourier.one_time_courier.exps.BusinessException;
 import uz.onetimecourier.one_time_courier.layout.PageLayout;
 import uz.onetimecourier.one_time_courier.service.DeliveryService;
 import uz.onetimecourier.one_time_courier.service.DeliveryStatusBroadcaster;
+import uz.onetimecourier.one_time_courier.service.RatingService;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -82,6 +83,7 @@ public class MyDeliveriesView extends Div {
 
     private final DeliveryService deliveryService;
     private final DeliveryStatusBroadcaster broadcaster;
+    private final RatingService ratingService;
 
     /**
      * Foydalanuvchi ID'si view yaratilganda (so'rov oqimida) olinadi va saqlanadi.
@@ -106,9 +108,11 @@ public class MyDeliveriesView extends Div {
 
     public MyDeliveriesView(DeliveryService deliveryService,
                             AuthenticationContext authContext,
-                            DeliveryStatusBroadcaster broadcaster) {
+                            DeliveryStatusBroadcaster broadcaster,
+                            RatingService ratingService) {
         this.deliveryService = deliveryService;
         this.broadcaster = broadcaster;
+        this.ratingService = ratingService;
         this.userId = authContext.getAuthenticatedUser(CustomUserDetails.class)
                 .map(CustomUserDetails::getId)
                 .orElse(null);
@@ -448,7 +452,7 @@ public class MyDeliveriesView extends Div {
                 : Optional.empty();
         courier.ifPresent(c -> card.add(courierBlock(c)));
 
-        // Amallar: olinganini tasdiqlash, tahrirlash (CREATED), bekor qilish (CREATED yoki MATCHED)
+        // Amallar: olinganini tasdiqlash, baholash, tahrirlash (CREATED), bekor qilish (CREATED yoki MATCHED)
         Div actions = new Div();
         actions.addClassName("md-actions");
         boolean hasActions = false;
@@ -461,6 +465,19 @@ public class MyDeliveriesView extends Div {
             actions.add(confirmPickup);
             hasActions = true;
         }
+
+        // Yetkazilgan yuk: faqat jo'natuvchi kuryerni baholaydi (har bir yuk uchun bir marta)
+        if (d.status() == DeliveryStatus.DELIVERED && userId != null
+                && !ratingService.hasRated(d.id(), userId)) {
+            NativeButton rate = new NativeButton("Kuryerni baholash");
+            rate.addClassNames("md-btn", "md-btn--solid");
+            rate.getElement().setAttribute("type", "button");
+            rate.addClickListener(e ->
+                    new RatingDialog(ratingService, userId, d.id(), this::load).open());
+            actions.add(rate);
+            hasActions = true;
+        }
+
         if (canEdit(d.status())) {
             NativeButton edit = new NativeButton("Tahrirlash");
             edit.addClassNames("md-btn", "md-btn--outline");
