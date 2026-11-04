@@ -43,9 +43,12 @@ import java.util.Map;
 public class CreateTripView extends Div {
 
     private static final Logger log = LoggerFactory.getLogger(CreateTripView.class);
+
     private static final String GENERIC_ERROR =
             "Kutilmagan xato yuz berdi. Birozdan keyin qayta urinib ko'ring.";
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm");
+    private static final long MAX_DAYS = 7;
+    private static final int MAX_NOTE = 300;
 
     private final CourierTripService tripService;
     private final AuthenticationContext authContext;
@@ -328,22 +331,14 @@ public class CreateTripView extends Div {
             TripDto saved = tripService.create(user.getId(), dto);
             showSuccess(saved);
         } catch (IllegalArgumentException | IllegalStateException e) {
+            // Foydalanuvchiga tushunarli xabar: servis o'zi tayyorlagan
             showAlert(e.getMessage());
             resetSubmitState();
         } catch (RuntimeException e) {
-            log.error("SAFAR YARATISHDA XATO:", e);
-
-            showAlert(
-                    "Xatolik: " +
-                            (e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName())
-            );
-
-            Notification.show(
-                    "Xato: " + e.getClass().getSimpleName(),
-                    7000,
-                    Notification.Position.MIDDLE
-            );
-
+            // Texnik xato (baza, tarmoq va hokazo): to'liq matn faqat logga yoziladi
+            log.error("Safar e'lonini saqlashda kutilmagan xato", e);
+            showAlert(GENERIC_ERROR);
+            Notification.show(GENERIC_ERROR, 5000, Notification.Position.MIDDLE);
             resetSubmitState();
         }
     }
@@ -481,7 +476,4 @@ public class CreateTripView extends Div {
             case LARGE -> "Katta quti, yirik buyum";
         };
     }
-
-    private static final long MAX_DAYS = 7;
-    private static final int MAX_NOTE = 300;
 }
