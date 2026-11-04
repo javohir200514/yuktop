@@ -59,8 +59,15 @@ public class GoogleOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         }
 
         user.setGoogleId(googleId);
+
         if (user.getEmail() == null && email != null) {
             user.setEmail(email);
+        }
+
+        Boolean emailVerified = google.getAttribute("email_verified");
+
+        if (Boolean.TRUE.equals(emailVerified)) {
+            user.setPhoneVerified(true);
         }
 
         user = userRepository.save(user);

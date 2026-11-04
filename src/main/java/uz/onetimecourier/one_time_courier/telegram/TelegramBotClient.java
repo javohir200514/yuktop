@@ -17,6 +17,8 @@ import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /** Telegram Bot API bilan yagona bog'lanish nuqtasi. Token faqat shu yerda ishlatiladi. */
 @Component
@@ -24,7 +26,13 @@ public class TelegramBotClient {
 
     private static final Logger log = LoggerFactory.getLogger(TelegramBotClient.class);
     private static final TypeReference<Map<String, Object>> MAP_TYPE = new TypeReference<>() {};
+    // Har bir Telegram chat uchun oxirgi yuborilgan xabar ID si
+    private final ConcurrentMap<Long, Integer> lastMessageIds =
+            new ConcurrentHashMap<>();
 
+    // Bir chatga parallel xabar yuborilishining oldini oladi
+    private final ConcurrentMap<Long, Object> chatLocks =
+            new ConcurrentHashMap<>();
     private final String token;
     private final RestClient client;
     private final ObjectMapper json = new ObjectMapper();
@@ -96,18 +104,63 @@ public class TelegramBotClient {
         return token.isEmpty() ? message : message.replace(token, "***");
     }
 
-    public void sendMessage(long chatId, String text, Map<String, Object> replyMarkup) {
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("chat_id", chatId);
-        body.put("text", text);
-        body.put("disable_web_page_preview", true);
-        if (replyMarkup != null) {
-            body.put("reply_markup", replyMarkup);
-        }
-        try {
-            call("sendMessage", body);
-        } catch (Exception e) {
-            log.warn("Telegram xabar yuborilmadi: {}", safe(e));
+    public void sendMessage(
+            long chatId,
+            String text,
+            Map<String, Object> replyMarkup) {
+
+        Object lock = chatLocks.computeIfAbsent(chatId, id -> new Object());
+
+        synchronized (lock) {
+
+            // 1. Avvalgi xabarni o'chirish
+            Integer oldMessageId = lastMessageIds.get(chatId);
+
+            if (oldMessageId != null) {
+                try {
+                    Map<String, Object> deleteBody = new LinkedHashMap<>();
+                    deleteBody.put("chat_id", chatId);
+                    deleteBody.put("message_id", oldMessageId);
+
+                    call("deleteMessage", deleteBody);
+
+                    log.info("Eski Telegram xabari o'chirildi: chat={}, message={}",
+                            chatId, oldMessageId);
+
+                } catch (Exception e) {
+                    log.warn("Eski xabarni o'chirib bo'lmadi: {}",
+                            safe(e));
+                }
+            }
+
+            // 2. Yangi xabar yuborish
+            try {
+                Map<String, Object> body = new LinkedHashMap<>();
+
+                body.put("chat_id", chatId);
+                body.put("text", text);
+                body.put("disable_web_page_preview", true);
+
+                if (replyMarkup != null) {
+                    body.put("reply_markup", replyMarkup);
+                }
+
+                Map<String, Object> response = call("sendMessage", body);
+
+                // 3. Yangi xabarning ID sini olish
+                Object result = response.get("result");
+
+                if (result instanceof Map<?, ?> message) {
+                    Object messageId = message.get("message_id");
+
+                    if (messageId instanceof Number number) {
+                        lastMessageIds.put(chatId, number.intValue());
+                    }
+                }
+
+            } catch (Exception e) {
+                log.warn("Telegram xabar yuborilmadi: {}", safe(e));
+            }
         }
     }
 

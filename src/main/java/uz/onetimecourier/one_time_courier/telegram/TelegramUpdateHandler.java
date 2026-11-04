@@ -325,11 +325,13 @@ public class TelegramUpdateHandler {
             answer(callbackId, e.getMessage());
             return;
         }
-        answer(callbackId, "Yuk olib ketildi");
+        answer(callbackId, "Jo'natuvchi tasdig'i kutilmoqda");
+
         bot.sendMessage(chatId,
-                "🚚 Yuk #" + deliveryId + " olib ketildi. Yetkazganingizda pastdagi tugmani bosing.",
-                TelegramBotClient.keyboard(List.of(List.of(
-                        TelegramBotClient.button("🏁 Yetkazdim", "dlv:" + deliveryId)))));
+                "⏳ Yukni olib ketganingiz haqida xabar yuborildi.\n\n"
+                        + "Jo'natuvchi tasdiqlashini kuting. "
+                        + "Tasdiqlangandan keyin yetkazish tugmasi chiqadi.",
+                null);
     }
 
     private void deliver(String callbackId, long chatId, UserEntity courier, long deliveryId) {

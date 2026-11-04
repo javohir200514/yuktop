@@ -331,8 +331,19 @@ public class CreateTripView extends Div {
             showAlert(e.getMessage());
             resetSubmitState();
         } catch (RuntimeException e) {
-            log.error("Safar e'lonini saqlashda kutilmagan xato", e);
-            showAlert(GENERIC_ERROR);
+            log.error("SAFAR YARATISHDA XATO:", e);
+
+            showAlert(
+                    "Xatolik: " +
+                            (e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName())
+            );
+
+            Notification.show(
+                    "Xato: " + e.getClass().getSimpleName(),
+                    7000,
+                    Notification.Position.MIDDLE
+            );
+
             resetSubmitState();
         }
     }
