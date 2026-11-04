@@ -417,7 +417,8 @@ public class MyCourierDeliveriesView extends Div {
                             ? "Jo'natuvchiga bildirildi. U tasdiqlashini kuting"
                             : "Yuk yetkazildi",
                     4000, Notification.Position.TOP_CENTER);
-            load();
+            // Ro'yxat bu yerda qayta yuklanmaydi: o'zgarishni DeliveryFeedBroadcaster
+            // push orqali yetkazadi. Ikki marta yuklash brauzerdagi DOM ni buzadi.
             return null;
         });
     }
