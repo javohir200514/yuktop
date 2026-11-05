@@ -1,5 +1,6 @@
 package uz.onetimecourier.one_time_courier.view;
 
+import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.router.PageTitle;
@@ -15,223 +16,186 @@ import uz.onetimecourier.one_time_courier.layout.AuthLayout;
 public class HomeView extends Div {
 
     // =====================================================================
-    //  QO'LDA CHIZILGANDEK IKONKALAR
-    //  Uslub: to'q ko'k kontur + biroz siljitilgan rangli dog' (bosma xato effekti)
+    //  IKONKALAR
+    //  Yagona uslub: qalin (3px) yumaloq kontur + yengil to'ldirma.
+    //  Rangi atrofdagi CSS (currentColor) dan olinadi, shuning uchun
+    //  sariq, oq, ko'k yoki yashil fonda bir xil yaxshi ko'rinadi.
     // =====================================================================
 
     private static final String ICON_PACKAGE = """
             <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-              <path d="M11 19.5 27 11l16 8.5v18.5L27 46 11 37.5z" fill="#f4b942"/>
-              <g fill="none" stroke="#102b50" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M8 15.5 24 7l16 8.5V34L24 42.5 8 34z"/>
-                <path d="M8 15.5 24 24l16-8.5"/>
-                <path d="M24 24v18.5"/>
-                <path d="M16 11.2l16 8.6"/>
+              <path d="M7 14.5 24 6l17 8.5v19L24 42 7 33.5z" fill="currentColor" fill-opacity=".2"/>
+              <g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 14.5 24 6l17 8.5v19L24 42 7 33.5z"/>
+                <path d="M7 14.5 24 23l17-8.5"/>
+                <path d="M24 23v19"/>
+                <path d="M15.5 10.2l17 8.6"/>
               </g>
             </svg>
             """;
 
     private static final String ICON_TRUCK = """
             <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8 18h25v20H8z" fill="#9cc4ff"/>
-              <path d="M33 24h8l5.5 6.5V38H33z" fill="#9cc4ff"/>
-              <g fill="none" stroke="#102b50" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4.5 13.5h25.5v21H4.5z"/>
-                <path d="M30 20h7.5l5 6v8.5H30"/>
-                <path d="M33.5 22.5h3.3l3.4 3.8h-6.7z"/>
-                <path d="M9 19.5h8"/>
+              <path d="M3 12h26v23H3z" fill="currentColor" fill-opacity=".2"/>
+              <g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 12h26v23H3z"/>
+                <path d="M29 19h8.5l7 8.500V35H29"/>
+                <path d="M33 22.500h3.700l3.800 4.500H33z"/>
+                <path d="M9 20h12"/>
               </g>
-              <circle cx="14" cy="35.5" r="4.6" fill="#fffdf8" stroke="#102b50" stroke-width="2.4"/>
-              <circle cx="36" cy="35.5" r="4.6" fill="#fffdf8" stroke="#102b50" stroke-width="2.4"/>
-              <circle cx="14" cy="35.5" r="1.3" fill="#102b50"/>
-              <circle cx="36" cy="35.5" r="1.3" fill="#102b50"/>
+              <g fill="none" stroke="currentColor" stroke-width="3">
+                <circle cx="13" cy="36" r="4.800" fill="#121212"/>
+                <circle cx="36" cy="36" r="4.800" fill="#121212"/>
+              </g>
             </svg>
             """;
 
     private static final String ICON_SHIELD = """
             <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-              <path d="M27 9.5l15 6v11c0 9-6 16-15 20-9-4-15-11-15-20v-11z" fill="#8fd3a8"/>
-              <g fill="none" stroke="#102b50" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M24 5l15 6v11c0 9-6 16-15 20C15 38 9 31 9 22V11z"/>
-                <path d="M16.5 24l5.3 5.3L32 18.5"/>
+              <path d="M24 5 40 11v11c0 9.500-6.500 16.500-16 20C14.500 38.500 8 31.500 8 22V11z"
+                    fill="currentColor" fill-opacity=".2"/>
+              <g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M24 5 40 11v11c0 9.500-6.500 16.500-16 20C14.500 38.500 8 31.500 8 22V11z"/>
+                <path d="M16.500 24l5.500 5.500L32 19"/>
               </g>
             </svg>
             """;
 
     private static final String ICON_PIN = """
             <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-              <path d="M27 8c-7 0-12 5-12 11.5C15 29 27 45 27 45s12-16 12-25.5C39 13 34 8 27 8z" fill="#f7a58a"/>
-              <g fill="none" stroke="#102b50" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M24 5c-7 0-12 5-12 11.5C12 26 24 42 24 42s12-16 12-25.5C36 10 31 5 24 5z"/>
-                <circle cx="24" cy="16.5" r="4.6" fill="#fffdf8"/>
+              <path d="M24 5c-7.200 0-13 5.400-13 12.300C11 27.500 24 43 24 43s13-15.500 13-25.700C37 10.400 31.200 5 24 5z"
+                    fill="currentColor" fill-opacity=".2"/>
+              <g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M24 5c-7.200 0-13 5.400-13 12.300C11 27.500 24 43 24 43s13-15.500 13-25.700C37 10.400 31.200 5 24 5z"/>
+                <circle cx="24" cy="17.500" r="5"/>
               </g>
             </svg>
             """;
 
     private static final String ICON_CLOCK = """
             <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="27" cy="27" r="17" fill="#ffd37a"/>
-              <g fill="none" stroke="#102b50" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="24" cy="24" r="17"/>
-                <path d="M24 13.5V24l7 4.2"/>
-                <path d="M24 7.5v1.8M40.5 24h-1.8M24 40.5v-1.8M7.5 24h1.8"/>
+              <circle cx="24" cy="24" r="18" fill="currentColor" fill-opacity=".2"/>
+              <g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="24" cy="24" r="18"/>
+                <path d="M24 13v11l7.500 4.500"/>
+                <path d="M24 3.500V6M44.500 24H42M24 44.500V42M3.500 24H6"/>
               </g>
             </svg>
             """;
 
     private static final String ICON_BOLT = """
             <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-              <path d="M30 8 14 30h11l-2 16 17-24H29z" fill="#ffd37a"/>
-              <path d="M27 5 11 27h11l-2 16 17-24H26z" fill="none" stroke="#102b50"
-                    stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M27 4 10 27h12l-2 17 18-25H26z" fill="currentColor" fill-opacity=".2"/>
+              <path d="M27 4 10 27h12l-2 17 18-25H26z" fill="none" stroke="currentColor"
+                    stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             """;
 
     private static final String ICON_TELEGRAM = """
             <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="26" cy="26" r="19" fill="#9cc4ff"/>
-              <g fill="none" stroke="#102b50" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="24" cy="24" r="19" fill="#fffdf8"/>
-                <path d="M11 24l24-9.5-4 19-7-5-3.5 3.5V27z"/>
-                <path d="M16.5 24.5 31 17"/>
+              <path d="M43 6 6 21l12 5 5 13z" fill="#2aabee" fill-opacity=".25"/>
+              <g fill="none" stroke="#2aabee" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M43 6 6 21l12 5 5 13z"/>
+                <path d="M18 26 43 6"/>
+                <path d="M23 39l5-8"/>
               </g>
             </svg>
             """;
 
-    // Tugma va accordion ichidagi monoxrom ikonkalar (currentColor)
+    // Tugma va accordion ichidagi ikonkalar (24x24, currentColor)
     private static final String ICON_SEARCH = """
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"
                  stroke-linecap="round" xmlns="http://www.w3.org/2000/svg">
               <circle cx="11" cy="11" r="7"/>
-              <path d="M20 20l-4.2-4.2"/>
+              <path d="M20 20l-4.200-4.200"/>
+            </svg>
+            """;
+
+    private static final String ICON_SEND = """
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"
+                 stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 19V5M5 12l7-7 7 7"/>
             </svg>
             """;
 
     private static final String ICON_ARROW = """
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"
                  stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
-              <path d="M4 12.5c5 .4 10-.4 15-.5M13 6l6 6-6 6"/>
-            </svg>
-            """;
-
-    private static final String ICON_PLANE = """
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                 stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
-              <path d="M21.5 2.5 10.5 13.5"/>
-              <path d="M21.5 2.5l-6.5 19-4-8-8-4z"/>
+              <path d="M4 12h15M13 6l6 6-6 6"/>
             </svg>
             """;
 
     private static final String ICON_CHEVRON = """
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
                  stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
-              <path d="M6 9.5l6 5.5 6-5.5"/>
+              <path d="M6 9.500l6 5.500 6-5.500"/>
             </svg>
             """;
 
-    // =====================================================================
-    //  HERO RASMI: yo'l xaritasi, kuryer mashinasi, banka va pochta shtampi
-    // =====================================================================
-
-    private static final String HERO_ART = """
-            <svg viewBox="0 0 560 520" xmlns="http://www.w3.org/2000/svg" role="img">
-              <!-- qog'oz varaq -->
-              <path d="M30 40 C 120 22, 330 30, 520 44 C 540 140, 534 330, 526 470
-                       C 380 492, 190 486, 36 478 C 22 360, 26 160, 30 40z"
-                    fill="#fffdf8" stroke="#102b50" stroke-width="2.6" stroke-linejoin="round"/>
-              <path d="M44 56 C 150 44, 330 50, 506 60" fill="none" stroke="#efe6d3" stroke-width="2"/>
-
-              <!-- xarita relyef chiziqlari -->
-              <g fill="none" stroke="#e5dcc6" stroke-width="2" stroke-linecap="round">
-                <path d="M60 130 C 110 100, 170 150, 230 118 S 340 90, 400 120"/>
-                <path d="M70 420 C 140 390, 200 440, 280 410 S 400 400, 470 430"/>
-                <path d="M440 170 C 470 220, 430 260, 470 310"/>
+    // Hero ostidagi yo'lda yurib o'tadigan yuk mashinasi
+    private static final String ICON_BIG_TRUCK = """
+            <svg viewBox="0 0 230 96" xmlns="http://www.w3.org/2000/svg">
+              <rect x="4" y="10" width="140" height="58" rx="5" fill="#f5f3ee"/>
+              <rect x="4" y="52" width="140" height="8" fill="#ffd21f"/>
+              <text x="74" y="40" text-anchor="middle" font-family="'Barlow Condensed', Impact, sans-serif"
+                    font-size="28" font-weight="800" fill="#121212" letter-spacing="1.5">YUKBOR</text>
+              <path d="M148 24h36c5 0 8 2 11 6l14 18c2 3 3 5 3 9v13H148z" fill="#ffd21f"/>
+              <path d="M156 31h24l13 17h-37z" fill="#2b3a4c"/>
+              <rect x="4" y="68" width="210" height="8" rx="3" fill="#2a2a2a"/>
+              <rect x="207" y="56" width="8" height="9" rx="2" fill="#fff6c2"/>
+              <g fill="#0b0b0b" stroke="#f5f3ee" stroke-width="3">
+                <circle cx="36" cy="78" r="13"/>
+                <circle cx="104" cy="78" r="13"/>
+                <circle cx="182" cy="78" r="13"/>
               </g>
-
-              <!-- yo'l (uzuq chiziq) -->
-              <path id="route" d="M96 396 C 150 300, 90 230, 190 210 S 330 250, 360 170 S 430 120, 462 106"
-                    fill="none" stroke="#e8742c" stroke-width="5" stroke-linecap="round"
-                    stroke-dasharray="2 14"/>
-
-              <!-- shaharlar -->
-              <g>
-                <circle cx="96" cy="396" r="11" fill="#fffdf8" stroke="#102b50" stroke-width="3"/>
-                <circle cx="96" cy="396" r="4" fill="#102b50"/>
-                <circle cx="190" cy="210" r="11" fill="#fffdf8" stroke="#102b50" stroke-width="3"/>
-                <circle cx="190" cy="210" r="4" fill="#102b50"/>
-                <circle cx="462" cy="106" r="11" fill="#f4b942" stroke="#102b50" stroke-width="3"/>
-                <circle cx="462" cy="106" r="4" fill="#102b50"/>
-              </g>
-              <g font-family="Caveat, 'Segoe Print', cursive" font-size="30" font-weight="700" fill="#102b50">
-                <text x="112" y="428" transform="rotate(-3 112 428)">Buxoro</text>
-                <text x="64" y="188" transform="rotate(-4 64 188)">Samarqand</text>
-                <text x="392" y="82" transform="rotate(-3 392 82)">Toshkent</text>
-              </g>
-
-              <!-- yuk mashinasi -->
-              <g transform="translate(250 262) rotate(-14)">
-                <rect x="0" y="0" width="64" height="40" rx="4" fill="#9cc4ff" stroke="#102b50" stroke-width="3"/>
-                <path d="M64 10h22l12 14v16H64z" fill="#fffdf8" stroke="#102b50"
-                      stroke-width="3" stroke-linejoin="round"/>
-                <path d="M72 15h11l7 9H72z" fill="#9cc4ff" stroke="#102b50" stroke-width="2.4"
-                      stroke-linejoin="round"/>
-                <path d="M10 12h28M10 22h18" stroke="#102b50" stroke-width="3" stroke-linecap="round"/>
-                <circle cx="20" cy="42" r="9" fill="#fffdf8" stroke="#102b50" stroke-width="3"/>
-                <circle cx="20" cy="42" r="2.6" fill="#102b50"/>
-                <circle cx="84" cy="42" r="9" fill="#fffdf8" stroke="#102b50" stroke-width="3"/>
-                <circle cx="84" cy="42" r="2.6" fill="#102b50"/>
-              </g>
-
-              <!-- banka (yuk) -->
-              <g transform="translate(330 330) rotate(6)">
-                <path d="M4 22 52 4l48 18v52L52 94 4 74z" fill="#f4b942" opacity=".0"/>
-                <path d="M0 24 50 4l50 20v50L50 96 0 74z" fill="#f4b942" stroke="#102b50"
-                      stroke-width="3" stroke-linejoin="round"/>
-                <path d="M0 24l50 20 50-20" fill="none" stroke="#102b50" stroke-width="3"
-                      stroke-linejoin="round"/>
-                <path d="M50 44v52" stroke="#102b50" stroke-width="3"/>
-                <path d="M25 14l50 20v14L25 28z" fill="#fffdf8" stroke="#102b50" stroke-width="2.6"
-                      stroke-linejoin="round" opacity=".92"/>
-                <path d="M62 62h22M62 72h14" stroke="#102b50" stroke-width="2.6" stroke-linecap="round"/>
-              </g>
-
-              <!-- pochta shtampi -->
-              <g transform="translate(402 360) rotate(-14)" fill="none" stroke="#e8742c"
-                 stroke-width="3.2" opacity=".92">
-                <circle cx="0" cy="0" r="44" stroke-dasharray="3 0"/>
-                <circle cx="0" cy="0" r="35" stroke-width="1.8"/>
-                <path d="M-56 -6H-44M44 -6H56" stroke-linecap="round"/>
-                <text x="0" y="-6" text-anchor="middle" font-family="Fraunces, Georgia, serif"
-                      font-size="18" font-weight="800" fill="#e8742c" stroke="none">YUKBOR</text>
-                <text x="0" y="14" text-anchor="middle" font-family="Inter, sans-serif"
-                      font-size="9.5" font-weight="700" fill="#e8742c" stroke="none"
-                      letter-spacing="1.6">YO'LDA YUK</text>
-              </g>
-
-              <!-- yopishtirilgan qog'oz (izoh) -->
-              <g transform="translate(58 292) rotate(-5)">
-                <rect x="0" y="0" width="150" height="62" fill="#fff3b8" stroke="#102b50" stroke-width="2.4"/>
-                <rect x="52" y="-9" width="46" height="16" fill="#e8742c" opacity=".75"/>
-                <text x="75" y="31" text-anchor="middle" font-family="Caveat, 'Segoe Print', cursive"
-                      font-size="25" font-weight="700" fill="#102b50">yo'lingizdagi</text>
-                <text x="75" y="53" text-anchor="middle" font-family="Caveat, 'Segoe Print', cursive"
-                      font-size="25" font-weight="700" fill="#102b50">yuk ham daromad!</text>
+              <g fill="#f5f3ee">
+                <circle cx="36" cy="78" r="4.500"/>
+                <circle cx="104" cy="78" r="4.500"/>
+                <circle cx="182" cy="78" r="4.500"/>
               </g>
             </svg>
             """;
+
+    // Tablo uchun namuna yo'nalishlar
+    private static final String[][] SAMPLE_ROUTES = {
+            {"Toshkent", "Samarqand"},
+            {"Samarqand", "Buxoro"},
+            {"Andijon", "Toshkent"},
+            {"Farg'ona", "Namangan"},
+            {"Qarshi", "Toshkent"}
+    };
 
     public HomeView() {
         addClassName("home-page");
 
         add(
                 hero(),
-                routeTape(),
                 steps(),
                 features(),
                 faq(),
                 ctaBand(),
-                new SiteFooter()
+                new SiteFooter(),
+                mobileBar()
         );
+    }
+
+    /**
+     * Telefonda: hero tugmalari ekrandan chiqib ketgach, pastda doimiy
+     * "Yuklarni ko'rish / Yuk joylash" paneli paydo bo'ladi.
+     */
+    @Override
+    protected void onAttach(AttachEvent event) {
+        super.onAttach(event);
+        getElement().executeJs("""
+                const actions = this.querySelector('.home-actions');
+                const bar = this.querySelector('.home-mobile-bar');
+                if (!actions || !bar || !('IntersectionObserver' in window)) { return; }
+                if (this._ybObserver) { this._ybObserver.disconnect(); }
+                this._ybObserver = new IntersectionObserver(function (entries) {
+                    bar.classList.toggle('is-visible', !entries[0].isIntersecting);
+                });
+                this._ybObserver.observe(actions);
+                """);
     }
 
     // ================= HERO =================
@@ -247,12 +211,17 @@ public class HomeView extends Div {
         Div grid = new Div();
         grid.addClassName("home-hero-grid");
 
-        // ---- chap tomon (matn) ----
+        // ---- matn qismi ----
         Div copy = new Div();
         copy.addClassName("home-hero-copy");
 
-        Span badge = new Span("yo'ldosh yuk, yo'ldosh kuryer");
-        badge.addClassName("home-eyebrow");
+        Div plate = new Div();
+        plate.addClassName("home-plate");
+        Span flag = new Span("UZ");
+        flag.addClassName("home-plate-flag");
+        Span number = new Span("01 YUKBOR");
+        number.addClassName("home-plate-num");
+        plate.add(flag, number);
 
         H1 title = new H1();
         title.addClassName("home-title");
@@ -262,7 +231,7 @@ public class HomeView extends Div {
 
         Span line2 = new Span();
         line2.addClassNames("home-title-line", "home-title-accent");
-        Span mark = new Span("daromad");
+        Span mark = new Span("Daromad");
         mark.addClassName("home-title-mark");
         line2.add(new Span("Qo'shimcha "), mark, new Span(" oling."));
 
@@ -280,83 +249,101 @@ public class HomeView extends Div {
         findButton.addClassNames("home-btn", "home-btn-primary");
         findButton.add(
                 svgBox(ICON_SEARCH, "home-btn-icon"),
-                new Span("Yuklarni ko'rish"),
-                svgBox(ICON_ARROW, "home-btn-icon")
+                new Span("Yuklarni ko'rish")
         );
 
         Anchor sendButton = new Anchor("/deliveries/new");
         sendButton.addClassNames("home-btn", "home-btn-secondary");
         sendButton.add(
-                svgBox(ICON_PLANE, "home-btn-icon"),
+                svgBox(ICON_SEND, "home-btn-icon"),
                 new Span("Yuk joylashtirish")
         );
 
         Div actions = new Div(findButton, sendButton);
         actions.addClassName("home-actions");
 
-        UnorderedList facts = new UnorderedList(
-                fact(ICON_PIN, String.valueOf(Region.values().length), " hudud bo'yicha"),
-                fact(ICON_SHIELD, "2 tomonlama", " tasdiqlash"),
-                fact(ICON_TELEGRAM, "Telegram", " orqali tasdiq")
+        Div stats = new Div(
+                stat(null, String.valueOf(Region.values().length), "hudud bo'yicha"),
+                stat(null, "2×", "tomonlama tasdiqlash"),
+                stat(ICON_TELEGRAM, null, "Telegram orqali tasdiq")
         );
-        facts.addClassName("home-facts");
+        stats.addClassName("home-stats");
 
-        copy.add(badge, title, description, actions, facts);
+        copy.add(plate, title, description, actions, stats);
 
-        // ---- o'ng tomon (rasm) ----
-        Div art = svgBox(HERO_ART, "home-hero-art");
-        art.getElement().removeAttribute("aria-hidden");
-        art.getElement().setAttribute("aria-label", "Shaharlararo yo'l xaritasi: yuk mashinasi va banka");
+        // ---- yo'nalishlar tablosi ----
+        Div board = board();
 
-        grid.add(copy, art);
+        grid.add(copy, board);
         container.add(grid);
-        hero.add(container);
+
+        // ---- yo'l va yuk mashinasi ----
+        Div road = new Div();
+        road.addClassName("home-road");
+        road.getElement().setAttribute("aria-hidden", "true");
+        road.add(svgBox(ICON_BIG_TRUCK, "home-truck"));
+
+        hero.add(container, road);
         return hero;
     }
 
-    private ListItem fact(String iconSvg, String strong, String rest) {
+    private Div stat(String iconSvg, String value, String label) {
 
-        ListItem item = new ListItem();
-        item.addClassName("home-fact");
+        Div box = new Div();
+        box.addClassName("home-stat");
 
-        Div icon = svgBox(iconSvg, "home-fact-icon");
-
-        Span text = new Span();
-        Span bold = new Span(strong);
-        bold.getElement().getStyle().set("font-weight", "700");
-        bold.getElement().getStyle().set("color", "var(--ink)");
-        text.add(bold, new Span(rest));
-
-        item.add(icon, text);
-        return item;
-    }
-
-    // ================= YO'NALISH LENTASI =================
-
-    private Div routeTape() {
-
-        Div wrap = new Div();
-        wrap.addClassName("home-tape-wrap");
-
-        Div tape = new Div();
-        tape.addClassName("home-tape");
-
-        String[] cities = {
-                "Toshkent", "Samarqand", "Buxoro", "Andijon",
-                "Farg'ona", "Namangan", "Qarshi", "Nukus"
-        };
-
-        for (int i = 0; i < cities.length; i++) {
-            tape.add(new Span(cities[i]));
-            if (i < cities.length - 1) {
-                Span dot = new Span();
-                dot.addClassName("home-tape-sep");
-                tape.add(dot);
-            }
+        if (iconSvg != null) {
+            Div valueBox = new Div();
+            valueBox.addClassName("home-stat-value");
+            valueBox.add(svgBox(iconSvg, "home-stat-icon"));
+            box.add(valueBox);
+        } else {
+            Span number = new Span(value);
+            number.addClassName("home-stat-value");
+            box.add(number);
         }
 
-        wrap.add(tape);
-        return wrap;
+        Span description = new Span(label);
+        description.addClassName("home-stat-label");
+
+        box.add(description);
+        return box;
+    }
+
+    private Div board() {
+
+        Div board = new Div();
+        board.addClassName("home-board");
+
+        Div head = new Div();
+        head.addClassName("home-board-head");
+        head.add(new Span("Yo'nalishlar"));
+        Span sample = new Span("namuna");
+        sample.addClassName("home-board-sample");
+        head.add(sample);
+
+        board.add(head);
+
+        for (int i = 0; i < SAMPLE_ROUTES.length; i++) {
+            Div row = new Div();
+            row.addClassName("home-board-row");
+
+            Span num = new Span(String.format("%02d", i + 1));
+            num.addClassName("home-board-num");
+
+            Span from = new Span(SAMPLE_ROUTES[i][0]);
+            from.addClassName("home-board-city");
+
+            Div arrow = svgBox(ICON_ARROW, "home-board-arrow");
+
+            Span to = new Span(SAMPLE_ROUTES[i][1]);
+            to.addClassName("home-board-city");
+
+            row.add(num, from, arrow, to);
+            board.add(row);
+        }
+
+        return board;
     }
 
     // ================= QADAMLAR =================
@@ -371,7 +358,7 @@ public class HomeView extends Div {
 
         container.add(
                 sectionHeader(
-                        "qanday ishlaydi?",
+                        "Qanday ishlaydi",
                         "Yetkazish endi ancha oson",
                         "Jo'natuvchilar va kuryerlar uchun yagona qulay platforma. Uch qadam, ortiqcha gap yo'q."
                 )
@@ -413,14 +400,15 @@ public class HomeView extends Div {
 
         Span num = new Span(number);
         num.addClassName("home-step-number");
+        num.getElement().setAttribute("aria-hidden", "true");
 
-        Div top = new Div(num, svgBox(iconSvg, "home-step-icon"));
+        Div top = new Div(svgBox(iconSvg, "home-step-icon"));
         top.addClassName("home-step-top");
 
         H3 heading = new H3(title);
         Paragraph text = new Paragraph(description);
 
-        step.add(top, heading, text);
+        step.add(num, top, heading, text);
         return step;
     }
 
@@ -429,33 +417,23 @@ public class HomeView extends Div {
     private Div features() {
 
         Div section = new Div();
-        section.addClassNames("home-section", "home-section-paper");
+        section.addClassName("home-section");
 
         Div container = new Div();
         container.addClassName("home-container");
 
-        Div layout = new Div();
-        layout.addClassName("home-why");
-
-        Div side = new Div();
-        side.addClassName("home-why-side");
-
-        side.add(
+        container.add(
                 sectionHeader(
-                        "bizning ustunligimiz",
+                        "Bizning ustunligimiz",
                         "Nega aynan YukBor?",
                         "Vaqtingizni tejang, ishonchli kuryer toping va yetkazishni osonlashtiring."
                 )
         );
 
-        Span note = new Span("yo'l bo'ylab, ortiqcha harajatsiz!");
-        note.addClassName("home-why-note");
-        side.add(note);
+        Div grid = new Div();
+        grid.addClassName("home-features-grid");
 
-        Div list = new Div();
-        list.addClassName("home-features-list");
-
-        list.add(
+        grid.add(
                 feature(
                         ICON_CLOCK,
                         "Tezkor xizmat",
@@ -478,24 +456,23 @@ public class HomeView extends Div {
                 )
         );
 
-        layout.add(side, list);
-        container.add(layout);
+        container.add(grid);
         section.add(container);
         return section;
     }
 
     private Div feature(String iconSvg, String title, String description) {
 
-        Div item = new Div();
-        item.addClassName("home-feature");
+        Div card = new Div();
+        card.addClassName("home-feature");
 
         Div iconBox = svgBox(iconSvg, "home-feature-icon");
 
-        H3 heading = new H3(title);
-        Paragraph text = new Paragraph(description);
+        Div body = new Div();
+        body.add(new H3(title), new Paragraph(description));
 
-        item.add(iconBox, heading, text);
-        return item;
+        card.add(iconBox, body);
+        return card;
     }
 
     // ================= FAQ =================
@@ -513,7 +490,7 @@ public class HomeView extends Div {
 
         wrap.add(
                 sectionHeader(
-                        "savollar",
+                        "Savollar",
                         "Ko'p so'raladigan savollar",
                         "Javobini topa olmadingizmi? Qo'llab-quvvatlash xizmati bilan bog'laning."
                 )
@@ -522,32 +499,30 @@ public class HomeView extends Div {
         Div list = new Div();
         list.addClassName("home-faq-list");
 
-        Div first = faqItem(
-                "Telefon raqamim kimga ko'rinadi?",
-                "Jo'natuvchi yuk joylaganda telefon raqami umumiy ro'yxatda ko'rinmaydi. "
-                        + "Yuk kuryer tomonidan qabul qilinib, biriktirilgandan keyin "
-                        + "raqamlar ikki tomonga ochiladi. Kuryer safar e'lon qilganda "
-                        + "esa raqami Kuryerlar sahifasida ko'rinadi."
-        );
-        // Birinchi savol dastlab ochiq turadi
-        first.getElement().getClassList().add("is-open");
-        first.getChildren().findFirst().ifPresent(c -> c.getElement().setAttribute("aria-expanded", "true"));
-
         list.add(
-                first,
+                faqItem(
+                        "Telefon raqamim kimga ko'rinadi?",
+                        "Jo'natuvchi yuk joylaganda telefon raqami umumiy ro'yxatda ko'rinmaydi. "
+                                + "Yuk kuryer tomonidan qabul qilinib, biriktirilgandan keyin "
+                                + "raqamlar ikki tomonga ochiladi. Kuryer safar e'lon qilganda "
+                                + "esa raqami Kuryerlar sahifasida ko'rinadi.",
+                        true
+                ),
                 faqItem(
                         "Yuk yo'qolsa yoki shikastlansa nima bo'ladi?",
                         "Yetkazish jarayonida nizo chiqsa, buyurtmani \"Nizoli\" holatiga o'tkazish mumkin. "
                                 + "Olib ketish va yetkazish vaqtlari tizimda qayd etiladi, shu asosida holat "
                                 + "tekshiriladi. Yuk qiymati bo'yicha kafolat va kompensatsiya tartibi "
-                                + "alohida shartlarda belgilanadi."
+                                + "alohida shartlarda belgilanadi.",
+                        false
                 ),
                 faqItem(
                         "Kuryer bo'lish uchun nima kerak?",
                         "Ro'yxatdan o'tish, Telegram orqali telefon raqamingizni tasdiqlash va "
                                 + "transport vositangiz ma'lumotlarini (turi, markasi, rangi va davlat raqami) "
                                 + "kiritish kifoya. Tasdiqlangandan so'ng yuklarni qabul qilish va safar "
-                                + "e'lon qilish mumkin bo'ladi."
+                                + "e'lon qilish mumkin bo'ladi.",
+                        false
                 )
         );
 
@@ -557,14 +532,14 @@ public class HomeView extends Div {
         return section;
     }
 
-    private Div faqItem(String question, String answer) {
+    private Div faqItem(String question, String answer, boolean openByDefault) {
 
         Div item = new Div();
         item.addClassName("home-faq-item");
 
         NativeButton toggle = new NativeButton();
         toggle.addClassName("home-faq-question");
-        toggle.getElement().setAttribute("aria-expanded", "false");
+        toggle.getElement().setAttribute("aria-expanded", String.valueOf(openByDefault));
 
         Span text = new Span(question);
         Div chevron = svgBox(ICON_CHEVRON, "home-faq-chevron");
@@ -574,6 +549,10 @@ public class HomeView extends Div {
         Div body = new Div();
         body.addClassName("home-faq-answer");
         body.add(new Paragraph(answer));
+
+        if (openByDefault) {
+            item.getElement().getClassList().add("is-open");
+        }
 
         toggle.addClickListener(e -> {
             boolean open = item.getElement().getClassList().contains("is-open");
@@ -598,9 +577,6 @@ public class HomeView extends Div {
         Div panel = new Div();
         panel.addClassName("home-cta-panel");
 
-        Span sticker = new Span("yo'lga chiqdikmi?");
-        sticker.addClassName("home-cta-sticker");
-
         Div content = new Div();
         content.addClassName("home-cta-content");
 
@@ -622,10 +598,30 @@ public class HomeView extends Div {
         Div actions = new Div(primary, ghost);
         actions.addClassName("home-cta-actions");
 
-        panel.add(sticker, content, actions);
+        panel.add(content, actions);
         container.add(panel);
         section.add(container);
         return section;
+    }
+
+    // ================= TELEFON PASTKI PANELI =================
+
+    private Div mobileBar() {
+
+        Div bar = new Div();
+        bar.addClassName("home-mobile-bar");
+        bar.getElement().setAttribute("aria-label", "Tezkor harakatlar");
+
+        Anchor find = new Anchor("/deliveries");
+        find.addClassNames("home-bar-btn", "home-bar-btn--primary");
+        find.add(svgBox(ICON_SEARCH, "home-btn-icon"), new Span("Yuklar"));
+
+        Anchor send = new Anchor("/deliveries/new");
+        send.addClassNames("home-bar-btn", "home-bar-btn--ghost");
+        send.add(svgBox(ICON_SEND, "home-btn-icon"), new Span("Yuk joylash"));
+
+        bar.add(find, send);
+        return bar;
     }
 
     // ================= YORDAMCHI =================
