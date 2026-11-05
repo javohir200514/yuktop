@@ -58,23 +58,10 @@ public class TelegramNotificationService {
     private void dispatch(DeliveryEntity d, DeliveryStatus status) {
         switch (status) {
             case CREATED -> notifyCouriers(d);
-
-            // MATCHED: kuryer qabul qildi, yoki kuryer "olib ketdim" dedi
             case MATCHED -> notifyMatched(d);
-
-            // PICKED_UP: yuk yo'lga chiqdi, yoki kuryer "yetkazdim" dedi (tasdiqlash kutilmoqda)
             case PICKED_UP -> notifyPickedUp(d);
-
-            case DELIVERED -> {
-                notifySender(d,
-                        "🎉 YUK MUVAFFAQIYATLI YETKAZILDI!\n\n"
-                                + title(d) + " yo'nalishidagi yukingiz tasdiqlandi.\n\n"
-                                + "🤝 Xizmatimizdan foydalanganingiz uchun rahmat!");
-                askRating(d);
-            }
-
+            case DELIVERED -> notifyDelivered(d);
             case CANCELLED -> notifyCourierCancelled(d);
-
             default -> { }
         }
     }
@@ -83,64 +70,93 @@ public class TelegramNotificationService {
 
     /**
      * MATCHED hodisasi ikki holatda chiqadi:
-     * 1) kuryer yukni qabul qildi (olib ketish belgisi yo'q) — jo'natuvchiga "kuryer topildi";
-     * 2) kuryer "olib ketdim" dedi (olib ketish belgisi bor) — jo'natuvchi tasdiqlashi kerak.
+     * 1) kuryer yukni qabul qildi — jo'natuvchiga "kuryer topildi";
+     * 2) kuryer "olib ketdim" dedi — jo'natuvchiga botda "Ha / Yo'q" tugmalari bilan so'rov.
      */
     private void notifyMatched(DeliveryEntity d) {
         if (d.getCourierPickupAt() == null) {
             notifySenderMatched(d);
         } else if (d.getSenderPickupConfirmedAt() == null) {
-            notifySender(d,
+            send(d.getSender(),
                     "📦 KURYER YUKNI OLGANINI BILDIRDI\n\n"
-                            + title(d) + " yo'nalishidagi yuk bo'yicha kuryer yukni olganini bildirdi.\n"
-                            + "Iltimos, saytda «Mening yuklarim» bo'limida «Yuk olinganini tasdiqlayman» "
-                            + "tugmasini bosing.");
+                            + title(d) + " yo'nalishidagi yukni kuryer olib ketganini bildirdi.\n"
+                            + "Olib ketilganini tasdiqlaysizmi?",
+                    confirmKeyboard("spy:" + d.getId(), "spn:" + d.getId(), "✅ Ha, olib ketdi", "❌ Yo'q"),
+                    "olib ketish tasdig'i (jo'natuvchi), yuk " + d.getId());
         }
     }
 
     /**
      * PICKED_UP hodisasi ikki holatda chiqadi:
-     * 1) jo'natuvchi olib ketishni tasdiqladi — yuk yo'lga chiqdi;
-     * 2) kuryer "yetkazdim" dedi — jo'natuvchi yetkazilganini tasdiqlashi kerak.
+     * 1) jo'natuvchi olib ketishni tasdiqladi — jo'natuvchiga xabar, kuryerga "Yetkazdim" tugmasi;
+     * 2) kuryer "yetkazdim" dedi — jo'natuvchiga botda "Ha / Yo'q" tugmalari bilan so'rov.
      */
     private void notifyPickedUp(DeliveryEntity d) {
         if (d.getCourierDeliveryAt() == null) {
-            notifySender(d,
+            send(d.getSender(),
                     "🚚 YUK YO'LGA CHIQDI!\n\n"
                             + title(d) + " yo'nalishidagi yukingiz kuryer tomonidan olib ketildi.\n"
-                            + "Hozirda yuk manzil tomon yetkazilmoqda.\n\n"
-                            + "📍 Yukingiz xavfsiz yetkazilishini tilaymiz!");
+                            + "📍 Yukingiz xavfsiz yetkazilishini tilaymiz!",
+                    null,
+                    "yo'lga chiqdi (jo'natuvchi), yuk " + d.getId());
+
+            send(d.getCourier(),
+                    "✅ Jo'natuvchi yukni olib ketganingizni tasdiqladi.\n\n"
+                            + title(d) + " yo'nalishida yukni manzilga yetkazing.\n"
+                            + "Yetkazganingizda pastdagi tugmani bosing.",
+                    TelegramBotClient.keyboard(List.of(List.of(
+                            TelegramBotClient.button("🏁 Yetkazdim", "dlv:" + d.getId())))),
+                    "yetkazdim tugmasi (kuryer), yuk " + d.getId());
         } else if (d.getSenderDeliveryConfirmedAt() == null) {
-            notifySender(d,
+            send(d.getSender(),
                     "📬 YUK YETKAZILDIMI?\n\n"
                             + "Kuryer " + title(d) + " yo'nalishidagi yukni yetkazganini bildirdi.\n"
-                            + "Iltimos, saytda «Mening yuklarim» bo'limida «Yetkazilganini tasdiqlayman» "
-                            + "tugmasini bosing.");
+                            + "Yetkazilganini tasdiqlaysizmi?",
+                    confirmKeyboard("dyy:" + d.getId(), "dyn:" + d.getId(), "✅ Ha, yetkazildi", "❌ Yo'q"),
+                    "yetkazish tasdig'i (jo'natuvchi), yuk " + d.getId());
         }
+    }
+
+    /** Yuk yakunlanganda: jo'natuvchiga baholash, kuryerga rahmat. */
+    private void notifyDelivered(DeliveryEntity d) {
+        send(d.getSender(),
+                "🎉 YUK MUVAFFAQIYATLI YETKAZILDI!\n\n"
+                        + title(d) + " yo'nalishidagi yukingiz tasdiqlandi.\n\n"
+                        + "🤝 Xizmatimizdan foydalanganingiz uchun rahmat!",
+                null,
+                "yakunlandi (jo'natuvchi), yuk " + d.getId());
+
+        send(d.getCourier(),
+                "🎉 YUK YAKUNLANDI!\n\n"
+                        + title(d) + " yo'nalishidagi yuk jo'natuvchi tomonidan tasdiqlandi. Rahmat!",
+                null,
+                "yakunlandi (kuryer), yuk " + d.getId());
+
+        askRating(d);
     }
 
     // ---------------------------------------------------------------- baholash
 
-    /** Yetkazilgandan keyin faqat jo'natuvchiga baholash tugmalari yuboriladi. */
+    /** Yetkazilgandan keyin faqat jo'natuvchiga baholash tugmalari. */
     private void askRating(DeliveryEntity d) {
-        if (d.getSender() == null) {
-            return;
-        }
         send(d.getSender(),
                 "⭐ KURYERNI BAHOLANG\n\n"
                         + title(d) + " yo'nalishidagi yuk bo'yicha kuryer xizmatini baholang.\n"
                         + "1 — yomon, 5 — a'lo.",
                 ratingKeyboard(d.getId()),
-                "baholash (jo'natuvchi), yuk #" + d.getId());
+                "baholash (jo'natuvchi), yuk " + d.getId());
     }
 
-    /** 1 dan 5 gacha yulduzli tugmalar. callback_data: rt:<yuk_id>:<baho>. */
+    /** 1 dan 5 gacha yulduzlar. Tugmalar qisqa va ikki qatorga bo'lingan, shunda hammasi ko'rinadi. */
     private static Map<String, Object> ratingKeyboard(Long deliveryId) {
-        List<Map<String, Object>> row = new ArrayList<>();
+        List<Map<String, Object>> first = new ArrayList<>();
+        List<Map<String, Object>> second = new ArrayList<>();
         for (int stars = 1; stars <= 5; stars++) {
-            row.add(TelegramBotClient.button("⭐".repeat(stars), "rt:" + deliveryId + ":" + stars));
+            Map<String, Object> button = TelegramBotClient.button(
+                    stars + " ⭐", "rt:" + deliveryId + ":" + stars);
+            (stars <= 3 ? first : second).add(button);
         }
-        return TelegramBotClient.keyboard(List.of(row));
+        return TelegramBotClient.keyboard(List.of(first, second));
     }
 
     // ---------------------------------------------------------------- kuryerlarga
@@ -184,7 +200,7 @@ public class TelegramNotificationService {
             if (Objects.equals(courier.getId(), senderId)) {
                 continue; // jo'natuvchi o'zi yuborgan yukni o'ziga ko'rsatmasin
             }
-            if (send(courier, text, markup, "yangi yuk #" + d.getId())) {
+            if (send(courier, text, markup, "yangi yuk " + d.getId())) {
                 sent++;
             }
         }
@@ -201,7 +217,7 @@ public class TelegramNotificationService {
                 "❌ YUK BEKOR QILINDI\n\n"
                         + title(d) + " yo'nalishidagi yuk jo'natuvchi tomonidan bekor qilindi.",
                 null,
-                "bekor qilish, yuk #" + d.getId());
+                "bekor qilish, yuk " + d.getId());
     }
 
     // ---------------------------------------------------------------- jo'natuvchiga
@@ -216,28 +232,29 @@ public class TelegramNotificationService {
 
         String vehicle = courier == null ? "Ma'lumot mavjud emas" : vehicle(courier);
 
-        notifySender(d,
+        send(d.getSender(),
                 "✅ KURYER TOPILDI!\n\n"
                         + "Yaxshi yangilik! " + title(d) + " yo'nalishidagi yukingizni kuryer qabul qildi.\n\n"
                         + "👤 Kuryer haqida ma'lumot:\n"
                         + "Ismi: " + who + "\n"
                         + "🚗 Transporti: " + vehicle + "\n\n"
                         + "📦 Tez orada kuryer yukingizni olib ketish uchun yo'lga chiqadi.\n\n"
-                        + "Xizmatimizdan foydalanganingiz uchun rahmat!");
-    }
-
-    private void notifySender(DeliveryEntity d, String text) {
-        UserEntity sender = d.getSender();
-        if (sender == null) {
-            log.warn("Yuk #{}: jo'natuvchi topilmadi, xabar yuborilmadi", d.getId());
-            return;
-        }
-        send(sender, text, null, "jo'natuvchi, yuk #" + d.getId());
+                        + "Xizmatimizdan foydalanganingiz uchun rahmat!",
+                null,
+                "kuryer topildi (jo'natuvchi), yuk " + d.getId());
     }
 
     // ---------------------------------------------------------------- yordamchilar
 
-    /** Foydalanuvchiga ko'rsatiladigan yuk nomi: yo'nalish va narx. ID ishlatilmaydi. */
+    /** Ha/Yo'q tugmalari bitta qatorda. */
+    private static Map<String, Object> confirmKeyboard(String yesData, String noData,
+                                                       String yesText, String noText) {
+        return TelegramBotClient.keyboard(List.of(List.of(
+                TelegramBotClient.button(yesText, yesData),
+                TelegramBotClient.button(noText, noData))));
+    }
+
+    /** Foydalanuvchiga ko'rsatiladigan yuk nomi: yo'nalish. ID ishlatilmaydi. */
     private static String title(DeliveryEntity d) {
         return "«" + TelegramUpdateHandler.routeLabel(d.getFromRegion(), d.getToRegion()) + "»";
     }
@@ -254,6 +271,10 @@ public class TelegramNotificationService {
      * boshqa xabarlarga ta'sir qilmaydi va sababini log'ga yozadi.
      */
     private boolean send(UserEntity user, String text, Map<String, Object> markup, String context) {
+        if (user == null) {
+            log.warn("Telegram xabari o'tkazib yuborildi: foydalanuvchi topilmadi, {}", context);
+            return false;
+        }
         Long chatId = user.getTelegramId();
         if (chatId == null) {
             log.info("Telegram bildirishnomasi o'tkazib yuborildi: foydalanuvchi #{} ({}) Telegram'ga bog'lanmagan, {}",
