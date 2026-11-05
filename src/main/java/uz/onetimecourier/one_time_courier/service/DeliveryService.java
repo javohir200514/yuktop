@@ -493,15 +493,15 @@ public class DeliveryService {
 
     /**
      * Jo'natuvchi kontakti. Hisobida telefon bo'lsa, o'sha raqam olinadi (forma yuborgan qiymat e'tiborga olinmaydi).
-     * Aks holda telefon yoki Telegram username majburiy. Hozircha hamma kontakt "tasdiqlanmagan".
+     * Tasdiqlanganlik hisobdagi telefon tasdig'idan olinadi. Qo'lda kiritilgan kontakt doim tasdiqlanmagan.
+     * Aks holda telefon yoki Telegram username majburiy.
      */
     private void applyContact(DeliveryEntity entity, UserEntity sender, CreateDeliveryRequestDto request) {
         String own = tryNormalizePhone(sender.getPhone());
         if (own != null) {
             entity.setSenderContactPhone(own);
             entity.setSenderContactTelegram(null);
-            // Hisob telefoni ro'yxatdan o'tishda Telegram orqali tasdiqlangan bo'ladi
-            entity.setSenderContactVerified(sender.getTelegramId() != null);
+            entity.setSenderContactVerified(sender.isPhoneVerified());
             return;
         }
 
