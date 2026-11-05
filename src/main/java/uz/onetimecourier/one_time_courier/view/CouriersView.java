@@ -56,6 +56,9 @@ public class CouriersView extends Div {
     private static final String GENERIC_ERROR =
             "Ma'lumotni yuklashda xato yuz berdi. Birozdan keyin qayta urinib ko'ring.";
 
+    /** Avatar ranglari. Har bir kuryer ismi doim bir xil rangni oladi. */
+    private static final String[] AVATAR_TONES = {"blue", "amber", "green", "violet"};
+
     private static final String BOX_SVG =
             "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" "
                     + "stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\">"
@@ -89,7 +92,7 @@ public class CouriersView extends Div {
         addClassNames("md-page", "dm-page");
 
         // ---- sarlavha: sahifa nomi va qisqa yozuv
-        H2 title = new H2("Kuryerlar");
+        H2 title = new H2("Safarlar");
         title.addClassName("dm-page-title");
 
         Paragraph subtitle = new Paragraph(
@@ -285,8 +288,6 @@ public class CouriersView extends Div {
         main.addClassName("dm-card-main");
 
         String courierName = isBlank(t.courierName()) ? "Kuryer" : t.courierName();
-        Span name = new Span(courierName);
-        name.addClassName("tv-side-name");
 
         Component contact;
         if (!isBlank(t.courierPhone())) {
@@ -302,7 +303,7 @@ public class CouriersView extends Div {
             contact = none;
         }
 
-        Div side = new Div(name, contact);
+        Div side = new Div(identity(courierName), contact);
         side.addClassName("dm-card-side");
 
         card.add(icon, main, side);
@@ -313,6 +314,44 @@ public class CouriersView extends Div {
             card.add(note);
         }
         return card;
+    }
+
+    /** Kuryer ismi: rangli avatar (bosh harflar) va ism. Kartaning o'ng tomonida. */
+    private static Div identity(String courierName) {
+        Div avatar = new Div();
+        avatar.setText(initials(courierName));
+        avatar.addClassNames("cc-avatar", "cc-avatar--" + toneFor(courierName));
+        avatar.getElement().setAttribute("aria-hidden", "true");
+
+        Span name = new Span(courierName);
+        name.addClassName("cc-identity-name");
+        name.getElement().setAttribute("title", courierName);
+
+        Span role = new Span("Kuryer");
+        role.addClassName("cc-identity-role");
+
+        Div text = new Div(name, role);
+        text.addClassName("cc-identity-text");
+
+        Div box = new Div(avatar, text);
+        box.addClassName("cc-identity");
+        return box;
+    }
+
+    /** "Javohir Komilov" -> "JK". Bitta so'z bo'lsa, bitta harf. */
+    private static String initials(String name) {
+        StringBuilder sb = new StringBuilder();
+        for (String word : name.trim().split("\\s+")) {
+            if (!word.isEmpty() && sb.length() < 2) {
+                sb.append(Character.toUpperCase(word.charAt(0)));
+            }
+        }
+        return sb.length() == 0 ? "?" : sb.toString();
+    }
+
+    /** Ism uchun doim bir xil rang. */
+    private static String toneFor(String name) {
+        return AVATAR_TONES[Math.floorMod(name.hashCode(), AVATAR_TONES.length)];
     }
 
     /** Kuryer raqamini katta qilib ko'rsatadi. Nusxalash va qo'ng'iroq tugmalari bilan. */
