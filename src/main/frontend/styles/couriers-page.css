@@ -4,11 +4,15 @@
    ===================================================== */
 
 :root {
-  --cp-navy: #102b50;
+  --cp-navy: #0f2a4f;
+  --cp-navy-soft: #1e3a66;
   --cp-blue: #1764ed;
   --cp-blue-dark: #104fc4;
-  --cp-muted: #647895;
-  --cp-line: #e5e7eb;
+  --cp-blue-tint: #eef4ff;
+  --cp-muted: #64748b;
+  --cp-line: #e2e8f0;
+  --cp-surface: #ffffff;
+  --cp-radius: 14px;
 }
 
 /* ---------------- sarlavha qatori: jami soni va tugma ---------------- */
@@ -19,50 +23,127 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 12px;
-  margin: 4px 0 14px;
+  margin: 6px 0 16px;
 }
 
 .dm-total {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: var(--cp-blue-tint);
   color: var(--cp-navy);
   font-size: 14px;
   font-weight: 700;
+  line-height: 1;
 }
 
 .tv-create.dm-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 42px;
-  padding: 0 18px;
+  min-height: 44px;
+  padding: 0 20px;
   border: none;
   border-radius: 12px;
   background: var(--cp-blue) !important;
   color: #fff !important;
   font-weight: 700;
   white-space: nowrap;
-  box-shadow: 0 8px 18px rgba(23, 100, 237, 0.25);
-  transition: background 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 10px 22px rgba(23, 100, 237, 0.24);
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .tv-create.dm-btn:hover {
   background: var(--cp-blue-dark) !important;
   transform: translateY(-1px);
+  box-shadow: 0 14px 26px rgba(23, 100, 237, 0.3);
 }
 
-/* ---------------- kartochka: kuryer ismi ---------------- */
+.tv-create.dm-btn:focus-visible {
+  outline: 3px solid rgba(23, 100, 237, 0.35);
+  outline-offset: 2px;
+}
 
-.dm-card-side .tv-side-name {
+/* ---------------- kartochka: kuryer kimligi ----------------
+   Ota-ona uslublardan kelgan chegara va fonni bekor qilamiz. */
+
+.dm-card-side .cc-identity,
+.dm-card-side .cc-identity-text,
+.dm-card-side .cc-identity-name,
+.dm-card-side .cc-identity-role {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  background: none !important;
+}
+
+.dm-card-side .cc-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 280px;
   min-width: 0;
-  max-width: 100%;
+  margin: 0 0 4px;
+  padding: 0;
+}
+
+.dm-card-side .cc-identity .cc-avatar {
+  width: 46px;
+  height: 46px;
+  flex: 0 0 46px;
+  margin: 0;
+  padding: 0;
+  border: 0 !important;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: #fff;
+  box-shadow: 0 0 0 3px #fff, 0 8px 18px rgba(15, 23, 42, 0.16) !important;
+  user-select: none;
+}
+
+.dm-card-side .cc-identity .cc-avatar--blue   { background: linear-gradient(135deg, #2563eb, #60a5fa) !important; }
+.dm-card-side .cc-identity .cc-avatar--amber  { background: linear-gradient(135deg, #f59e0b, #fbbf24) !important; }
+.dm-card-side .cc-identity .cc-avatar--green  { background: linear-gradient(135deg, #059669, #34d399) !important; }
+.dm-card-side .cc-identity .cc-avatar--violet { background: linear-gradient(135deg, #7c3aed, #a78bfa) !important; }
+
+.dm-card-side .cc-identity .cc-identity-text {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0;
+}
+
+.dm-card-side .cc-identity .cc-identity-name {
+  display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  padding: 0;
   color: var(--cp-navy);
   font-size: 15px;
   font-weight: 700;
+  line-height: 1.3;
 }
 
-/* Kengda: ism va tugma yonma-yon */
+.dm-card-side .cc-identity .cc-identity-role {
+  display: block;
+  margin-top: 2px;
+  padding: 0;
+  color: var(--cp-muted);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+/* Kartochka: ism va tugma yonma-yon, kengda */
 .dm-card > .dm-card-side {
   flex-wrap: wrap;
   justify-content: flex-end;
@@ -74,9 +155,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
-  min-width: min(340px, 86vw);
-  padding: 8px 4px;
+  gap: 16px;
+  min-width: min(360px, 86vw);
+  padding: 10px 6px 4px;
   text-align: center;
 }
 
@@ -85,13 +166,16 @@
   color: var(--cp-navy);
   font-size: 20px;
   font-weight: 800;
+  letter-spacing: -0.01em;
 }
 
 .tv-phone-number {
-  padding: 14px 18px;
-  border: 1px solid #dbe6f7;
-  border-radius: 14px;
-  background: #f5f9ff;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 16px 18px;
+  border: 1px solid #d6e4fb;
+  border-radius: var(--cp-radius);
+  background: linear-gradient(180deg, #f7faff, var(--cp-blue-tint));
   color: var(--cp-navy);
   font-size: 22px;
   font-weight: 800;
@@ -110,7 +194,7 @@
 
 .tv-phone-actions .dm-btn {
   flex: 1 1 120px;
-  min-height: 44px;
+  min-height: 46px;
   padding: 0 16px;
   border-radius: 12px;
   font-weight: 700;
@@ -118,18 +202,29 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .tv-phone-actions .dm-btn--solid {
   background: var(--cp-blue);
   color: #fff;
   border: none;
+  box-shadow: 0 8px 18px rgba(23, 100, 237, 0.22);
+}
+
+.tv-phone-actions .dm-btn--solid:hover {
+  background: var(--cp-blue-dark);
+  transform: translateY(-1px);
 }
 
 .tv-phone-actions .dm-btn--ghost {
-  background: #fff;
+  background: var(--cp-surface);
   color: var(--cp-navy);
   border: 1px solid #cbd5e1;
+}
+
+.tv-phone-actions .dm-btn--ghost:hover {
+  background: #f8fafc;
 }
 
 /* ---------------- planshet va telefon ---------------- */
@@ -142,7 +237,7 @@
   }
 
   .tv-head .dm-total {
-    text-align: center;
+    justify-content: center;
   }
 
   .tv-create.dm-btn {
@@ -153,7 +248,11 @@
     flex-wrap: nowrap;
   }
 
-  .dm-card-side .tv-side-name {
+  .dm-card-side .cc-identity {
+    max-width: 100%;
+  }
+
+  .dm-card-side .cc-identity .cc-identity-name {
     font-size: 14px;
   }
 
@@ -164,68 +263,25 @@
 
   .tv-phone-number {
     font-size: 19px;
-    padding: 12px 14px;
+    padding: 14px 14px;
+  }
+}
+
+@media (max-width: 420px) {
+  .dm-card-side .cc-identity .cc-identity-name {
+    max-width: 150px;
   }
 }
 
 /* Animatsiyalarni kamaytirish */
 @media (prefers-reduced-motion: reduce) {
-  .tv-create.dm-btn {
+  .tv-create.dm-btn,
+  .tv-phone-actions .dm-btn {
     transition: none;
   }
-}
-/* Kuryer kimligi: rangli avatar va ism (eski to'rtburchak o'rniga) */
-.dm-card-side .cc-identity {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
-}
 
-.cc-avatar {
-  width: 44px;
-  height: 44px;
-  flex-shrink: 0;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: 0.03em;
-  color: #fff;
-  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.14);
-  user-select: none;
-}
-
-.cc-avatar--blue   { background: linear-gradient(135deg, #2563eb, #60a5fa); }
-.cc-avatar--amber  { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
-.cc-avatar--green  { background: linear-gradient(135deg, #059669, #34d399); }
-.cc-avatar--violet { background: linear-gradient(135deg, #7c3aed, #a78bfa); }
-
-.cc-identity-text {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-.cc-identity-name {
-  max-width: 180px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 15px;
-  font-weight: 600;
-  color: #0f172a;
-}
-
-.cc-identity-role {
-  margin-top: 2px;
-  font-size: 12px;
-  color: #64748b;
-}
-
-@media (max-width: 420px) {
-  .cc-identity-name {
-    max-width: 140px;
+  .tv-create.dm-btn:hover,
+  .tv-phone-actions .dm-btn--solid:hover {
+    transform: none;
   }
 }
