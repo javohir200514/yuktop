@@ -36,6 +36,9 @@ import static uz.onetimecourier.one_time_courier.view.DeliveryViewSupport.tag;
 /**
  * Kuryer safarlari ro'yxati. Tuzilishi va dizayni ochiq yuklar sahifasi bilan bir xil:
  * tepada yo'nalish filtri, pastda kartalar. Kuryer hisobida "+ Safar e'lon qilish" tugmasi ko'rinadi.
+ *
+ * Dizayn (bosh sahifa bilan bir xil korporativ uslub) feed-corporate.css da. U eski stillardan
+ * KEYIN ulanishi kerak, shuning uchun annotatsiyalar ro'yxatida oxirgi turadi.
  */
 @Route(value = "couriers", layout = PageLayout.class)
 @RouteAlias(value = "trips", layout = PageLayout.class)
@@ -47,6 +50,8 @@ import static uz.onetimecourier.one_time_courier.view.DeliveryViewSupport.tag;
 @CssImport("./styles/deliveries-responsive.css")
 @CssImport("./styles/page-head.css")
 @CssImport("./styles/couriers-page.css")
+@CssImport("./styles/yb-feed.css")
+@CssImport("./styles/feed-corporate.css")
 public class CouriersView extends Div {
 
     private static final Logger log = LoggerFactory.getLogger(CouriersView.class);
@@ -59,11 +64,22 @@ public class CouriersView extends Div {
     /** Avatar ranglari. Har bir kuryer ismi doim bir xil rangni oladi. */
     private static final String[] AVATAR_TONES = {"blue", "amber", "green", "violet"};
 
-    private static final String BOX_SVG =
-            "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" "
-                    + "stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\">"
-                    + "<path d=\"M21 8l-9-5-9 5 9 5 9-5z\"/><path d=\"M3 8v8l9 5 9-5V8\"/><path d=\"M12 13v8\"/>"
-                    + "</svg>";
+    /**
+     * Karta ikonkasi: yuk mashinasi. Uslub bosh sahifadagi ikonkalar bilan bir xil:
+     * ingichka kontur (currentColor), yengil to'ldirma (.f) va ko'k aksent (.a).
+     */
+    private static final String TRUCK_SVG =
+            "<svg viewBox=\"0 0 48 48\" xmlns=\"http://www.w3.org/2000/svg\">"
+                    + "<path class=\"f\" d=\"M3 12h26v23H3z\"/>"
+                    + "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" "
+                    + "stroke-linecap=\"round\" stroke-linejoin=\"round\">"
+                    + "<path d=\"M3 12h26v23H3z\"/>"
+                    + "<path d=\"M29 19h8.5l7 8.5V35H29\"/>"
+                    + "<path class=\"a\" d=\"M33 22.5h3.7l3.8 4.5H33z\"/>"
+                    + "<path d=\"M9 19h12\"/>"
+                    + "<circle class=\"w\" cx=\"13\" cy=\"36\" r=\"4.8\"/>"
+                    + "<circle class=\"w\" cx=\"36\" cy=\"36\" r=\"4.8\"/>"
+                    + "</g></svg>";
 
     private final CourierTripService tripService;
     private final boolean isCourier;
@@ -91,7 +107,10 @@ public class CouriersView extends Div {
 
         addClassNames("md-page", "dm-page");
 
-        // ---- sarlavha: sahifa nomi va qisqa yozuv
+        // ---- sarlavha: yorliq, sahifa nomi va qisqa yozuv
+        Span kicker = new Span("Kuryer safarlari");
+        kicker.addClassName("dm-kicker");
+
         H2 title = new H2("Safarlar");
         title.addClassName("dm-page-title");
 
@@ -99,7 +118,7 @@ public class CouriersView extends Div {
                 "Yo'nalishingizga mos kuryer safarlarini toping va to'g'ridan-to'g'ri bog'laning.");
         subtitle.addClassName("dm-page-sub");
 
-        Div head = new Div(title, subtitle);
+        Div head = new Div(kicker, title, subtitle);
         head.addClassName("dm-page-head");
 
         // ---- filtr paneli (ochiq yuklar bilan bir xil)
@@ -155,7 +174,7 @@ public class CouriersView extends Div {
         fromFilter.setLabel("Qayerdan");
         toFilter.setLabel("Qayerga");
 
-        clearButton.addClassNames("dm-btn", "dm-btn--solid", "dm-clear");
+        clearButton.addClassNames("dm-btn", "dm-btn--ghost", "dm-clear");
         clearButton.getElement().setAttribute("type", "button");
         clearButton.addClickListener(e -> {
             fromFilter.clear();
@@ -396,12 +415,12 @@ public class CouriersView extends Div {
         dialog.open();
     }
 
-    /** Quti ikonkasi: oddiy Div, SVG ichida. Shu sababli klass doim karta elementiga tegadi. */
+    /** Yuk mashinasi ikonkasi: oddiy Div, SVG ichida. Shu sababli klass doim karta elementiga tegadi. */
     private static Div iconBox() {
         Div box = new Div();
         box.addClassName("dm-card-icon");
         box.getElement().setAttribute("aria-hidden", "true");
-        box.getElement().setProperty("innerHTML", BOX_SVG);
+        box.getElement().setProperty("innerHTML", TRUCK_SVG);
         return box;
     }
 

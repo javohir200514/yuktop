@@ -3,12 +3,13 @@ package uz.onetimecourier.one_time_courier.view;
 import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.NativeButton;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
@@ -63,6 +64,7 @@ public class LoginView extends Div implements BeforeEnterObserver {
 
     private static final String GOOGLE_LABEL = "Google orqali kirish";
     private static final String TELEGRAM_LABEL = "Telegram orqali kirish";
+    private static final String SUBMIT_LABEL = "Kirish";
 
     private final AuthenticationManager authenticationManager;
     private final TelegramLoginService telegramLoginService;
@@ -70,10 +72,15 @@ public class LoginView extends Div implements BeforeEnterObserver {
 
     private final TextField phone = new TextField("Telefon raqam");
     private final PasswordField password = new PasswordField("Parol");
-    private final Button submit = new Button("Kirish");
-    private final Button googleBtn = new Button();
-    private final Button telegramBtn = new Button();
 
+    // Tugmalar oddiy HTML tugma: rang va shakl to'liq CSS dan boshqariladi
+    private final NativeButton submit = new NativeButton();
+    private final Span submitLabel = new Span(SUBMIT_LABEL);
+    private final Icon submitIcon = VaadinIcon.ARROW_RIGHT.create();
+    private final NativeButton googleBtn = new NativeButton();
+    private final NativeButton telegramBtn = new NativeButton();
+
+    private boolean busy = false;
     private String telegramToken;
     private Registration pollRegistration;
 
@@ -93,6 +100,7 @@ public class LoginView extends Div implements BeforeEnterObserver {
         card.setWidthFull();
         card.setAlignItems(VerticalLayout.Alignment.STRETCH);
 
+        // ---- Brend
         Span yuk = new Span("YUK");
         yuk.addClassName("brand-yuk");
         Span bor = new Span("BOR");
@@ -104,16 +112,18 @@ public class LoginView extends Div implements BeforeEnterObserver {
         Div brand = new Div(brandName, tagline);
         brand.addClassName("yukbor-brand");
 
+        // ---- Sarlavha
         H1 title = new H1();
         title.addClassName("login-title");
-        title.add(new Span("Hisobingizga "));
+        Span plain = new Span("Hisobingizga ");
         Span accent = new Span("kiring");
         accent.addClassName("login-title-highlight");
-        title.add(accent);
+        title.add(plain, accent);
 
         Paragraph description = new Paragraph("Buyurtmalaringizni qulay va xavfsiz boshqaring.");
         description.addClassName("login-description");
 
+        // ---- Maydonlar
         phone.setValue("+998");
         phone.setPlaceholder("+998901234567");
         phone.setPrefixComponent(VaadinIcon.PHONE.create());
@@ -135,10 +145,11 @@ public class LoginView extends Div implements BeforeEnterObserver {
         form.setWidthFull();
         form.setAlignItems(VerticalLayout.Alignment.STRETCH);
 
+        // ---- Kirish tugmasi
         submit.addClassName("login-submit");
-        submit.setWidthFull();
-        submit.setIcon(VaadinIcon.ARROW_RIGHT.create());
-        submit.setIconAfterText(true);
+        submit.getElement().setAttribute("type", "button");
+        submitIcon.addClassName("login-submit-icon");
+        submit.add(submitLabel, submitIcon);
         submit.addClickListener(e -> login());
         phone.addKeyPressListener(Key.ENTER, e -> login());
         password.addKeyPressListener(Key.ENTER, e -> login());
@@ -150,54 +161,36 @@ public class LoginView extends Div implements BeforeEnterObserver {
 
     // ---------- Yasash ----------
 
-    /** "yoki" ajratgichi: chiziq — yozuv — chiziq (CSS'ga bog'liq emas). */
+    /** "yoki" ajratgichi: chiziq — yozuv — chiziq. */
     private Div buildDivider() {
         Span left = line();
         Span text = new Span("yoki");
-        text.getStyle()
-                .set("color", "#8793a8")
-                .set("font-size", "12px")
-                .set("font-weight", "600")
-                .set("text-transform", "uppercase")
-                .set("letter-spacing", ".08em");
+        text.addClassName("login-divider-text");
         Span right = line();
 
         Div divider = new Div(left, text, right);
-        divider.getStyle()
-                .set("display", "flex")
-                .set("align-items", "center")
-                .set("gap", "12px")
-                .set("width", "100%")
-                .set("margin", "0 0 16px");
+        divider.addClassName("login-divider");
         return divider;
     }
 
     private static Span line() {
         Span s = new Span();
-        s.getStyle()
-                .set("flex", "1")
-                .set("height", "1px")
-                .set("background", "#dde6f5");
+        s.addClassName("login-divider-line");
         return s;
     }
 
     private Div buildSocialButtons() {
-        styleSocial(googleBtn, "social-google", "#ffffff", "1px solid #d6e4fb");
-        setSocialContent(googleBtn, GOOGLE_SVG, GOOGLE_LABEL, "#374151");
+        styleSocial(googleBtn, "social-google");
+        setSocialContent(googleBtn, GOOGLE_SVG, GOOGLE_LABEL);
         googleBtn.addClickListener(e ->
                 UI.getCurrent().getPage().setLocation("/oauth2/authorization/google"));
 
-        styleSocial(telegramBtn, "social-telegram", "#229ed9", "none");
-        setSocialContent(telegramBtn, TELEGRAM_SVG, TELEGRAM_LABEL, "#ffffff");
+        styleSocial(telegramBtn, "social-telegram");
+        setSocialContent(telegramBtn, TELEGRAM_SVG, TELEGRAM_LABEL);
         telegramBtn.addClickListener(e -> startTelegramLogin());
 
         Div social = new Div(googleBtn, telegramBtn);
-        social.getStyle()
-                .set("display", "flex")
-                .set("flex-direction", "column")
-                .set("gap", "10px")
-                .set("width", "100%")
-                .set("margin", "0 0 18px");
+        social.addClassName("login-social");
         return social;
     }
 
@@ -210,24 +203,14 @@ public class LoginView extends Div implements BeforeEnterObserver {
         return footer;
     }
 
-    private static void styleSocial(Button b, String cssClass, String background, String border) {
+    private static void styleSocial(NativeButton b, String cssClass) {
         b.addClassNames("social-btn", cssClass);
-        b.setWidthFull();
-        b.getStyle()
-                .set("height", "52px")
-                .set("min-height", "52px")
-                .set("margin", "0")
-                .set("padding", "0")
-                .set("border-radius", "14px")
-                .set("background", background)
-                .set("border", border)
-                .set("cursor", "pointer");
+        b.getElement().setAttribute("type", "button");
     }
 
-    private static void setSocialContent(Button b, String svg, String label, String color) {
+    private static void setSocialContent(NativeButton b, String svg, String label) {
         b.getElement().setProperty("innerHTML",
-                "<span style=\"display:inline-flex;align-items:center;justify-content:center;"
-                        + "gap:10px;color:" + color + ";font-size:14px;font-weight:700;\">"
+                "<span class=\"social-btn-content\">"
                         + svg + "<span>" + label + "</span></span>");
     }
 
@@ -247,12 +230,11 @@ public class LoginView extends Div implements BeforeEnterObserver {
             password.focus();
             return;
         }
-        if (!submit.isEnabled()) {
+        if (busy) {
             return;
         }
 
-        submit.setEnabled(false);
-        submit.setText("Tekshirilmoqda...");
+        setBusy(true, "Tekshirilmoqda...", false);
         try {
             Authentication authentication = authenticationManager.authenticate(
                     UsernamePasswordAuthenticationToken.unauthenticated(phoneNumber, passwordValue));
@@ -281,10 +263,16 @@ public class LoginView extends Div implements BeforeEnterObserver {
     }
 
     private void resetSubmit() {
-        submit.setEnabled(true);
-        submit.setText("Kirish");
-        submit.setIcon(VaadinIcon.ARROW_RIGHT.create());
+        setBusy(false, SUBMIT_LABEL, true);
         password.focus();
+    }
+
+    /** Tugma holatini boshqaradi: band bo'lsa o'chadi va matni o'zgaradi. */
+    private void setBusy(boolean value, String text, boolean showIcon) {
+        busy = value;
+        submit.getElement().setEnabled(!value);
+        submitLabel.setText(text);
+        submitIcon.setVisible(showIcon);
     }
 
     // ---------- Telegram ----------
@@ -346,7 +334,7 @@ public class LoginView extends Div implements BeforeEnterObserver {
     }
 
     private void setTelegramLabel(String label) {
-        setSocialContent(telegramBtn, TELEGRAM_SVG, label, "#ffffff");
+        setSocialContent(telegramBtn, TELEGRAM_SVG, label);
     }
 
     @Override

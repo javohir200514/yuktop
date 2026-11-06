@@ -48,6 +48,9 @@ import static uz.onetimecourier.one_time_courier.view.DeliveryViewSupport.weight
 /**
  * Ochiq yuklar ro'yxati. Kim ko'rayotganiga qarab ma'lumot turlicha:
  * kirmagan va jo'natuvchi: faqat ochiq maydonlar; kuryer: jo'natuvchi ismi, niqoblangan kontakt, "Qabul qilish".
+ *
+ * Dizayn (bosh sahifa bilan bir xil korporativ uslub) feed-corporate.css da. U eski stillardan
+ * KEYIN ulanishi kerak, shuning uchun annotatsiyalar ro'yxatida oxirgi turadi.
  */
 @Route(value = "deliveries", layout = PageLayout.class)
 @PageTitle("Yuklar | YukBor")
@@ -57,6 +60,8 @@ import static uz.onetimecourier.one_time_courier.view.DeliveryViewSupport.weight
 @CssImport("./styles/deliveries-modern.css")
 @CssImport("./styles/deliveries-responsive.css")
 @CssImport("./styles/page-head.css")
+@CssImport("./styles/yb-feed.css")
+@CssImport("./styles/feed-corporate.css")
 public class DeliveriesView extends Div {
 
     private static final Logger log = LoggerFactory.getLogger(DeliveriesView.class);
@@ -65,13 +70,21 @@ public class DeliveriesView extends Div {
     private static final String GENERIC_ERROR =
             "Kutilmagan xato yuz berdi. Birozdan keyin qayta urinib ko'ring.";
 
-    /** Karta chapidagi quti ikonkasi (inline SVG, tashqi kutubxonasiz). */
+    /**
+     * Karta chapidagi quti ikonkasi (inline SVG, tashqi kutubxonasiz). Uslub bosh sahifadagi
+     * ikonkalar bilan bir xil: ingichka kontur (currentColor), yengil to'ldirma (.f), ko'k aksent (.a).
+     */
     private static final String BOX_ICON =
             "<span class=\"dm-card-icon\" aria-hidden=\"true\">"
-                    + "<svg viewBox=\"0 0 24 24\" width=\"26\" height=\"26\" fill=\"none\" stroke=\"currentColor\" "
-                    + "stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\">"
-                    + "<path d=\"M21 8l-9-5-9 5 9 5 9-5z\"/><path d=\"M3 8v8l9 5 9-5V8\"/><path d=\"M12 13v8\"/>"
-                    + "</svg></span>";
+                    + "<svg viewBox=\"0 0 48 48\" xmlns=\"http://www.w3.org/2000/svg\">"
+                    + "<path class=\"f\" d=\"M7 14.5 24 6l17 8.5v19L24 42 7 33.5z\"/>"
+                    + "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" "
+                    + "stroke-linecap=\"round\" stroke-linejoin=\"round\">"
+                    + "<path d=\"M7 14.5 24 6l17 8.5v19L24 42 7 33.5z\"/>"
+                    + "<path d=\"M7 14.5 24 23l17-8.5\"/>"
+                    + "<path d=\"M24 23v19\"/>"
+                    + "<path class=\"a\" d=\"M15.5 10.2l17 8.7\"/>"
+                    + "</g></svg></span>";
 
     private enum Viewer { ANONYMOUS, SENDER, COURIER, OTHER }
 
@@ -118,12 +131,17 @@ public class DeliveriesView extends Div {
         Div main = new Div();
         main.addClassName("page-fold");
 
-        // ---- sahifa sarlavhasi (Kuryerlar sahifasidagi kabi)
+        // ---- sahifa sarlavhasi: yorliq, nom va qisqa yozuv
+        Span kicker = new Span("Ochiq yuklar");
+        kicker.addClassName("dm-kicker");
+
         H2 title = new H2("Yuklar");
         title.addClassName("dm-page-title");
+
         Paragraph subtitle = new Paragraph("Siz shu yuklarni yetkazib berishingiz mumkin.");
         subtitle.addClassName("dm-page-sub");
-        Div head = new Div(title, subtitle);
+
+        Div head = new Div(kicker, title, subtitle);
         head.addClassName("dm-page-head");
         main.add(head);
 
@@ -230,7 +248,7 @@ public class DeliveriesView extends Div {
         fromFilter.setLabel("Qayerdan");
         toFilter.setLabel("Qayerga");
 
-        clearButton.addClassNames("dm-btn", "dm-btn--solid", "dm-clear");
+        clearButton.addClassNames("dm-btn", "dm-btn--ghost", "dm-clear");
         clearButton.getElement().setAttribute("type", "button");
         clearButton.addClickListener(e -> {
             fromFilter.clear();

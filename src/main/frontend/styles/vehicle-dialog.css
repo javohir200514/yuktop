@@ -1,103 +1,426 @@
-/* Transport dialogi: maydonlar to'rda, plastinka ko'rinishi rangli */
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap");
+
+/* =========================================
+   YUKBOR — TRANSPORT MA'LUMOTLARI DIALOGI
+   Bosh sahifa va login bilan bir xil: asfalt, sariq aksent, Barlow Condensed.
+========================================= */
+
+.vd-dialog {
+    --vd-asphalt: #121212;
+    --vd-asphalt-2: #1b1b1b;
+    --vd-line: #353535;
+    --vd-yellow: #ffd21f;
+    --vd-yellow-hover: #ffe266;
+    --vd-yellow-deep: #b89500;
+    --vd-white: #f5f3ee;
+    --vd-soft: #d9d4c8;
+    --vd-muted: #a9a59b;
+    --vd-blue: #1d5fd1;
+    --vd-danger: #ff7a6b;
+    --vd-display: "Barlow Condensed", "Arial Narrow", Impact, sans-serif;
+    --vd-body: "Barlow", "Segoe UI", system-ui, sans-serif;
+}
+
+/* Dialog oynasi (overlay) */
+.vd-dialog::part(overlay),
+vaadin-dialog-overlay.vd-dialog::part(overlay) {
+    background: var(--vd-asphalt-2);
+    border: 2px solid var(--vd-white);
+    border-radius: 18px;
+    box-shadow: 10px 10px 0 var(--vd-yellow);
+    overflow: hidden;
+    color: var(--vd-white);
+    font-family: var(--vd-body);
+}
+
+.vd-dialog::part(content),
+vaadin-dialog-overlay.vd-dialog::part(content) {
+    padding: 0;
+}
+
+.vd-dialog::part(backdrop),
+vaadin-dialog-overlay.vd-dialog::part(backdrop) {
+    background: rgba(0, 0, 0, .7);
+}
+
+/* =========================================
+   SARLAVHA
+========================================= */
+
+.vd-header {
+    position: relative;
+    padding: 30px 26px 18px;
+    border-bottom: 2px dashed var(--vd-line);
+}
+
+/* Yuqoridagi sariq-qora lenta */
+.vd-header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 12px;
+    background: repeating-linear-gradient(
+        -45deg,
+        var(--vd-asphalt) 0 14px,
+        var(--vd-yellow) 14px 28px
+    );
+}
+
+.vd-kicker {
+    display: inline-block;
+    margin-bottom: 10px;
+    padding: 4px 10px 3px;
+    border-radius: 4px;
+    background: var(--vd-yellow);
+    color: var(--vd-asphalt);
+    font-family: var(--vd-display);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    transform: rotate(-1.5deg);
+}
+
+.vd-title {
+    margin: 0 0 8px;
+    color: var(--vd-white);
+    font-family: var(--vd-display);
+    font-size: 34px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: .3px;
+    text-transform: uppercase;
+}
+
+.vd-sub {
+    margin: 0;
+    color: var(--vd-muted);
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+/* =========================================
+   TANA
+========================================= */
 
 .vd-body {
-  padding: 4px 2px 2px;
+    padding: 20px 26px 8px;
 }
 
 .vd-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px 16px;
-  align-items: start;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px 16px;
 }
 
 .vd-full {
-  grid-column: 1 / -1;
+    grid-column: 1 / -1;
 }
+
+/* Maydonlar: login sahifasidagi bilan bir xil */
+
+.vd-input {
+    width: 100%;
+    color: var(--vd-white);
+    font-family: var(--vd-body);
+    font-size: 16px;
+    --vaadin-input-field-value-color: var(--vd-white);
+    --vaadin-input-field-placeholder-color: #8f8a7f;
+}
+
+.vd-input::part(input-field) {
+    background: var(--vd-asphalt);
+    border: 2px solid var(--vd-line);
+    border-radius: 12px;
+    box-shadow: none;
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.vd-input:hover::part(input-field) {
+    border-color: #4a4a4a;
+}
+
+.vd-input[focused]::part(input-field) {
+    border-color: var(--vd-yellow);
+    box-shadow: 0 0 0 3px rgba(255, 210, 31, .22);
+}
+
+.vd-input[invalid]::part(input-field) {
+    border-color: var(--vd-danger);
+}
+
+.vd-input::part(label) {
+    color: var(--vd-soft);
+    font-family: var(--vd-display);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+}
+
+.vd-input::part(value) {
+    color: var(--vd-white);
+}
+
+.vd-input::part(toggle-button) {
+    color: var(--vd-yellow);
+}
+
+.vd-input::part(error-message) {
+    color: var(--vd-danger);
+    font-weight: 600;
+}
+
+vaadin-select-overlay::part(overlay) {
+    background: var(--vd-asphalt-2);
+    border: 2px solid var(--vd-yellow);
+    border-radius: 12px;
+    box-shadow: 6px 6px 0 var(--vd-yellow);
+}
+
+/* =========================================
+   DAVLAT RAQAMI: PLASTINKA
+========================================= */
 
 .vd-plate-row {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 10px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 14px 16px;
 }
 
-.vd-plate-row vaadin-checkbox {
-  margin-top: 2px;
+.vd-plate-row > .vd-input {
+    grid-column: 1 / -1;
 }
 
-/* Davlat raqami plastinkasi */
 .vd-plate {
-  display: flex;
-  align-items: stretch;
-  height: 60px;
-  border: 2px solid #111827;
-  border-radius: 10px;
-  background: #ffffff;
-  color: #0f172a;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(15, 23, 42, .12);
+    display: flex;
+    align-items: stretch;
+    min-height: 64px;
+    border: 3px solid var(--vd-white);
+    border-radius: 10px;
+    background: var(--vd-white);
+    color: var(--vd-asphalt);
+    box-shadow: 4px 4px 0 var(--vd-yellow);
+    overflow: hidden;
 }
 
+/* Chap tomondagi ko'k band: UZ */
 .vd-plate-band {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 46px;
-  background: #1d4ed8;
-  color: #ffffff;
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: .5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    flex-shrink: 0;
+
+    background: var(--vd-blue);
+    color: #ffffff;
+    font-family: var(--vd-display);
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 1px;
 }
 
 .vd-plate-text {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: "Arial Black", "Segoe UI", sans-serif;
-  font-size: 24px;
-  font-weight: 900;
-  letter-spacing: 2px;
-  white-space: nowrap;
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    padding: 0 12px;
+
+    font-family: var(--vd-display);
+    font-size: 34px;
+    font-weight: 800;
+    letter-spacing: 3px;
+    white-space: nowrap;
 }
 
 .vd-plate-empty {
-  opacity: .3;
+    color: #8b8579;
 }
 
-/* Yuridik shaxs raqami: boshqa rang */
-.vd-plate--legal {
-  border-color: #854d0e;
-  background: #fde047;
-}
-
+/* Yuridik shaxs: sariq band */
 .vd-plate--legal .vd-plate-band {
-  background: #15803d;
+    background: var(--vd-yellow);
+    color: var(--vd-asphalt);
 }
+
+.vd-plate-controls {
+    display: flex;
+    align-items: center;
+    min-height: 48px;
+}
+
+.vd-legal {
+    color: var(--vd-soft);
+    font-family: var(--vd-display);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: .6px;
+    text-transform: uppercase;
+}
+
+vaadin-checkbox.vd-legal::part(checkbox) {
+    background: var(--vd-asphalt);
+    border: 2px solid var(--vd-line);
+    border-radius: 6px;
+}
+
+vaadin-checkbox.vd-legal[checked]::part(checkbox) {
+    background: var(--vd-yellow);
+    border-color: var(--vd-yellow);
+}
+
+vaadin-checkbox.vd-legal[focus-ring]::part(checkbox) {
+    box-shadow: 0 0 0 3px rgba(255, 210, 31, .3);
+}
+
+/* =========================================
+   XATO XABARI
+========================================= */
 
 .vd-error {
-  margin: 0;
-  padding: 10px 12px;
-  border-radius: 8px;
-  background: #fef2f2;
-  color: #b91c1c;
-  font-size: 14px;
+    margin: 4px 0 0;
+    padding: 12px 14px;
+
+    background: rgba(255, 122, 107, .1);
+    border: 2px solid var(--vd-danger);
+    border-radius: 12px;
+    color: #ffb3a9;
+    font-size: 15px;
+    font-weight: 600;
 }
 
-.vd-dialog .vd-cancel {
-  margin-right: auto;
+/* =========================================
+   PASTKI QISM: TUGMALAR
+========================================= */
+
+vaadin-dialog-overlay.vd-dialog::part(footer),
+.vd-dialog::part(footer) {
+    padding: 0;
 }
 
-/* Telefon */
+.vd-footer {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    width: 100%;
+    padding: 16px 26px 22px;
+    margin-top: 10px;
+    border-top: 2px dashed var(--vd-line);
+    background: var(--vd-asphalt-2);
+}
+
+.vd-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 50px;
+    padding: 0 22px;
+
+    border: 2px solid transparent;
+    border-radius: 12px;
+
+    font-family: var(--vd-display);
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: .6px;
+    text-transform: uppercase;
+    white-space: nowrap;
+
+    cursor: pointer;
+    transition: transform .15s ease, box-shadow .15s ease, background .2s ease, color .2s ease;
+}
+
+.vd-btn:focus-visible {
+    outline: 3px solid var(--vd-yellow);
+    outline-offset: 3px;
+}
+
+.vd-btn--solid {
+    background: var(--vd-yellow);
+    border-color: var(--vd-yellow);
+    color: var(--vd-asphalt);
+    box-shadow: 0 4px 0 var(--vd-yellow-deep);
+}
+
+.vd-btn--solid:hover {
+    background: var(--vd-yellow-hover);
+    border-color: var(--vd-yellow-hover);
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 var(--vd-yellow-deep);
+}
+
+.vd-btn--solid:active {
+    transform: translateY(4px);
+    box-shadow: none;
+}
+
+.vd-btn--ghost {
+    background: transparent;
+    border-color: var(--vd-soft);
+    color: var(--vd-white);
+}
+
+.vd-btn--ghost:hover {
+    background: var(--vd-white);
+    border-color: var(--vd-white);
+    color: var(--vd-asphalt);
+}
+
+/* =========================================
+   TELEFON (≤ 560px)
+========================================= */
+
 @media (max-width: 560px) {
-  .vd-grid {
-    grid-template-columns: 1fr;
-  }
 
-  .vd-plate-text {
-    font-size: 19px;
-    letter-spacing: 1px;
-  }
+    .vd-header {
+        padding: 28px 20px 16px;
+    }
+
+    .vd-title {
+        font-size: 28px;
+    }
+
+    .vd-body {
+        padding: 18px 20px 6px;
+    }
+
+    .vd-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .vd-plate-text {
+        font-size: 26px;
+        letter-spacing: 2px;
+    }
+
+    .vd-plate-row {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .vd-footer {
+        padding: 14px 20px 20px;
+    }
+
+    .vd-btn {
+        flex: 1 1 140px;
+    }
+}
+
+/* =========================================
+   HARAKATNI KAMAYTIRISH
+========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .vd-input::part(input-field),
+    .vd-btn {
+        transition: none;
+    }
 }

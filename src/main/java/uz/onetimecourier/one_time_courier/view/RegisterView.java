@@ -2,12 +2,13 @@ package uz.onetimecourier.one_time_courier.view;
 
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.NativeButton;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
@@ -39,6 +40,8 @@ import uz.onetimecourier.one_time_courier.service.TelegramPhoneVerificationServi
 @CssImport("./styles/login-view.css")
 public class RegisterView extends Div implements BeforeEnterObserver {
 
+    private static final String SUBMIT_LABEL = "Ro'yxatdan o'tish";
+
     private final AuthService authService;
     private final TelegramPhoneVerificationService phoneVerification;
     private final String botUsername;
@@ -48,7 +51,10 @@ public class RegisterView extends Div implements BeforeEnterObserver {
     private final PasswordField password = new PasswordField("Parol");
     private final PasswordField confirm = new PasswordField("Parolni takrorlang");
     private final Select<Role> role = new Select<>();
-    private final Button submit = new Button("Ro'yxatdan o'tish");
+
+    private final NativeButton submit = new NativeButton();
+    private final Span submitLabel = new Span(SUBMIT_LABEL);
+    private final Icon submitIcon = VaadinIcon.ARROW_RIGHT.create();
 
     public RegisterView(AuthService authService,
                         TelegramPhoneVerificationService phoneVerification,
@@ -56,7 +62,7 @@ public class RegisterView extends Div implements BeforeEnterObserver {
         this.authService = authService;
         this.phoneVerification = phoneVerification;
         this.botUsername = botUsername;
-        addClassName("login-page");
+        addClassNames("login-page", "register-page");
 
         VerticalLayout card = new VerticalLayout();
         card.addClassNames("login-card", "register-card");
@@ -65,6 +71,7 @@ public class RegisterView extends Div implements BeforeEnterObserver {
         card.setWidthFull();
         card.setAlignItems(VerticalLayout.Alignment.STRETCH);
 
+        // ---- Brend
         Span yuk = new Span("YUK");
         yuk.addClassName("brand-yuk");
         Span bor = new Span("BOR");
@@ -76,16 +83,26 @@ public class RegisterView extends Div implements BeforeEnterObserver {
         Div brand = new Div(brandName, tagline);
         brand.addClassName("yukbor-brand");
 
+        // ---- Sarlavha
         H1 title = new H1();
         title.addClassName("login-title");
-        title.add(new Span("Hisob "));
+        Span plain = new Span("Hisob ");
         Span accent = new Span("yarating");
         accent.addClassName("login-title-highlight");
-        title.add(accent);
+        title.add(plain, accent);
 
         Paragraph description = new Paragraph("Bir necha soniyada ro'yxatdan o'ting.");
         description.addClassName("login-description");
 
+        // ---- Bosqichlar: hozir 1-bosqich
+        Div steps = new Div(
+                registerStep("01", "Ma'lumot", true),
+                registerStep("02", "Telegram", false),
+                registerStep("03", "Tasdiq", false)
+        );
+        steps.addClassName("register-steps");
+
+        // ---- Maydonlar
         fullName.setPlaceholder("Aliyev Vali");
         fullName.setPrefixComponent(VaadinIcon.USER.create());
         fullName.setMaxLength(120);
@@ -111,17 +128,17 @@ public class RegisterView extends Div implements BeforeEnterObserver {
         role.setItemLabelGenerator(r -> r == Role.SENDER ? "Yuk jo'natuvchi" : "Kuryer (yuk yetkazuvchi)");
         role.setValue(Role.SENDER);
 
-        fullName.addClassName("login-input");
-        phone.addClassName("login-input");
-        password.addClassName("login-input");
-        confirm.addClassName("login-input");
-        role.addClassName("login-input");
-
         fullName.setWidthFull();
         phone.setWidthFull();
         password.setWidthFull();
         confirm.setWidthFull();
         role.setWidthFull();
+
+        fullName.addClassName("login-input");
+        phone.addClassName("login-input");
+        password.addClassName("login-input");
+        confirm.addClassName("login-input");
+        role.addClassName("login-input");
 
         VerticalLayout form = new VerticalLayout(fullName, phone, password, confirm, role);
         form.addClassName("register-form");
@@ -130,18 +147,41 @@ public class RegisterView extends Div implements BeforeEnterObserver {
         form.setWidthFull();
         form.setAlignItems(VerticalLayout.Alignment.STRETCH);
 
+        // ---- Tugma va izoh
         submit.addClassName("login-submit");
-        submit.setWidthFull();
+        submit.getElement().setAttribute("type", "button");
+        submitIcon.addClassName("login-submit-icon");
+        submit.add(submitLabel, submitIcon);
         submit.addClickListener(e -> register());
         confirm.addKeyPressListener(Key.ENTER, e -> register());
 
+        Paragraph hint = new Paragraph("Keyingi qadamda telefon raqamingizni Telegram botda tasdiqlaysiz.");
+        hint.addClassName("register-hint");
+
+        // ---- Pastki qism
         RouterLink loginLink = new RouterLink("Kirish", LoginView.class);
         loginLink.addClassName("login-register-link");
         Div footer = new Div(new Span("Hisobingiz bormi? "), loginLink);
         footer.addClassName("login-footer");
 
-        card.add(brand, title, description, form, submit, footer);
+        card.add(brand, title, description, steps, form, submit, hint, footer);
         add(card);
+    }
+
+    /** Bosqich belgisi: raqam kvadrati va nomi. Faol bosqich sariq bo'ladi. */
+    private Div registerStep(String number, String label, boolean active) {
+        Span num = new Span(number);
+        num.addClassName("register-step-num");
+
+        Span text = new Span(label);
+        text.addClassName("register-step-label");
+
+        Div step = new Div(num, text);
+        step.addClassName("register-step");
+        if (active) {
+            step.addClassName("register-step--active");
+        }
+        return step;
     }
 
     @Override
@@ -187,7 +227,7 @@ public class RegisterView extends Div implements BeforeEnterObserver {
 
     /** Ma'lumotlarni tekshirib, sessiyaga saqlaydi va Telegram tasdiqlash sahifasiga o'tkazadi. */
     private void register() {
-        if (!submit.isEnabled() || !validate()) {
+        if (!validate()) {
             return;
         }
         if (botUsername == null || botUsername.isBlank()) {

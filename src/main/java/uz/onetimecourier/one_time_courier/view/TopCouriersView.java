@@ -40,30 +40,40 @@ public class TopCouriersView extends Div {
     private static final String[] MEDALS = {"1", "2", "3"};
     private static final String[] TONES = {"gold", "silver", "bronze"};
 
-    /** Chiziqli (stroke) ikonkalar: tashqi kutubxonasiz, rangni CSS boshqaradi (currentColor). */
+    /**
+     * Ikonkalar: ingichka kontur (currentColor) + yengil to'ldirma (.f).
+     * Tashqi kutubxonasiz, rangni CSS boshqaradi.
+     */
     private static final String ICON_TRUCK = """
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                 stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
-              <rect x="1" y="6" width="13" height="10" rx="1"/>
-              <path d="M14 9h4l3 3v4h-7"/>
-              <circle cx="5.5" cy="17.5" r="2"/>
-              <circle cx="17.5" cy="17.5" r="2"/>
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path class="f" d="M1 6h13v10H1z"/>
+              <g fill="none" stroke="currentColor" stroke-width="1.9"
+                 stroke-linecap="round" stroke-linejoin="round">
+                <rect x="1" y="6" width="13" height="10" rx="1"/>
+                <path d="M14 9h4l3 3v4h-7"/>
+                <circle cx="5.5" cy="17.5" r="2" fill="#fff"/>
+                <circle cx="17.5" cy="17.5" r="2" fill="#fff"/>
+              </g>
             </svg>
             """;
 
     private static final String ICON_STAR = """
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                 stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5-4.8-4.6 6.6-.9z"/>
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path class="f" d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5-4.8-4.6 6.6-.9z"/>
+              <path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5-4.8-4.6 6.6-.9z"
+                    fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/>
             </svg>
             """;
 
     private static final String ICON_TROPHY = """
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                 stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8 21h8M12 17v4"/>
-              <path d="M7 4h10v5a5 5 0 0 1-10 0z"/>
-              <path d="M7 6H4v2a3 3 0 0 0 3 3M17 6h3v2a3 3 0 0 1-3 3"/>
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path class="f" d="M7 4h10v5a5 5 0 0 1-10 0z"/>
+              <g fill="none" stroke="currentColor" stroke-width="1.9"
+                 stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 21h8M12 17v4"/>
+                <path d="M7 4h10v5a5 5 0 0 1-10 0z"/>
+                <path d="M7 6H4v2a3 3 0 0 0 3 3M17 6h3v2a3 3 0 0 1-3 3"/>
+              </g>
             </svg>
             """;
 
@@ -80,6 +90,7 @@ public class TopCouriersView extends Div {
     public TopCouriersView(RatingService service) {
         this.service = service;
         addClassName("tc-page");
+        content.addClassName("tc-content");
         add(content, new SiteFooter());
     }
 
@@ -127,9 +138,10 @@ public class TopCouriersView extends Div {
         if (list.isEmpty()) {
             content.add(emptyState());
         } else {
-            Div podium = new Div();
-            podium.addClassName("tc-podium");
             int topCount = Math.min(3, list.size());
+
+            Div podium = new Div();
+            podium.addClassNames("tc-podium", "tc-podium--" + topCount);
             for (int i = 0; i < topCount; i++) {
                 podium.add(podiumCard(i, list.get(i)));
             }
@@ -157,6 +169,9 @@ public class TopCouriersView extends Div {
         Div hero = new Div();
         hero.addClassName("tc-hero");
 
+        Span kicker = new Span("Reyting");
+        kicker.addClassName("tc-hero-kicker");
+
         H1 title = new H1("Eng ishonchli kuryerlar");
         title.addClassName("tc-hero-title");
 
@@ -173,7 +188,7 @@ public class TopCouriersView extends Div {
                 stat(String.valueOf(delivered), "Yetkazilgan yuk"));
         stats.addClassName("tc-stats");
 
-        hero.add(title, sub, stats);
+        hero.add(kicker, title, sub, stats);
         return hero;
     }
 
@@ -198,7 +213,7 @@ public class TopCouriersView extends Div {
         }
 
         Span medal = new Span(MEDALS[index]);
-        medal.addClassName("tc-medal");
+        medal.addClassNames("tc-medal", "tc-medal--" + TONES[index]);
 
         String name = maskName(c.name());
         Div avatar = avatar(name, TONES[index]);
@@ -285,7 +300,7 @@ public class TopCouriersView extends Div {
         Div box = new Div();
         box.addClassName("tc-steps");
 
-        Span kicker = new Span("QANDAY ISHLAYDI");
+        Span kicker = new Span("Qanday ishlaydi");
         kicker.addClassName("tc-steps-kicker");
 
         H2 title = new H2("Reytingga 3 qadamda chiqing");

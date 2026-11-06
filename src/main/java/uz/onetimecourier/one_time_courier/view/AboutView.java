@@ -24,20 +24,21 @@ import uz.onetimecourier.one_time_courier.layout.PageLayout;
 @CssImport("./styles/about-page.css")
 public class AboutView extends Div {
 
+    /** Hero fonidagi yo'l chizig'i (faqat kompyuterda ko'rinadi). Ranglar brend ranglari. */
     private static final String ROUTE_SVG = """
         <svg class="ab-route-svg" viewBox="0 0 600 560" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
           <path d="M-20 520 C 120 420, 200 520, 320 360 S 470 170, 540 120"
-                fill="none" stroke="#8FB4F3" stroke-width="4" stroke-linecap="round" stroke-dasharray="2 14"/>
-          <circle cx="40" cy="498" r="10" fill="#fff" stroke="#2563EB" stroke-width="4"/>
+                fill="none" stroke="#B7CDF6" stroke-width="4" stroke-linecap="round" stroke-dasharray="2 14"/>
+          <circle cx="40" cy="498" r="10" fill="#fff" stroke="#1764ED" stroke-width="4"/>
           <g transform="translate(540 92)">
-            <path d="M0-44C-23-44-38-29-38-10C-38 16 0 44 0 44C0 44 38 16 38-10C38-29 23-44 0-44Z" fill="#FFD97A"/>
-            <circle cx="0" cy="-12" r="12" fill="#15294B"/>
+            <path d="M0-44C-23-44-38-29-38-10C-38 16 0 44 0 44C0 44 38 16 38-10C38-29 23-44 0-44Z" fill="#1764ED"/>
+            <circle cx="0" cy="-12" r="12" fill="#fff"/>
           </g>
         </svg>""";
 
     public AboutView() {
         addClassName("ab-page");
-        add(hero(), strip(), how(), roles(), cta(),new SiteFooter());
+        add(hero(), strip(), how(), roles(), cta(), new SiteFooter());
     }
 
     // ---------- Hero ----------
@@ -56,6 +57,7 @@ public class AboutView extends Div {
         lead.addClassName("ab-lead");
 
         Div actions = new Div(
+                button("/register", "Ro‘yxatdan o‘tish", "ab-btn-primary"),
                 link("#how", "Qanday ishlashini ko‘rish ↓"));
         actions.addClassName("ab-actions");
 
@@ -97,7 +99,7 @@ public class AboutView extends Div {
                         "Qabul qiluvchi kodni aytadi, yuk topshirildi deb belgilanadi va pul kuryerga o‘tadi."));
         route.addClassName("ab-route");
 
-        Div outer = section("ab-how", sectionTitle("Qanday ishlaydi"), route);
+        Div outer = section("ab-how", sectionHead("Jarayon", "Qanday ishlaydi"), route);
         outer.setId("how");
         return outer;
     }
@@ -125,15 +127,15 @@ public class AboutView extends Div {
                 "Yukni qabul qiluvchida hisob bo‘lishi shart emas: unga topshirish uchun kod yuboriladi.");
         note.addClassName("ab-note");
 
-        return section("ab-roles", sectionTitle("Kim nima qiladi"), grid, note);
+        return section("ab-roles", sectionHead("Rollar", "Kim nima qiladi"), grid, note);
     }
 
     // ---------- Pastki chaqiriq ----------
     private Component cta() {
         H2 title = new H2("Yo‘lingiz bor, yuk ham bor. Qolganini biz hal qilamiz.");
         Div actions = new Div(
-                button("/register", "Yuk jo‘natish", "ab-btn-navy"),
-                button("/register", "Kuryer bo‘lish", "ab-btn-outline"));
+                button("/register", "Yuk jo‘natish", "ab-btn-white"),
+                button("/register", "Kuryer bo‘lish", "ab-btn-outline-light"));
         actions.addClassName("ab-actions");
         Div box = new Div(title, actions);
         box.addClassName("ab-cta-box");
@@ -151,10 +153,15 @@ public class AboutView extends Div {
         return outer;
     }
 
-    private static H2 sectionTitle(String text) {
-        H2 h = new H2(text);
+    /** Bo'lim sarlavhasi: yuqorida kichik ko'k yorliq, ostida katta sarlavha. */
+    private static Div sectionHead(String kicker, String title) {
+        Span label = new Span(kicker);
+        label.addClassName("ab-section-kicker");
+        H2 h = new H2(title);
         h.addClassName("ab-section-title");
-        return h;
+        Div head = new Div(label, h);
+        head.addClassName("ab-section-head");
+        return head;
     }
 
     private static Div stop(String number, String title, String text) {
@@ -171,7 +178,7 @@ public class AboutView extends Div {
             list.add(new ListItem(item));
         }
         Div panel = new Div(new H3(title), list,
-                button(href, buttonText, cssClass.endsWith("courier") ? "ab-btn-amber" : "ab-btn-navy"));
+                button(href, buttonText, cssClass.endsWith("courier") ? "ab-btn-white" : "ab-btn-primary"));
         panel.addClassNames("ab-panel", cssClass);
         return panel;
     }

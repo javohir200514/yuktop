@@ -1,41 +1,40 @@
-@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Caveat:wght@700&family=DM+Mono:wght@500&family=DM+Sans:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&family=Caveat:wght@600;700&display=swap");
 
 /* =====================================================
-   YUKBOR — bosh sahifa (mobile-first)
-   Telefonda hamma matn markazda, kompyuterda chapga tekis
+   YUKBOR — bosh sahifa
+   Kompyuterda hero bitta ekranga sig'adi. Telefonda hamma matn markazda.
    ===================================================== */
 
 .home-page {
-    --bg: #f5f6f2;
-    --paper: #fffefb;
-    --ink: #111512;
-    --muted: #5c665f;
-    --accent: #ff5a1f;
-    --accent-dark: #d9430c;
-    --mint: #dfece3;
-    --line: rgba(17, 21, 18, .15);
-    --wheel: #fffefb;
-    --navy: #0b0f0c;
+    --asphalt: #121212;
+    --asphalt-2: #1b1b1b;
+    --line: #353535;
+    --yellow: #ffd21f;
+    --yellow-deep: #b89500;
+    --white: #f5f3ee;
+    --muted: #a9a59b;
+    --sign-blue: #1d5fd1;
+    --sign-green: #0f8a52;
 
-    --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
-    --font-body: "DM Sans", "Segoe UI", system-ui, sans-serif;
-    --font-mono: "DM Mono", ui-monospace, "SF Mono", Consolas, monospace;
+    --font-display: "Barlow Condensed", "Arial Narrow", Impact, sans-serif;
+    --font-body: "Barlow", "Segoe UI", system-ui, sans-serif;
     --font-hand: "Caveat", "Segoe Print", "Bradley Hand", cursive;
 
     display: block;
     position: relative;
     width: 100%;
-    max-width: 100%;
     min-height: 100vh;
     min-height: 100dvh;
     margin: 0;
-    padding: 0 0 calc(80px + env(safe-area-inset-bottom, 0px));
+    padding: 0 0 calc(78px + env(safe-area-inset-bottom, 0px));
 
-    color: var(--ink);
+    color: var(--white);
     font-family: var(--font-body);
     font-size: 16px;
-    text-align: center;
-    background: var(--bg);
+    line-height: 1.5;
+    background-color: var(--asphalt);
+    background-image: radial-gradient(rgba(255, 255, 255, .045) 1px, transparent 1px);
+    background-size: 20px 20px;
 
     -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent;
@@ -58,158 +57,210 @@
     overflow-x: clip;
 }
 
-/* Ikonkalar: .a = aksent chiziq, .f = yengil to'ldirma, .w = g'ildirak */
-.home-page svg .a { stroke: var(--accent); }
-.home-page svg .f { fill: var(--accent); fill-opacity: .18; stroke: none; }
-.home-page svg .w { fill: var(--wheel); }
+.home-page a {
+    -webkit-tap-highlight-color: transparent;
+}
 
 /* =====================================================
    UMUMIY
    ===================================================== */
 
 .home-container {
+    position: relative;
+    z-index: 1;
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 18px;
 }
 
 .home-section {
     width: 100%;
-    padding: 64px 0;
-}
-
-.home-section-dark {
-    background: var(--ink);
-    color: var(--paper);
-    --wheel: #111512;
+    padding: 56px 0;
 }
 
 .home-section-header {
-    max-width: 640px;
-    margin: 0 auto 38px;
+    max-width: 680px;
+    margin: 0 auto 30px;
+    text-align: center;
 }
 
 .home-section-kicker {
     display: inline-block;
     margin-bottom: 14px;
+    padding: 5px 11px 4px;
 
-    color: var(--accent);
-    font-family: var(--font-mono);
-    font-size: 13px;
-    font-weight: 500;
+    border-radius: 4px;
+    background: var(--yellow);
+    color: var(--asphalt);
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 700;
     letter-spacing: 1.6px;
     text-transform: uppercase;
+    transform: rotate(-1.5deg);
 }
 
 .home-section-title {
     margin: 0 0 14px;
 
+    color: var(--white);
     font-family: var(--font-display);
-    font-size: clamp(32px, 9vw, 54px);
+    font-size: clamp(32px, 9vw, 56px);
     font-weight: 800;
-    line-height: 1.02;
-    letter-spacing: -.03em;
+    line-height: 1;
+    letter-spacing: .3px;
+    text-transform: uppercase;
     text-wrap: balance;
 }
 
 .home-section-description {
     margin: 0;
     color: var(--muted);
-    font-size: 17px;
-    line-height: 1.6;
+    font-size: 16px;
+    line-height: 1.65;
 }
-
-.home-section-dark .home-section-description {
-    color: rgba(255, 254, 251, .66);
-}
-
-/* =====================================================
-   HERO
-   ===================================================== */
 
 .home-hero {
-    width: 100%;
-    padding: 36px 0 56px;
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    min-height: calc(100vh - var(--yb-nav-h, 98px));
+    min-height: calc(100svh - var(--yb-nav-h, 98px));
+    padding: clamp(28px, 4vh, 48px) 0;
+}
+
+@supports (align-items: safe center) {
+    .home-hero {
+        align-items: safe center;
+    }
+}
+
+/* Sariq va ko'k yorug'lik: fonni yumshoq yoritadi */
+.home-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(55% 45% at 88% 12%, rgba(255, 210, 31, .12), transparent 70%),
+        radial-gradient(45% 40% at 0% 100%, rgba(29, 95, 209, .14), transparent 70%);
+    pointer-events: none;
 }
 
 .home-hero-container {
+    position: relative;
+    z-index: 1;
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 18px;
 }
 
 .home-hero-grid {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: 44px;
-    align-items: center;
+    gap: 40px;
 }
 
-.home-chip {
+/* Telefonda matn markazda */
+.home-hero-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 0;
+    text-align: center;
+}
+
+/* Davlat raqami belgisi */
+.home-plate {
     display: inline-flex;
-    align-items: center;
-    gap: 9px;
-    margin-bottom: 22px;
-    padding: 8px 14px 7px;
+    align-items: stretch;
+    margin: 0 auto 20px;
 
-    border: 1.5px solid var(--ink);
+    border: 3px solid var(--white);
     border-radius: 8px;
-    background: var(--paper);
-    font-family: var(--font-mono);
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: .8px;
-    text-transform: uppercase;
-    transform: rotate(-1.5deg);
+    background: var(--white);
+    overflow: hidden;
+    transform: rotate(-2deg);
+    box-shadow: 4px 4px 0 var(--yellow);
 }
 
-.home-chip-dot {
-    display: inline-block;
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: var(--accent);
-}
-
-.home-title {
-    margin: 0 0 20px;
-
+.home-plate-flag {
+    display: flex;
+    align-items: center;
+    padding: 0 9px;
+    background: var(--sign-blue);
+    color: #fff;
     font-family: var(--font-display);
-    font-size: clamp(42px, 12vw, 92px);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.home-plate-num {
+    padding: 4px 14px 2px;
+    color: var(--asphalt);
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: 3px;
+    line-height: 1.1;
+}
+
+/* Sarlavha: telefonda kichik, kompyuterda ekran balandligiga moslashadi */
+.home-title {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 0 18px;
+
+    color: var(--white);
+    font-family: var(--font-display);
+    font-size: clamp(40px, 11.5vw, 64px);
     font-weight: 800;
     line-height: .98;
-    letter-spacing: -.035em;
-    text-wrap: balance;
+    letter-spacing: .3px;
+    text-transform: uppercase;
     overflow-wrap: break-word;
+    hyphens: none;
 }
 
 .home-title-line {
     display: block;
 }
 
+.home-title-accent {
+    display: block;
+    margin-top: 4px;
+}
+
 .home-title-mark {
-    color: var(--accent);
-    text-decoration: underline wavy var(--ink);
-    text-decoration-thickness: 3px;
-    text-underline-offset: 9px;
-    text-decoration-skip-ink: none;
+    display: inline-block;
+    padding: 0 .14em;
+    border-radius: 6px;
+    background: var(--yellow);
+    color: var(--asphalt);
+    transform: rotate(-1.5deg);
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
 }
 
 .home-lead {
-    max-width: 520px;
-    margin: 0 auto 28px;
+    max-width: 480px;
+    margin: 0 auto 24px;
 
     color: var(--muted);
-    font-size: 18px;
+    font-size: 16px;
     line-height: 1.65;
+    text-align: center;
 }
 
 .home-actions {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
 }
 
 .home-btn {
@@ -220,22 +271,25 @@
 
     width: 100%;
     min-height: 56px;
-    padding: 0 26px;
+    padding: 0 22px;
 
     border-radius: 12px;
-    font-family: var(--font-body);
-    font-size: 16px;
+    font-family: var(--font-display);
+    font-size: 20px;
     font-weight: 700;
+    letter-spacing: .8px;
     text-decoration: none;
+    text-transform: uppercase;
+    white-space: nowrap;
 
-    transition: background .2s ease, color .2s ease, transform .15s ease;
+    transition: transform .15s ease, box-shadow .15s ease, background .2s ease, color .2s ease;
 }
 
 .home-btn-icon {
     display: flex;
     flex-shrink: 0;
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
 }
 
 .home-btn-icon svg {
@@ -245,42 +299,43 @@
 }
 
 .home-btn-primary {
-    border: 1.5px solid var(--ink);
-    background: var(--ink);
-    color: var(--paper);
+    border: 3px solid var(--yellow);
+    background: var(--yellow);
+    color: var(--asphalt);
+    box-shadow: 0 5px 0 var(--yellow-deep);
 }
 
 .home-btn-primary:hover {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: var(--ink);
+    color: var(--asphalt);
+    transform: translateY(2px);
+    box-shadow: 0 3px 0 var(--yellow-deep);
 }
 
-.home-btn-primary .home-btn-icon {
-    transition: transform .2s ease;
-}
-
-.home-btn-primary:hover .home-btn-icon {
-    transform: translateX(4px);
+.home-btn-primary:active {
+    transform: translateY(5px);
+    box-shadow: 0 0 0 var(--yellow-deep);
 }
 
 .home-btn-secondary {
-    border: 1.5px solid var(--ink);
+    border: 3px solid var(--white);
     background: transparent;
-    color: var(--ink);
+    color: var(--white);
 }
 
 .home-btn-secondary:hover {
-    background: var(--mint);
+    background: var(--white);
+    color: var(--asphalt);
 }
 
 /* Statistika */
 .home-stats {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    max-width: 520px;
-    margin: 34px auto 0;
-    border-top: 1px solid var(--line);
+    width: 100%;
+    max-width: 480px;
+    margin: 24px auto 0;
+    border-top: 2px solid var(--line);
+    border-bottom: 2px solid var(--line);
 }
 
 .home-stat {
@@ -289,11 +344,12 @@
     align-items: center;
     gap: 6px;
     min-width: 0;
-    padding: 18px 6px 0;
+    padding: 14px 6px;
+    text-align: center;
 }
 
 .home-stat + .home-stat {
-    border-left: 1px solid var(--line);
+    border-left: 2px dashed var(--line);
 }
 
 .home-stat-value {
@@ -302,11 +358,11 @@
     justify-content: center;
     height: 34px;
 
+    color: var(--yellow);
     font-family: var(--font-display);
-    font-size: 32px;
+    font-size: 34px;
     font-weight: 800;
     line-height: 1;
-    letter-spacing: -.02em;
 }
 
 .home-stat-icon {
@@ -323,78 +379,207 @@
 
 .home-stat-label {
     color: var(--muted);
-    font-family: var(--font-mono);
-    font-size: 10.5px;
-    letter-spacing: .4px;
-    line-height: 1.35;
+    font-size: 12.5px;
+    line-height: 1.3;
+}
+
+/* Yo'nalishlar paneli */
+.home-hero-visual {
+    width: 100%;
+    min-width: 0;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.home-board {
+    position: relative;
+    min-width: 0;
+    border: 3px solid var(--white);
+    border-radius: 16px;
+    background: var(--asphalt-2);
+    overflow: hidden;
+    box-shadow: 8px 8px 0 var(--yellow);
+    text-align: left;
+}
+
+.home-board-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 16px 10px;
+
+    background: var(--yellow);
+    color: var(--asphalt);
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 1.4px;
     text-transform: uppercase;
 }
 
-/* Hero rasmi (xarita) */
-.home-art {
-    width: 100%;
-    max-width: 460px;
-    margin: 0 auto;
-    transform: rotate(1deg);
+.home-board-sample {
+    font-family: var(--font-hand);
+    font-size: 21px;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: none;
+    transform: rotate(-3deg);
 }
 
-.home-art svg {
+.home-board-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px 11px;
+    border-top: 2px dashed var(--line);
+}
+
+.home-board-row:first-of-type {
+    border-top: none;
+}
+
+.home-board-num {
+    flex-shrink: 0;
+    width: 26px;
+    color: var(--muted);
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.home-board-city {
+    min-width: 0;
+    color: var(--white);
+    font-family: var(--font-display);
+    font-size: clamp(20px, 5.6vw, 24px);
+    font-weight: 700;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+}
+
+.home-board-arrow {
+    display: flex;
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    color: var(--yellow);
+}
+
+.home-board-arrow svg {
     display: block;
     width: 100%;
-    height: auto;
-    overflow: visible;
+    height: 100%;
 }
 
 /* =====================================================
-   SHAHARLAR LENTASI
+   LENTA (yo'nalishlar, doimiy aylanadi)
    ===================================================== */
 
-.home-marquee {
+.home-ticker {
+    position: relative;
     width: 100%;
-    padding: 15px 0 12px;
-
-    background: var(--accent);
-    color: var(--ink);
-    border-top: 2px solid var(--ink);
-    border-bottom: 2px solid var(--ink);
+    background: var(--yellow);
+    color: var(--asphalt);
+    border-top: 3px solid var(--asphalt);
+    border-bottom: 3px solid var(--asphalt);
     overflow: hidden;
 }
 
-.home-marquee-track {
+.home-ticker-track {
     display: flex;
     width: max-content;
-    animation: home-marquee 40s linear infinite;
+    animation: home-ticker 30s linear infinite;
 }
 
-.home-marquee-group {
-    display: flex;
-    flex-shrink: 0;
+.home-ticker-item {
+    display: inline-flex;
     align-items: center;
-    gap: 26px;
-    padding-right: 26px;
-}
+    padding: 12px 0;
 
-.home-marquee-city {
     font-family: var(--font-display);
-    font-size: clamp(26px, 6vw, 40px);
+    font-size: 22px;
     font-weight: 800;
-    letter-spacing: -.02em;
-    line-height: 1;
+    letter-spacing: 1px;
     text-transform: uppercase;
     white-space: nowrap;
 }
 
-.home-marquee-dot {
-    flex-shrink: 0;
-    width: 11px;
-    height: 11px;
-    border-radius: 50%;
-    background: var(--ink);
+.home-ticker-item::after {
+    content: "✦";
+    margin: 0 22px;
+    font-size: 16px;
 }
 
-@keyframes home-marquee {
+@keyframes home-ticker {
     from { transform: translateX(0); }
     to   { transform: translateX(-50%); }
+}
+
+/* =====================================================
+   YO'L VA YUK MASHINASI
+   ===================================================== */
+
+.home-road {
+    position: relative;
+    width: 100%;
+    height: 112px;
+
+    background: var(--asphalt-2);
+    border-bottom: 4px solid var(--white);
+    overflow: hidden;
+}
+
+.home-road::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 24px;
+    height: 5px;
+
+    background-image: repeating-linear-gradient(
+        90deg,
+        var(--white) 0 38px,
+        transparent 38px 76px
+    );
+    background-size: 76px 5px;
+    opacity: .85;
+    animation: home-road-move 1.4s linear infinite;
+}
+
+.home-truck {
+    position: absolute;
+    left: 0;
+    bottom: 10px;
+    z-index: 2;
+    display: block;
+    width: 150px;
+
+    animation: home-drive 15s linear infinite;
+}
+
+.home-truck svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    animation: home-bump .5s ease-in-out infinite alternate;
+}
+
+@keyframes home-road-move {
+    from { background-position-x: 0; }
+    to   { background-position-x: -76px; }
+}
+
+@keyframes home-drive {
+    from { transform: translateX(-200px); }
+    to   { transform: translateX(calc(100vw + 40px)); }
+}
+
+@keyframes home-bump {
+    from { transform: translateY(0); }
+    to   { transform: translateY(1.5px); }
 }
 
 /* =====================================================
@@ -404,34 +589,59 @@
 .home-steps {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
 }
 
 .home-step {
+    position: relative;
     min-width: 0;
-    padding: 34px 6px;
-    border-top: 1px solid var(--line);
-}
+    padding: 24px 22px 26px;
 
-.home-step:last-child {
-    border-bottom: 1px solid var(--line);
+    border: 2px solid var(--line);
+    border-radius: 16px;
+    background: var(--asphalt-2);
+    overflow: hidden;
+    text-align: center;
 }
 
 .home-step-number {
-    display: block;
-    margin-bottom: 16px;
+    position: absolute;
+    top: 4px;
+    right: 16px;
 
-    color: var(--accent);
-    font-family: var(--font-mono);
-    font-size: 14px;
-    font-weight: 500;
-    letter-spacing: 1.6px;
+    color: transparent;
+    font-family: var(--font-display);
+    font-size: 84px;
+    font-weight: 800;
+    line-height: 1;
+    -webkit-text-stroke: 2px var(--yellow);
+    opacity: .85;
+}
+
+.home-step-top {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 18px;
+    padding-bottom: 18px;
+    border-bottom: 2px dashed var(--line);
 }
 
 .home-step-icon {
     display: flex;
-    width: 64px;
-    height: 64px;
-    margin: 0 auto 18px;
+    align-items: center;
+    justify-content: center;
+    width: 58px;
+    height: 58px;
+    padding: 11px;
+
+    border-radius: 14px;
+    background: var(--yellow);
+    color: var(--asphalt);
+    transform: rotate(-4deg);
+}
+
+.home-step:nth-child(2) .home-step-icon {
+    transform: rotate(3deg);
 }
 
 .home-step-icon svg {
@@ -441,24 +651,26 @@
 }
 
 .home-step h3 {
-    margin: 0 0 10px;
+    margin: 0 0 8px;
+    color: var(--white);
     font-family: var(--font-display);
     font-size: 28px;
     font-weight: 800;
     line-height: 1.05;
-    letter-spacing: -.025em;
+    letter-spacing: .4px;
+    text-transform: uppercase;
 }
 
 .home-step p {
-    max-width: 340px;
     margin: 0 auto;
+    max-width: 320px;
     color: var(--muted);
-    font-size: 16.5px;
-    line-height: 1.65;
+    font-size: 16px;
+    line-height: 1.6;
 }
 
 /* =====================================================
-   AFZALLIKLAR (qorong'i bo'lim)
+   AFZALLIKLAR (yo'l belgilari)
    ===================================================== */
 
 .home-features-grid {
@@ -468,24 +680,39 @@
 }
 
 .home-feature {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
     min-width: 0;
-    padding: 28px 22px 30px;
+    padding: 24px 20px 26px;
 
-    border: 1px solid rgba(255, 254, 251, .16);
-    border-radius: 20px;
-    transition: border-color .2s ease, background .2s ease;
+    border-radius: 18px;
+    overflow: hidden;
+    text-align: center;
 }
 
-.home-feature:hover {
-    border-color: var(--accent);
-    background: rgba(255, 254, 251, .035);
+/* belgi ichidagi ingichka ramka */
+.home-feature::after {
+    content: "";
+    position: absolute;
+    inset: 5px;
+    border: 2px solid currentColor;
+    border-radius: 13px;
+    opacity: .4;
+    pointer-events: none;
 }
+
+.home-feature:nth-child(1) { background: var(--sign-blue);  color: #fff; }
+.home-feature:nth-child(2) { background: var(--sign-green); color: #fff; }
+.home-feature:nth-child(3) { background: var(--yellow);     color: var(--asphalt); }
+.home-feature:nth-child(4) { background: var(--white);      color: var(--asphalt); }
 
 .home-feature-icon {
     display: flex;
     width: 64px;
     height: 64px;
-    margin: 0 auto 18px;
 }
 
 .home-feature-icon svg {
@@ -494,19 +721,25 @@
     height: 100%;
 }
 
+.home-feature-body {
+    min-width: 0;
+}
+
 .home-feature h3 {
-    margin: 0 0 8px;
+    margin: 0 0 6px;
     font-family: var(--font-display);
-    font-size: 24px;
+    font-size: 28px;
     font-weight: 800;
-    letter-spacing: -.02em;
+    line-height: 1;
+    letter-spacing: .4px;
+    text-transform: uppercase;
 }
 
 .home-feature p {
     margin: 0;
-    color: rgba(255, 254, 251, .68);
     font-size: 15.5px;
-    line-height: 1.6;
+    line-height: 1.55;
+    opacity: .9;
 }
 
 /* =====================================================
@@ -516,11 +749,11 @@
 .home-faq-wrap {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: 30px;
+    gap: 26px;
 }
 
 .home-faq-wrap .home-section-header {
-    margin: 0 auto;
+    margin-bottom: 0;
 }
 
 .home-faq-list {
@@ -530,77 +763,75 @@
 }
 
 .home-faq-item {
-    border: 1.5px solid var(--line);
-    border-radius: 16px;
-    background: var(--paper);
+    border: 2px solid var(--line);
+    border-radius: 14px;
+    background: var(--asphalt-2);
     overflow: hidden;
     transition: border-color .2s ease;
 }
 
 .home-faq-item.is-open {
-    border-color: var(--ink);
+    border-color: var(--yellow);
 }
 
 .home-faq-question {
-    position: relative;
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
 
     width: 100%;
-    min-height: 68px;
-    padding: 20px 56px;
+    min-height: 64px;
+    padding: 14px 16px;
 
     border: none;
     background: transparent;
-    color: var(--ink);
-    font-family: var(--font-display);
-    font-size: 19px;
+    color: var(--white);
+    font-family: var(--font-body);
+    font-size: 17px;
     font-weight: 700;
-    line-height: 1.25;
-    letter-spacing: -.01em;
-    text-align: center;
+    line-height: 1.3;
+    text-align: left;
 
     cursor: pointer;
 }
 
 .home-faq-question:focus-visible {
-    outline: 3px solid var(--accent);
+    outline: 3px solid var(--yellow);
     outline-offset: -3px;
 }
 
 .home-faq-chevron {
-    position: absolute;
-    top: 50%;
-    right: 14px;
-
     display: flex;
+    flex-shrink: 0;
     align-items: center;
     justify-content: center;
 
-    width: 34px;
-    height: 34px;
+    width: 38px;
+    height: 38px;
 
+    border: 2px solid var(--yellow);
     border-radius: 50%;
-    background: var(--mint);
-    color: var(--ink);
+    color: var(--yellow);
 
-    transform: translateY(-50%);
-    transition: transform .3s ease, background .2s ease;
+    transition: transform .3s ease, background .2s ease, color .2s ease;
 }
 
 .home-faq-chevron svg {
     display: block;
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
 }
 
 .home-faq-item.is-open .home-faq-chevron {
-    transform: translateY(-50%) rotate(180deg);
-    background: var(--accent);
+    transform: rotate(180deg);
+    background: var(--yellow);
+    color: var(--asphalt);
 }
 
 .home-faq-answer {
     display: none;
-    padding: 0 22px 24px;
+    padding: 0 16px 20px;
 }
 
 .home-faq-item.is-open .home-faq-answer {
@@ -610,8 +841,8 @@
 .home-faq-answer p {
     margin: 0;
     color: var(--muted);
-    font-size: 16px;
-    line-height: 1.75;
+    font-size: 15.5px;
+    line-height: 1.7;
 }
 
 /* =====================================================
@@ -619,7 +850,7 @@
    ===================================================== */
 
 .home-cta-section {
-    padding: 8px 0 72px;
+    padding: 16px 0 64px;
 }
 
 .home-cta-panel {
@@ -629,45 +860,53 @@
     align-items: center;
     gap: 26px;
 
-    padding: 54px 22px 32px;
-    border: 2px solid var(--ink);
-    border-radius: 28px 22px 30px 20px;
-    background: var(--mint);
+    padding: 44px 22px 30px;
+    border-radius: 18px;
+
+    background: var(--yellow);
+    color: var(--asphalt);
+    text-align: center;
+    overflow: hidden;
 }
 
-.home-cta-sticker {
+/* ogohlantiruvchi chiziqli lenta */
+.home-cta-panel::before {
+    content: "";
     position: absolute;
-    top: -17px;
-    right: 18px;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 14px;
+    background: repeating-linear-gradient(
+        -45deg,
+        var(--asphalt) 0 14px,
+        var(--yellow) 14px 28px
+    );
+}
 
-    padding: 5px 16px 3px;
-    border: 2px solid var(--ink);
-    border-radius: 8px;
-    background: var(--accent);
-    color: var(--ink);
-    font-family: var(--font-hand);
-    font-size: 25px;
-    font-weight: 700;
-    line-height: 1.1;
-    transform: rotate(4deg);
+.home-cta-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .home-cta-content h2 {
-    margin: 0 0 14px;
+    margin: 0 0 12px;
     font-family: var(--font-display);
-    font-size: clamp(34px, 9.5vw, 62px);
+    font-size: clamp(32px, 9.5vw, 60px);
     font-weight: 800;
     line-height: 1;
-    letter-spacing: -.03em;
+    letter-spacing: .3px;
+    text-transform: uppercase;
     text-wrap: balance;
 }
 
 .home-cta-content p {
-    max-width: 520px;
     margin: 0 auto;
-    color: #35433a;
-    font-size: 17px;
+    max-width: 520px;
+    font-size: 16px;
     line-height: 1.6;
+    opacity: .85;
 }
 
 .home-cta-actions {
@@ -675,6 +914,7 @@
     flex-direction: column;
     gap: 12px;
     width: 100%;
+    max-width: 420px;
 }
 
 .home-cta-button {
@@ -684,42 +924,44 @@
 
     width: 100%;
     min-height: 56px;
-    padding: 0 28px;
+    padding: 0 26px;
 
     border-radius: 12px;
-    font-size: 16px;
+    font-family: var(--font-display);
+    font-size: 20px;
     font-weight: 700;
+    letter-spacing: .8px;
     text-decoration: none;
+    text-transform: uppercase;
     white-space: nowrap;
 
-    transition: background .2s ease, color .2s ease, transform .15s ease;
+    transition: transform .15s ease, background .2s ease, color .2s ease;
 }
 
 .home-cta-button--primary {
-    border: 1.5px solid var(--ink);
-    background: var(--ink);
-    color: var(--paper);
+    border: 3px solid var(--asphalt);
+    background: var(--asphalt);
+    color: var(--yellow);
 }
 
 .home-cta-button--primary:hover {
-    background: var(--accent);
-    border-color: var(--ink);
-    color: var(--ink);
-    transform: translateY(-2px);
+    color: var(--yellow);
+    transform: translateY(-3px);
 }
 
 .home-cta-button--ghost {
-    border: 1.5px solid var(--ink);
+    border: 3px solid var(--asphalt);
     background: transparent;
-    color: var(--ink);
+    color: var(--asphalt);
 }
 
 .home-cta-button--ghost:hover {
-    background: var(--paper);
+    background: var(--asphalt);
+    color: var(--yellow);
 }
 
 /* =====================================================
-   TELEFON PASTKI PANELI
+   TELEFON PASTKI PANELI (scroll qilingach chiqadi)
    ===================================================== */
 
 .home-mobile-bar {
@@ -733,10 +975,10 @@
     gap: 10px;
     padding: 10px 14px calc(10px + env(safe-area-inset-bottom, 0px));
 
-    background: rgba(245, 246, 242, .96);
-    border-top: 1.5px solid var(--ink);
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
+    background: rgba(18, 18, 18, .96);
+    border-top: 3px solid var(--yellow);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
 
     transform: translateY(110%);
     transition: transform .3s ease;
@@ -758,203 +1000,30 @@
     padding: 0 12px;
 
     border-radius: 11px;
-    font-family: var(--font-body);
-    font-size: 15.5px;
+    font-family: var(--font-display);
+    font-size: 19px;
     font-weight: 700;
+    letter-spacing: .6px;
     text-decoration: none;
+    text-transform: uppercase;
     white-space: nowrap;
 }
 
 .home-bar-btn .home-btn-icon {
-    width: 19px;
-    height: 19px;
-}
-
-.home-bar-btn--primary {
-    border: 1.5px solid var(--ink);
-    background: var(--ink);
-    color: var(--paper);
-}
-
-.home-bar-btn--ghost {
-    border: 1.5px solid var(--ink);
-    background: var(--paper);
-    color: var(--ink);
-}
-
-/* =====================================================
-   FOOTER
-   ===================================================== */
-
-.home-footer {
-    position: relative;
-    margin: 0;
-    padding: 0;
-
-    background: var(--navy);
-    color: #cbd5e1;
-    font-family: inherit;
-}
-
-.home-footer::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: var(--accent);
-}
-
-.home-footer .home-footer-inner {
-    padding-top: 52px;
-    padding-bottom: 36px;
-}
-
-.home-footer-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0;
-    text-align: center;
-}
-
-.home-footer-col,
-.home-footer-brand {
-    min-width: 0;
-}
-
-.home-footer-brand {
-    padding-bottom: 28px;
-    border-bottom: 1px solid rgba(255, 255, 255, .09);
-}
-
-.home-footer-logo-row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    margin-bottom: 14px;
-}
-
-.home-footer-brand-name {
-    color: #ffffffd9;
-    font-size: 22px;
-    font-weight: 650;
-    letter-spacing: -.5px;
-}
-
-.home-footer-text {
-    max-width: 420px;
-    margin: 0 auto 20px;
-
-    color: #98a09a;
-    font-size: 14px;
-    line-height: 1.8;
-}
-
-.home-footer-social {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-
-    width: fit-content;
-    margin: 0 auto;
-    padding: 12px 18px;
-    border: 1px solid rgba(255, 255, 255, .18);
-    border-radius: 12px;
-    background: rgba(255, 255, 255, .04);
-
-    color: #fff;
-    font-size: 14px;
-    font-weight: 700;
-    text-decoration: none;
-
-    transition: background .25s ease, border-color .25s ease, transform .25s ease;
-}
-
-.home-footer-social:hover {
-    background: rgba(255, 255, 255, .1);
-    border-color: var(--accent);
-    color: #fff;
-    transform: translateY(-2px);
-}
-
-.home-footer-social-icon {
-    display: flex;
     width: 20px;
     height: 20px;
 }
 
-.home-footer-social-icon svg {
-    display: block;
-    width: 100%;
-    height: 100%;
+.home-bar-btn--primary {
+    border: 3px solid var(--yellow);
+    background: var(--yellow);
+    color: var(--asphalt);
 }
 
-.home-footer-col {
-    padding: 24px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, .09);
-}
-
-.home-footer-col:last-child {
-    border-bottom: none;
-}
-
-.home-footer-title {
-    display: block;
-    margin-bottom: 14px;
-
-    color: var(--accent);
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: 1.6px;
-    text-align: center;
-    text-transform: uppercase;
-}
-
-.home-footer-links {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-}
-
-.home-footer-link {
-    width: auto;
-    padding: 4px 0;
-
-    color: #98a09a;
-    font-size: 15px;
-    text-decoration: none;
-
-    transition: color .2s ease;
-}
-
-.home-footer-link:hover {
-    color: #fff;
-}
-
-.home-footer-bottom {
-    border-top: 1px solid rgba(255, 255, 255, .09);
-    background: #070a08;
-}
-
-.home-footer-bottom-inner {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-
-    padding-top: 20px;
-    padding-bottom: 20px;
-    text-align: center;
-}
-
-.home-footer-copy,
-.home-footer-note {
-    color: #69726c;
-    font-size: 13px;
+.home-bar-btn--ghost {
+    border: 3px solid var(--white);
+    background: transparent;
+    color: var(--white);
 }
 
 /* =====================================================
@@ -964,20 +1033,24 @@
 @media (max-width: 360px) {
     .home-container,
     .home-hero-container {
-        padding: 0 16px;
+        padding: 0 14px;
+    }
+
+    .home-plate-num {
+        font-size: 20px;
+        letter-spacing: 2px;
     }
 
     .home-stat-label {
-        font-size: 9.5px;
+        font-size: 11.5px;
     }
 
-    .home-faq-question {
-        padding: 18px 50px 18px 16px;
-        font-size: 17px;
+    .home-feature {
+        padding: 20px 16px 22px;
     }
 
     .home-bar-btn {
-        font-size: 14px;
+        font-size: 17px;
         gap: 6px;
     }
 }
@@ -996,43 +1069,48 @@
         padding: 0 32px;
     }
 
-    .home-hero {
-        padding: 56px 0 80px;
+    .home-section {
+        padding: 88px 0;
+    }
+
+    .home-section-header {
+        margin-bottom: 44px;
+    }
+
+    .home-title {
+        font-size: clamp(52px, 9vw, 84px);
     }
 
     .home-actions {
         flex-direction: row;
         justify-content: center;
+        max-width: none;
     }
 
     .home-btn {
         width: auto;
-        min-width: 210px;
+        min-width: 220px;
     }
 
-    .home-section {
-        padding: 92px 0;
+    .home-cta-actions {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        max-width: none;
     }
 
-    .home-section-header {
-        margin-bottom: 52px;
+    .home-cta-button {
+        width: auto;
+        min-width: 220px;
     }
 
     .home-steps {
         grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
     }
 
     .home-step {
-        padding: 6px 26px 8px;
-        border-top: none;
-    }
-
-    .home-step:last-child {
-        border-bottom: none;
-    }
-
-    .home-step + .home-step {
-        border-left: 1px solid var(--line);
+        padding: 26px 22px 28px;
     }
 
     .home-features-grid {
@@ -1041,88 +1119,20 @@
     }
 
     .home-feature {
-        padding: 34px 26px 36px;
+        padding: 28px 24px 30px;
     }
 
     .home-cta-panel {
-        padding: 64px 40px 44px;
-    }
-
-    .home-cta-actions {
-        flex-direction: row;
-        justify-content: center;
-    }
-
-    .home-cta-button {
-        width: auto;
-        min-width: 210px;
+        padding: 56px 40px 40px;
     }
 
     .home-mobile-bar {
         display: none;
     }
-
-    /* Footer */
-    .home-footer .home-footer-inner {
-        padding-top: 60px;
-    }
-
-    .home-footer-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 32px 40px;
-        text-align: left;
-    }
-
-    .home-footer-brand {
-        grid-column: 1 / -1;
-        padding-bottom: 0;
-        border-bottom: none;
-    }
-
-    .home-footer-logo-row {
-        justify-content: flex-start;
-    }
-
-    .home-footer-text {
-        margin: 0 0 22px;
-    }
-
-    .home-footer-social {
-        margin: 0;
-    }
-
-    .home-footer-col {
-        padding: 0;
-        border-bottom: none;
-    }
-
-    .home-footer-title {
-        text-align: left;
-    }
-
-    .home-footer-links {
-        align-items: flex-start;
-    }
-
-    .home-footer-link {
-        padding: 0;
-        font-size: 14px;
-    }
-
-    .home-footer-link:hover {
-        padding-left: 4px;
-    }
-
-    .home-footer-bottom-inner {
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        text-align: left;
-    }
 }
 
 /* =====================================================
-   KOMPYUTER (≥ 1050px) — matnlar chapga tekis
+   KOMPYUTER (≥ 1050px): hero bitta ekranga sig'adi
    ===================================================== */
 
 @media (min-width: 1050px) {
@@ -1131,82 +1141,101 @@
         padding: 0 48px;
     }
 
+    /* 98px: navbar balandligi. Hero qolgan ekran bo'yicha markazlanadi. */
     .home-hero {
-        padding: 80px 0 104px;
+        display: flex;
+        align-items: center;
+        min-height: calc(100vh - 98px);
+        min-height: calc(100dvh - 98px);
+        padding: 24px 0;
+    }
+
+    .home-hero-container {
+        width: 100%;
     }
 
     .home-hero-grid {
-        grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr);
-        gap: 64px;
+        grid-template-columns: minmax(0, 1.25fr) minmax(0, .85fr);
+        align-items: center;
+        gap: 56px;
     }
 
     .home-hero-copy {
+        align-items: flex-start;
         text-align: left;
     }
 
+    .home-plate {
+        margin: 0 0 clamp(14px, 2.6vh, 24px);
+    }
+
+    /* Sarlavha ekran eni va balandligiga qarab kichrayadi, shuning uchun hamma narsa sig'adi */
+    .home-title {
+        font-size: clamp(44px, min(6.6vw, 10.5vh), 96px);
+        line-height: .95;
+        margin-bottom: clamp(12px, 2.4vh, 22px);
+    }
+
     .home-lead {
-        margin-left: 0;
-        margin-right: 0;
+        margin: 0 0 clamp(16px, 3vh, 28px);
+        font-size: 17px;
+        text-align: left;
     }
 
     .home-actions {
         justify-content: flex-start;
+        margin: 0;
     }
 
     .home-stats {
-        margin-left: 0;
-        margin-right: auto;
+        margin: clamp(16px, 3vh, 30px) 0 0;
+        max-width: 560px;
     }
 
-    .home-art {
-        max-width: 520px;
-        margin-right: 0;
+    .home-hero-visual {
+        max-width: none;
+        margin: 0;
+    }
+
+    .home-board-row {
+        padding: clamp(8px, 1.4vh, 12px) 16px;
+    }
+
+    .home-board-city {
+        font-size: 24px;
+    }
+
+    .home-ticker-item {
+        font-size: 24px;
+    }
+
+    .home-road {
+        height: 150px;
+    }
+
+    .home-truck {
+        width: 220px;
     }
 
     .home-section {
-        padding: 112px 0;
-    }
-
-    .home-step {
-        padding: 6px 36px 8px;
-        text-align: left;
-    }
-
-    .home-step:first-child {
-        padding-left: 0;
-    }
-
-    .home-step-icon {
-        margin-left: 0;
-    }
-
-    .home-step p {
-        margin-left: 0;
+        padding: 104px 0;
     }
 
     .home-features-grid {
         grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 
-    .home-feature {
-        text-align: left;
-    }
-
-    .home-feature-icon {
-        margin-left: 0;
+    .home-feature:nth-child(odd) {
+        transform: rotate(-1deg);
     }
 
     .home-feature:nth-child(even) {
-        transform: translateY(28px);
-    }
-
-    .home-features-grid {
-        padding-bottom: 28px;
+        transform: rotate(1deg);
     }
 
     .home-faq-wrap {
         grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr);
-        gap: 72px;
+        gap: 64px;
         align-items: start;
     }
 
@@ -1216,34 +1245,29 @@
     }
 
     .home-faq-question {
-        padding: 22px 68px 22px 26px;
-        font-size: 20px;
-        text-align: left;
-    }
-
-    .home-faq-chevron {
-        right: 20px;
+        padding: 18px 22px;
+        font-size: 18px;
     }
 
     .home-faq-answer {
-        padding: 0 26px 26px;
-    }
-
-    .home-faq-answer p {
-        text-align: left;
+        padding: 0 22px 24px;
     }
 
     .home-cta-panel {
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
-        gap: 56px;
-        padding: 76px 64px 56px;
+        gap: 48px;
+        padding: 72px 56px 52px;
         text-align: left;
     }
 
+    .home-cta-content {
+        align-items: flex-start;
+    }
+
     .home-cta-content p {
-        margin-left: 0;
+        margin: 0;
     }
 
     .home-cta-actions {
@@ -1252,20 +1276,12 @@
         width: auto;
     }
 
-    .home-cta-sticker {
-        right: 56px;
-    }
-
-    .home-footer-grid {
-        grid-template-columns: 1.6fr 1fr 1fr 1fr;
-    }
-
-    .home-footer-brand {
-        grid-column: auto;
+    .home-cta-button {
+        min-width: 240px;
     }
 }
 
-/* Animatsiyalarni kamaytirish sozlamasi */
+/* Animatsiyalarni kamaytirish */
 @media (prefers-reduced-motion: reduce) {
     .home-page *,
     .home-page *::before,
@@ -1275,22 +1291,97 @@
         animation: none !important;
     }
 
-    .home-marquee-track {
-        width: auto;
-        justify-content: center;
+    .home-truck {
+        left: 8%;
     }
+}
+/* =========================================
+   YUKBOR — NAVBAR VA HERO YAKUNIY TUZATISH
+========================================= */
 
-    .home-marquee-group {
-        flex-wrap: wrap;
-        justify-content: center;
-        padding: 0 20px;
+.home-page {
+    width: 100%;
+    position: relative;
+    overflow-x: clip;
+}
+
+.yb-content:has(.home-page) {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.home-hero {
+    width: 100%;
+    min-width: 0;
+    scroll-margin-top: var(--yb-nav-h, 98px);
+}
+
+.home-hero-container,
+.home-hero-grid,
+.home-hero-copy {
+    min-width: 0;
+}
+
+.home-title {
+    overflow-wrap: break-word;
+    word-break: normal;
+}
+
+@media (max-width: 1049px) {
+    .home-hero {
+        min-height: auto;
+        padding-top: 36px;
+        padding-bottom: 40px;
     }
+}
 
-    .home-marquee-group[aria-hidden="true"] {
-        display: none;
+@media (max-width: 820px) {
+    .home-hero {
+        padding-top: 28px;
     }
+}
 
-    .home-art-dot {
-        display: none;
+@media (max-width: 380px) {
+    .home-hero {
+        padding-top: 22px;
+    }
+}
+
+/* =========================================
+   YUKBOR — HERO NAVBAR USTIGA KIRISHINI TUZATISH
+   ========================================= */
+
+/* Hero ichidagi kontent kesilmasin */
+.home-page .home-hero {
+    overflow: visible !important;
+    position: relative;
+    width: 100%;
+}
+
+/* Desktop: kontentni yuqoridan boshlash */
+@media (min-width: 1050px) {
+    .home-page .home-hero {
+        display: flex;
+        align-items: flex-start !important;
+        min-height: calc(100vh - var(--yb-nav-h, 98px));
+        min-height: calc(100dvh - var(--yb-nav-h, 98px));
+        padding-top: 32px !important;
+        padding-bottom: 32px !important;
+        overflow: visible !important;
+    }
+}
+
+/* Navbar ostidagi bo'shliq */
+body:has(.main-navbar) {
+    padding-top: var(--yb-nav-h, 98px) !important;
+}
+
+/* Mobil qurilmalar */
+@media (max-width: 1049px) {
+    .home-page .home-hero {
+        overflow: visible !important;
+        padding-top: 32px !important;
     }
 }

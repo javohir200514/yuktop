@@ -1,11 +1,11 @@
 package uz.onetimecourier.one_time_courier.view;
 
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.NativeButton;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.select.Select;
@@ -89,22 +89,39 @@ public class VehicleVerificationDialog extends Dialog {
         this.onVerified = onVerified;
 
         addClassName("vd-dialog");
-        setHeaderTitle("Transport ma'lumotlari");
         setCloseOnOutsideClick(false);
         setWidth("min(520px, 92vw)");
 
-        Div body = new Div(buildFields());
+        // Sarlavha: sariq yorliq, nom va izoh
+        Span kicker = new Span("Yakuniy qadam");
+        kicker.addClassName("vd-kicker");
+
+        H2 title = new H2("Transport ma'lumotlari");
+        title.addClassName("vd-title");
+
+        Paragraph intro = new Paragraph(
+                "Kuryer bo'lish uchun transportingiz ma'lumotlarini kiriting. Ma'lumotlar tekshiriladi.");
+        intro.addClassName("vd-sub");
+
+        Div header = new Div(kicker, title, intro);
+        header.addClassName("vd-header");
+
+        Div body = new Div(header, buildFields());
         body.addClassName("vd-body");
-        add(body);
 
-        Button cancel = new Button("Bekor qilish", e -> close());
-        cancel.addClassName("vd-cancel");
+        // Pastki qism: oddiy Div, uslubi to'liq CSS dan boshqariladi
+        NativeButton cancel = new NativeButton("Bekor qilish", e -> close());
+        cancel.addClassNames("vd-btn", "vd-btn--ghost", "vd-cancel");
+        cancel.getElement().setAttribute("type", "button");
 
-        Button verify = new Button("Tasdiqlash", e -> submit());
-        verify.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        verify.addClassName("vd-submit");
+        NativeButton verify = new NativeButton("Tasdiqlash", e -> submit());
+        verify.addClassNames("vd-btn", "vd-btn--solid", "vd-submit");
+        verify.getElement().setAttribute("type", "button");
 
-        getFooter().add(cancel, verify);
+        Div footer = new Div(cancel, verify);
+        footer.addClassName("vd-footer");
+
+        add(body, footer);
         refreshVisibility();
     }
 
@@ -119,7 +136,7 @@ public class VehicleVerificationDialog extends Dialog {
         type.setItemLabelGenerator(VehicleType::getLabel);
         type.setWidthFull();
         type.addValueChangeListener(e -> refreshVisibility());
-        type.addClassName("vd-full");
+        type.addClassNames("vd-input", "vd-full");
 
         List<String> brands = new ArrayList<>(CAR_MODELS.keySet());
         brands.add(OTHER);
@@ -127,30 +144,38 @@ public class VehicleVerificationDialog extends Dialog {
         brandSelect.setItems(brands);
         brandSelect.setWidthFull();
         brandSelect.addValueChangeListener(e -> onBrandChanged());
+        brandSelect.addClassName("vd-input");
 
         brandCustom.setPlaceholder("Masalan: Tesla");
         brandCustom.setWidthFull();
         brandCustom.addValueChangeListener(e -> refreshVisibility());
+        brandCustom.addClassName("vd-input");
 
         modelSelect.setLabel("Model");
         modelSelect.setWidthFull();
         modelSelect.addValueChangeListener(e -> refreshVisibility());
+        modelSelect.addClassName("vd-input");
 
         modelCustom.setPlaceholder("Model nomini kiriting");
         modelCustom.setWidthFull();
+        modelCustom.addClassName("vd-input");
 
         colorSelect.setLabel("Rang");
         colorSelect.setItems(COLORS);
         colorSelect.setWidthFull();
+        colorSelect.addClassName("vd-input");
 
         // Davlat raqami va plastinka ko'rinishi
         plate.setPlaceholder("01 A 123 BC");
         plate.setValueChangeMode(ValueChangeMode.EAGER);
+        plate.setAllowedCharPattern("[A-Za-z0-9 ]");
         plate.setMaxLength(12);
         plate.setWidthFull();
         plate.addValueChangeListener(e -> updatePlatePreview());
+        plate.addClassName("vd-input");
 
         legal.addValueChangeListener(e -> updatePlatePreview());
+        legal.addClassName("vd-legal");
 
         Span band = new Span("UZ");
         band.addClassName("vd-plate-band");
@@ -158,8 +183,11 @@ public class VehicleVerificationDialog extends Dialog {
         plateView.addClassName("vd-plate");
         plateView.add(band, plateText);
 
+        Div plateControls = new Div(legal);
+        plateControls.addClassName("vd-plate-controls");
+
         plateRow.addClassNames("vd-plate-row", "vd-full");
-        plateRow.add(plate, legal, plateView);
+        plateRow.add(plate, plateView, plateControls);
 
         error.addClassName("vd-error");
         error.setVisible(false);

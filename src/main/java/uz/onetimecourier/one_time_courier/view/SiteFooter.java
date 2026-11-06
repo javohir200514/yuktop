@@ -18,17 +18,24 @@ public class SiteFooter extends Footer {
 
     private static final String ICON_TELEGRAM = """
             <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="24" cy="24" r="22" fill="#2aabee"/>
+              <circle cx="24" cy="24" r="22" fill="#ffffff"/>
               <path d="M9.5 23.5l25-10c1.2-.5 2.3.3 1.9 2.1l-4.3 20.2c-.3 1.4-1.2 1.7-2.4 1.1l-6.6-4.9-3.2 3.1c-.4.4-.7.7-1.4.7l.5-6.7 12.2-11c.5-.5-.1-.7-.8-.3l-15 9.5-6.5-2c-1.4-.4-1.4-1.4.6-2.2z"
-                    fill="#ffffff"/>
+                    fill="#1d5fd1"/>
             </svg>
             """;
 
     public SiteFooter() {
 
         addClassNames("home-footer", "home-footer-bleed");
+
+        // ---- Yuqori chiziq: sariq-qora "ogohlantirish" lentasi ----
+        Div stripe = new Div();
+        stripe.addClassName("home-footer-stripe");
+        stripe.getElement().setAttribute("aria-hidden", "true");
+
+        // ---- Asosiy qism ----
         Div inner = new Div();
-        inner.addClassNames("home-container", "home-footer-inner");
+        inner.addClassName("home-footer-inner");
 
         Div grid = new Div(
                 brandColumn(),
@@ -52,7 +59,7 @@ public class SiteFooter extends Footer {
         bottom.addClassName("home-footer-bottom");
 
         Div bottomInner = new Div();
-        bottomInner.addClassNames("home-container", "home-footer-bottom-inner");
+        bottomInner.addClassName("home-footer-bottom-inner");
 
         Span copy = new Span("© 2026 YukBor. Barcha huquqlar himoyalangan.");
         copy.addClassName("home-footer-copy");
@@ -63,21 +70,32 @@ public class SiteFooter extends Footer {
         bottomInner.add(copy, note);
         bottom.add(bottomInner);
 
-        add(inner, bottom);
+        add(stripe, inner, bottom);
     }
+
+    // ---------------------------------------------------------------- ustunlar
 
     private Div brandColumn() {
 
         Div col = new Div();
         col.addClassName("home-footer-brand");
 
+        // Logotip: navbar bilan bir xil sariq belgi
         Div logoRow = new Div();
         logoRow.addClassName("home-footer-logo-row");
 
-        Span brandName = new Span("YukBor");
-        brandName.addClassName("home-footer-brand-name");
+        Span plate = new Span("YB");
+        plate.addClassName("home-footer-plate");
+        plate.getElement().setAttribute("aria-hidden", "true");
 
-        logoRow.add(brandName);
+        Span accent = new Span("BOR");
+        accent.addClassName("home-footer-brand-accent");
+
+        Span brandName = new Span();
+        brandName.addClassName("home-footer-brand-name");
+        brandName.add(new Span("YUK"), accent);
+
+        logoRow.add(plate, brandName);
 
         Paragraph text = new Paragraph(
                 "Shahar ichida va viloyatlararo yetkazish uchun ishonchli platforma. "

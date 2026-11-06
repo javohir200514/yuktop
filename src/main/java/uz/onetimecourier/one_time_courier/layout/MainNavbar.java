@@ -79,16 +79,28 @@ public class MainNavbar extends Div {
 
         addClassName("main-navbar");
 
-        // Asosiy navbar konteyneri
         Div inner = new Div();
         inner.addClassName("navbar-inner");
 
-        // LOGO
-        Anchor logo = new Anchor("/", "YukBor");
+        // ---------- LOGOTIP: sariq belgi + ikki rangli yozuv ----------
+        Anchor logo = new Anchor("/");
         logo.addClassName("navbar-logo");
         logo.getElement().setAttribute("aria-label", "YukBor — bosh sahifa");
 
-        // MENYU
+        Span plate = new Span("YB");
+        plate.addClassName("navbar-logo-plate");
+        plate.getElement().setAttribute("aria-hidden", "true");
+
+        Span accent = new Span("BOR");
+        accent.addClassName("navbar-logo-accent");
+
+        Span word = new Span();
+        word.addClassName("navbar-logo-word");
+        word.add(new Span("YUK"), accent);
+
+        logo.add(plate, word);
+
+        // ---------- MENYU ----------
         Div menu = new Div(
                 link("Yuklar", "/deliveries", VaadinIcon.PACKAGE),
                 link("Safarlar", "/couriers", VaadinIcon.TRUCK, "/trips"),
@@ -96,23 +108,22 @@ public class MainNavbar extends Div {
                 link("Biz haqimizda", "/about", VaadinIcon.INFO_CIRCLE)
         );
         if (isLoggedIn() && isSender()) {
-            menu.add(link("Yuk joylash", "/deliveries/new", VaadinIcon.PLUS));
+            Anchor send = link("Yuk joylash", "/deliveries/new", VaadinIcon.PLUS);
+            send.addClassName("navbar-link--cta");
+            menu.add(send);
         }
         if (isLoggedIn() && isCourier()) {
             menu.add(link("Mening yetkazishlarim", "/courier/deliveries", VaadinIcon.CLIPBOARD_CHECK));
         }
         menu.addClassName("navbar-menu");
 
-        // O'NG TOMON
+        // ---------- O'NG TOMON ----------
         Div actions = new Div();
         actions.addClassName("navbar-actions");
 
         if (isLoggedIn()) {
-
             actions.add(userMenu(authContext));
-
         } else {
-
             Anchor login = link("Kirish", "/login", null);
             login.addClassName("navbar-login");
 
@@ -122,21 +133,18 @@ public class MainNavbar extends Div {
             actions.add(login, register);
         }
 
-        // MENYU VA ACTIONS PANELI
         Div panel = new Div(menu, actions);
         panel.addClassName("navbar-panel");
 
-        // MOBIL MENYU TUGMASI
+        // ---------- MOBIL MENYU TUGMASI ----------
         toggle.setIcon(VaadinIcon.MENU.create());
         toggle.addClassName("navbar-toggle");
         toggle.setAriaLabel("Menyuni ochish");
-
         toggle.addClickListener(event -> {
             boolean open = !getClassNames().contains("open");
             setMenuOpen(open);
         });
 
-        // ELEMENTLARNI JOYLASHTIRISH
         inner.add(logo, panel, toggle);
         add(inner);
     }
@@ -148,10 +156,8 @@ public class MainNavbar extends Div {
         super.onAttach(attachEvent);
         if (navRegistration == null) {
             UI ui = attachEvent.getUI();
-            // Har navigatsiyadan keyin joriy havola belgilanadi
             navRegistration = ui.addAfterNavigationListener(
                     event -> markActive(event.getLocation().getPath()));
-            // Navbar birinchi marta chizilganda joriy sahifa uchun ham
             var location = ui.getInternals().getActiveViewLocation();
             if (location != null) {
                 markActive(location.getPath());
@@ -185,18 +191,14 @@ public class MainNavbar extends Div {
     // ---------------------------------------------------------------- profil menyusi
 
     /**
-     * Profil chipi va uning tagida ochiladigan menyu:
-     * Profil, Yuklarimning holati (SENDER) yoki Mening yetkazishlarim (COURIER), Chiqish (qizil).
+     * Profil chipi (ism + rol belgisi + strelka) va uning tagida ochiladigan menyu:
+     * Profil, Yuklarimning holati (SENDER) yoki Mening yetkazishlarim (COURIER), Bildirishnomalar, Chiqish.
      */
     private Div userMenu(AuthenticationContext authContext) {
 
         String firstName = displayName();
 
-        Image photo = new Image(
-                "/images/profile.png",
-                "Profil rasmi"
-        );
-
+        Image photo = new Image("/images/profile.png", "Profil rasmi");
         photo.addClassName("navbar-profile-img");
 
         Div avatar = new Div(photo);
@@ -209,7 +211,14 @@ public class MainNavbar extends Div {
         arrow.add(VaadinIcon.ANGLE_DOWN.create());
         arrow.addClassName("navbar-user-arrow");
 
-        Div chip = new Div(avatar, name, arrow);
+        Div chip = new Div(avatar, name);
+        String role = roleLabel();
+        if (role != null) {
+            Span badge = new Span(role);
+            badge.addClassNames("navbar-role", isCourier() ? "navbar-role--courier" : "navbar-role--sender");
+            chip.add(badge);
+        }
+        chip.add(arrow);
         chip.addClassName("navbar-user");
 
         chip.getElement().setAttribute("role", "button");
@@ -218,7 +227,6 @@ public class MainNavbar extends Div {
         chip.getElement().setAttribute("aria-expanded", "false");
         chip.getElement().setAttribute("aria-label", "Profil menyusini ochish");
 
-        // Ochiladigan menyu
         Div dropdown = new Div();
         dropdown.addClassName("nu-dropdown");
         dropdown.getElement().setAttribute("role", "menu");
@@ -227,11 +235,6 @@ public class MainNavbar extends Div {
         if (head != null) {
             dropdown.add(head);
         }
-
-        /*Anchor profileItem = new Anchor("/profile", "Profil");
-        profileItem.addClassName("nu-item");
-        profileItem.getElement().setAttribute("role", "menuitem");
-        dropdown.add(profileItem);*/
 
         if (isSender()) {
             Anchor deliveriesItem = new Anchor("/deliveries/mine", "Yuklarimning holati");
@@ -272,13 +275,8 @@ public class MainNavbar extends Div {
     /** Menyu tepasidagi sarlavha: to'liq ism va kontakt. Faqat setText ishlatiladi. */
     private Div accountHeader() {
 
-        Authentication auth = SecurityContextHolder
-                .getContext()
-                .getAuthentication();
-
-        Object principal = auth == null
-                ? null
-                : auth.getPrincipal();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = auth == null ? null : auth.getPrincipal();
 
         String fullName = null;
         String contact = null;
@@ -335,9 +333,7 @@ public class MainNavbar extends Div {
         }
         navItems.add(new NavItem(anchor, List.copyOf(paths)));
 
-        anchor.getElement().addEventListener("click", event -> {
-            setMenuOpen(false);
-        });
+        anchor.getElement().addEventListener("click", event -> setMenuOpen(false));
 
         return anchor;
     }
@@ -347,30 +343,19 @@ public class MainNavbar extends Div {
         return route == null ? "" : route.replaceFirst("^/+", "");
     }
 
-    /**
-     * Mobil menyuni ochish yoki yopish.
-     */
+    /** Mobil menyuni ochish yoki yopish. */
     private void setMenuOpen(boolean open) {
 
         getClassNames().set("open", open);
 
-        toggle.setIcon(
-                (open ? VaadinIcon.CLOSE : VaadinIcon.MENU).create()
-        );
-
-        toggle.setAriaLabel(
-                open ? "Menyuni yopish" : "Menyuni ochish"
-        );
+        toggle.setIcon((open ? VaadinIcon.CLOSE : VaadinIcon.MENU).create());
+        toggle.setAriaLabel(open ? "Menyuni yopish" : "Menyuni ochish");
     }
 
-    /**
-     * Foydalanuvchi tizimga kirganligini tekshirish.
-     */
+    /** Foydalanuvchi tizimga kirganligini tekshirish. */
     private boolean isLoggedIn() {
 
-        Authentication auth = SecurityContextHolder
-                .getContext()
-                .getAuthentication();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         return auth != null
                 && auth.isAuthenticated()
@@ -389,39 +374,35 @@ public class MainNavbar extends Div {
 
     private boolean hasRole(String role) {
 
-        Authentication auth = SecurityContextHolder
-                .getContext()
-                .getAuthentication();
-
-        Object principal = auth == null
-                ? null
-                : auth.getPrincipal();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = auth == null ? null : auth.getPrincipal();
 
         return principal instanceof CustomUserDetails user
                 && role.equals(String.valueOf(user.getRole()));
     }
 
-    /**
-     * Foydalanuvchi ismini olish.
-     */
+    /** Rol belgisi uchun matn. Rolsiz foydalanuvchiga null. */
+    private String roleLabel() {
+        if (isCourier()) {
+            return "Kuryer";
+        }
+        if (isSender()) {
+            return "Jo'natuvchi";
+        }
+        return null;
+    }
+
+    /** Foydalanuvchi ismini olish. */
     private String displayName() {
 
-        Authentication auth = SecurityContextHolder
-                .getContext()
-                .getAuthentication();
-
-        Object principal = auth == null
-                ? null
-                : auth.getPrincipal();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = auth == null ? null : auth.getPrincipal();
 
         String name = null;
 
         if (principal instanceof CustomUserDetails user) {
-
             name = user.getFullName();
-
         } else if (principal instanceof OAuth2User oauthUser) {
-
             String givenName = oauthUser.getAttribute("given_name");
             String fullName = oauthUser.getAttribute("name");
 

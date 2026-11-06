@@ -3,8 +3,10 @@ package uz.onetimecourier.one_time_courier.view;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.NativeButton;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
@@ -41,13 +43,13 @@ import java.util.List;
 @Route(value = "register/verify", layout = AuthLayout.class)
 @PageTitle("Telefon tasdiqlash | YukBor")
 @AnonymousAllowed
+@CssImport("./styles/telegram-verify.css")
 public class TelegramVerifyView extends VerticalLayout implements BeforeEnterObserver {
 
     private static final int CODE_LENGTH = 6;
     private static final int POLL_MS = 1500;
     private static final int CODE_SECONDS = 300; // kod 5 daqiqa amal qiladi
     private static final String BOT_OPENED_KEY = "yukbor_bot_opened_token";
-    private static final String OVERLAY_ID = "yukbor-verify-overlay";
 
     private final AuthService authService;
     private final TelegramPhoneVerificationService phoneVerification;
@@ -64,10 +66,10 @@ public class TelegramVerifyView extends VerticalLayout implements BeforeEnterObs
     private Span timerText;
     private Span error;
     private VerticalLayout codeBlock;
-    private Button openBot;
-    private Button confirm;
-    private Button vehicleBtn;
-    private Button backBtn;
+    private NativeButton openBot;
+    private NativeButton confirm;
+    private NativeButton vehicleBtn;
+    private NativeButton backBtn;
 
     public TelegramVerifyView(AuthService authService,
                               TelegramPhoneVerificationService phoneVerification,
@@ -96,7 +98,6 @@ public class TelegramVerifyView extends VerticalLayout implements BeforeEnterObs
         buildLayout();
 
         UI ui = attachEvent.getUI();
-        addOverlay(ui);
         autoOpenBot(ui);
 
         stopPolling();
@@ -109,7 +110,6 @@ public class TelegramVerifyView extends VerticalLayout implements BeforeEnterObs
         stopPolling();
         UI ui = detachEvent.getUI();
         ui.setPollInterval(-1);
-        removeOverlay(ui);
         clearCodeTimer();
         if (!verified && pending != null) {
             phoneVerification.discard(pending.token());
@@ -117,26 +117,6 @@ public class TelegramVerifyView extends VerticalLayout implements BeforeEnterObs
             pending = null;
         }
         super.onDetach(detachEvent);
-    }
-
-    // ---------------------------------------------------------------- xiralik qatlam
-
-    /** Qatlam body ga qo'shiladi: butun ekran, navbar pastidan boshlab, xira bo'ladi. */
-    private void addOverlay(UI ui) {
-        ui.getPage().executeJs(
-                "if (!document.getElementById($0)) {" +
-                        "  var d = document.createElement('div');" +
-                        "  d.id = $0;" +
-                        "  d.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;" +
-                        "background:rgba(15,23,42,0.55);backdrop-filter:blur(2px);" +
-                        "z-index:0;pointer-events:none;';" +
-                        "  document.body.appendChild(d);" +
-                        "}", OVERLAY_ID);
-    }
-
-    private void removeOverlay(UI ui) {
-        ui.getPage().executeJs(
-                "var d = document.getElementById($0); if (d) d.remove();", OVERLAY_ID);
     }
 
     // ---------------------------------------------------------------- bot
@@ -161,91 +141,57 @@ public class TelegramVerifyView extends VerticalLayout implements BeforeEnterObs
         removeAll();
         boxes.clear();
 
-        setSizeFull();
+        // Sahifa to'liq ekran: uslubi telefon-tasdiqlash CSS da
+        addClassName("vt-page");
         setPadding(false);
         setSpacing(false);
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
-        // Qatlam ustida turishi uchun; o'zi shaffof
-        getStyle()
-                .set("background", "transparent")
-                .set("position", "relative")
-                .set("z-index", "1");
 
         VerticalLayout card = new VerticalLayout();
-        card.setWidth("430px");
-        card.setMaxWidth("100%");
+        card.addClassName("vt-card");
         card.setAlignItems(Alignment.CENTER);
         card.setSpacing(true);
         card.setPadding(false);
-        card.getStyle()
-                .set("background", "white")
-                .set("border-radius", "26px")
-                .set("padding", "45px")
-                .set("box-shadow", "0 20px 60px rgba(0,0,0,0.18)")
-                .set("text-align", "center")
-                .set("box-sizing", "border-box");
 
-        Span telegramIcon = new Span();
+        // Telegram belgisi: ko'k doira ichida samolyotcha
+        Div telegramIcon = new Div();
+        telegramIcon.addClassName("vt-icon");
         telegramIcon.getElement().setProperty("innerHTML",
-                "<div style='width:70px;height:70px;border-radius:50%;" +
-                        "background:#0088cc;display:flex;align-items:center;" +
-                        "justify-content:center;margin:0 auto 8px auto;'>" +
-                        "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' " +
-                        "width='38px' height='38px' fill='white'>" +
-                        "<path d='M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 " +
-                        "12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023" +
-                        ".465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 " +
-                        "6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902" +
-                        "-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 " +
-                        "3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c" +
-                        "-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252" +
-                        "-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663" +
-                        " 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z'/>" +
-                        "</svg></div>");
+                "<div class='vt-tg'>"
+                        + "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor' aria-hidden='true'>"
+                        + "<path d='M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 "
+                        + "12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023"
+                        + ".465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 "
+                        + "6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902"
+                        + "-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 "
+                        + "3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c"
+                        + "-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252"
+                        + "-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663"
+                        + " 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z'/>"
+                        + "</svg></div>");
 
         H2 title = new H2("Telefon raqamni tasdiqlang");
-        title.getStyle()
-                .set("margin", "0")
-                .set("font-size", "22px")
-                .set("font-weight", "800")
-                .set("color", "#111827");
+        title.addClassName("vt-title");
 
         Span phoneSpan = new Span(pending.phone());
-        phoneSpan.getStyle()
-                .set("font-weight", "700")
-                .set("color", "#0088cc")
-                .set("font-size", "15px");
+        phoneSpan.addClassName("vt-phone");
 
         Span subtitle = new Span("Telegram botda raqamingizni yuboring. Botdan kelgan 6 xonali kodni shu yerga kiriting.");
-        subtitle.getStyle()
-                .set("color", "#6b7280")
-                .set("font-size", "14px")
-                .set("max-width", "300px")
-                .set("display", "inline-block")
-                .set("text-align", "center");
+        subtitle.addClassName("vt-sub");
 
         statusText = new Span("Telegram botda raqamingizni yuboring.");
-        statusText.getStyle()
-                .set("color", "#6b7280")
-                .set("font-size", "13px");
+        statusText.addClassName("vt-status");
 
-        openBot = new Button("Telegram botni ochish", e ->
-                UI.getCurrent().getPage().open(botUrl(), "_blank"));
-        openBot.setWidthFull();
-        openBot.getStyle()
-                .set("background", "#0088cc")
-                .set("color", "white")
-                .set("border-radius", "16px")
-                .set("height", "48px")
-                .set("font-weight", "700")
-                .set("border", "none")
-                .set("cursor", "pointer");
+        openBot = new NativeButton("Telegram botni ochish");
+        openBot.addClassNames("vt-btn", "vt-btn--tg");
+        openBot.getElement().setAttribute("type", "button");
+        openBot.addClickListener(e -> UI.getCurrent().getPage().open(botUrl(), "_blank"));
 
         HorizontalLayout otpLayout = new HorizontalLayout();
+        otpLayout.addClassName("vt-otp-row");
         otpLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         otpLayout.setSpacing(true);
-        otpLayout.getStyle().set("gap", "10px");
         for (int i = 0; i < CODE_LENGTH; i++) {
             TextField box = createOtpField(i);
             boxes.add(box);
@@ -253,15 +199,13 @@ public class TelegramVerifyView extends VerticalLayout implements BeforeEnterObs
         }
 
         timerText = new Span();
-        timerText.getStyle()
-                .set("font-size", "14px")
-                .set("font-weight", "600")
-                .set("color", "#6b7280");
+        timerText.addClassName("vt-timer");
 
         confirm = buildPrimaryButton("Tasdiqlash");
         confirm.addClickListener(e -> submitCode());
 
         codeBlock = new VerticalLayout(otpLayout, timerText, confirm);
+        codeBlock.addClassName("vt-code");
         codeBlock.setPadding(false);
         codeBlock.setSpacing(true);
         codeBlock.setAlignItems(Alignment.CENTER);
@@ -269,25 +213,16 @@ public class TelegramVerifyView extends VerticalLayout implements BeforeEnterObs
         codeBlock.setVisible(false);
 
         error = new Span();
-        error.getStyle()
-                .set("color", "#ef4444")
-                .set("font-size", "14px")
-                .set("font-weight", "600");
+        error.addClassName("vt-error");
         error.setVisible(false);
 
         vehicleBtn = buildPrimaryButton("Transport ma'lumotlarini kiriting");
         vehicleBtn.setVisible(false);
         vehicleBtn.addClickListener(e -> openVehicleDialog());
 
-        backBtn = new Button("Qaytadan urinish", e -> UI.getCurrent().navigate(RegisterView.class));
-        backBtn.getStyle()
-                .set("background", "transparent")
-                .set("color", "#9ca3af")
-                .set("font-size", "13px")
-                .set("cursor", "pointer")
-                .set("border", "none")
-                .set("padding", "8px 16px")
-                .set("border-radius", "10px");
+        backBtn = new NativeButton("Qaytadan urinish", e -> UI.getCurrent().navigate(RegisterView.class));
+        backBtn.addClassName("vt-back");
+        backBtn.getElement().setAttribute("type", "button");
         backBtn.setVisible(false);
 
         card.add(telegramIcon, title, phoneSpan, subtitle, statusText, openBot,
@@ -297,15 +232,9 @@ public class TelegramVerifyView extends VerticalLayout implements BeforeEnterObs
 
     private TextField createOtpField(int index) {
         TextField tf = new TextField();
-        tf.setWidth("52px");
+        tf.addClassName("vt-otp");
         tf.setAllowedCharPattern("[0-9]");
         tf.setValueChangeMode(ValueChangeMode.EAGER);
-        tf.getStyle()
-                .set("text-align", "center")
-                .set("font-size", "22px")
-                .set("font-weight", "700")
-                .set("background", "#f3f4f6")
-                .set("border-radius", "14px");
         tf.getElement().setAttribute("inputmode", "numeric");
         tf.getElement().setAttribute("autocomplete", "one-time-code");
 
@@ -365,29 +294,10 @@ public class TelegramVerifyView extends VerticalLayout implements BeforeEnterObs
         error.setVisible(true);
     }
 
-    private Button buildPrimaryButton(String text) {
-        Button btn = new Button(text);
-        btn.setWidthFull();
-        btn.getStyle()
-                .set("background", "linear-gradient(135deg, #2196F3, #00C853)")
-                .set("color", "white")
-                .set("border-radius", "16px")
-                .set("height", "52px")
-                .set("font-size", "16px")
-                .set("font-weight", "700")
-                .set("cursor", "pointer")
-                .set("border", "none")
-                .set("box-shadow", "0 4px 15px rgba(33,150,243,0.35)")
-                .set("transition", "all 0.2s ease");
-        btn.getElement().executeJs(
-                "this.addEventListener('mouseover', () => {" +
-                        "  this.style.boxShadow='0 6px 20px rgba(33,150,243,0.5)';" +
-                        "  this.style.transform='translateY(-1px)';" +
-                        "});" +
-                        "this.addEventListener('mouseout', () => {" +
-                        "  this.style.boxShadow='0 4px 15px rgba(33,150,243,0.35)';" +
-                        "  this.style.transform='translateY(0)';" +
-                        "});");
+    private NativeButton buildPrimaryButton(String text) {
+        NativeButton btn = new NativeButton(text);
+        btn.addClassNames("vt-btn", "vt-btn--solid");
+        btn.getElement().setAttribute("type", "button");
         return btn;
     }
 
@@ -427,7 +337,7 @@ public class TelegramVerifyView extends VerticalLayout implements BeforeEnterObs
                         "function paint() {" +
                         "  var m = Math.floor(sec / 60), s = sec % 60;" +
                         "  el.textContent = label + ': ' + (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);" +
-                        "  el.style.color = sec <= 30 ? '#ef4444' : '#6b7280';" +
+                        "  el.style.color = sec <= 30 ? '#ff7a6b' : '#a9a59b';" +
                         "}" +
                         "paint();" +
                         "window._yukborCodeTimer = setInterval(function() {" +
@@ -435,7 +345,7 @@ public class TelegramVerifyView extends VerticalLayout implements BeforeEnterObs
                         "  if (sec <= 0) {" +
                         "    clearInterval(window._yukborCodeTimer);" +
                         "    el.textContent = expired;" +
-                        "    el.style.color = '#ef4444';" +
+                        "    el.style.color = '#ff7a6b';" +
                         "    return;" +
                         "  }" +
                         "  paint();" +

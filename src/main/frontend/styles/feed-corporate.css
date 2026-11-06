@@ -1,0 +1,894 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+
+/* =====================================================
+   YUKBOR — Yuklar va Safarlar sahifalari (korporativ uslub)
+   Bosh sahifa dizayni bilan bir xil ranglar va shakllar.
+
+   Bu fayl eski stillar (my-deliveries, deliveries-feed, deliveries-modern,
+   deliveries-responsive, page-head, couriers-page, yb-feed) ustidan yoziladi,
+   shuning uchun u ularning OXIRIDA ulangan bo'lishi kerak.
+   Eski stillar kuchli bo'lgan joylarda (!important) ishlatilgan.
+   Telefonda matnlar markazda, kompyuterda chapga tekis.
+   ===================================================== */
+
+.md-page.dm-page,
+.tv-phone-box {
+    --navy: #102b50;
+    --blue: #1764ed;
+    --blue-dark: #104fc4;
+    --ink: #0f1e36;
+    --muted: #5b6b84;
+    --line: #dfe6f0;
+    --soft: #f4f7fb;
+    --soft-blue: #eaf1fd;
+    --font: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+.md-page.dm-page {
+    /* Header oddiy tartibda turgani uchun kontent tepasida faqat kichik bo'shliq kerak */
+    --feed-top: 32px;
+
+    display: block;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+
+    color: var(--ink);
+    font-family: var(--font);
+    font-size: 16px;
+    text-align: center;
+    background: #fff;
+
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
+}
+
+.md-page.dm-page *,
+.md-page.dm-page *::before,
+.md-page.dm-page *::after {
+    box-sizing: border-box;
+}
+
+/* Eski stillardagi KATTA HARFLAR va harf oralig'ini bekor qilish */
+.md-page.dm-page *,
+.tv-phone-box * {
+    text-transform: none !important;
+}
+
+/* Ikonkalar: .a = ko'k aksent, .f = yengil to'ldirma, .w = g'ildirak */
+.md-page.dm-page svg .a { stroke: var(--blue); }
+.md-page.dm-page svg .f { fill: var(--blue); fill-opacity: .12; stroke: none; }
+.md-page.dm-page svg .w { fill: #fff; }
+
+.md-page.dm-page .page-fold {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: var(--feed-top) 20px 56px;
+    min-height: calc(100vh - 92px);
+    min-height: calc(100dvh - 92px);
+    background: transparent;
+}
+
+/* =====================================================
+   SARLAVHA
+   ===================================================== */
+
+.md-page.dm-page .dm-page-head {
+    max-width: 640px;
+    margin: 0 auto 28px;
+    padding: 0;
+    background: none;
+}
+
+.md-page.dm-page .dm-kicker {
+    display: block;
+    margin: 0 0 12px;
+    padding: 0;
+
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+    color: var(--blue);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase !important;
+}
+
+.md-page.dm-page .dm-page-title {
+    margin: 0 0 10px;
+
+    color: var(--navy);
+    font-family: var(--font) !important;
+    font-size: clamp(30px, 7.4vw, 44px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -.03em !important;
+}
+
+.md-page.dm-page .dm-page-sub {
+    margin: 0;
+    color: var(--muted);
+    font-family: var(--font);
+    font-size: 17px;
+    line-height: 1.6;
+}
+
+/* =====================================================
+   FILTR PANELI
+   ===================================================== */
+
+.md-page.dm-page .dm-filter-bar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+    align-items: end;
+
+    margin: 0 0 24px;
+    padding: 16px;
+
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 8px 28px rgba(16, 43, 80, .06);
+    text-align: left;
+}
+
+/* ⇄ belgisi: eski stildagi qora kvadratni bekor qilamiz */
+.md-page.dm-page .dm-filter-arrow {
+    display: none;
+    width: auto !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 0 14px !important;
+
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: #8a9bb5 !important;
+    font-size: 20px;
+    line-height: 1;
+    text-align: center;
+}
+
+/* Select maydonlari: qalin qora ramka va sariq chevronni bekor qilamiz */
+.md-page.dm-page .dm-filter-bar vaadin-select {
+    --vaadin-input-field-border-width: 0;
+    --vaadin-input-field-border-color: transparent;
+    --lumo-primary-color: var(--blue);
+    --lumo-primary-text-color: var(--blue);
+}
+
+.md-page.dm-page .dm-filter-bar vaadin-select::part(input-field) {
+    min-height: 52px;
+    border: 0 !important;
+    border-radius: 12px !important;
+    background: #fff !important;
+    box-shadow: inset 0 0 0 1.5px #c6d3e6 !important;
+}
+
+.md-page.dm-page .dm-filter-bar vaadin-select[focus-ring]::part(input-field),
+.md-page.dm-page .dm-filter-bar vaadin-select[opened]::part(input-field) {
+    box-shadow: inset 0 0 0 2px var(--blue) !important;
+}
+
+.md-page.dm-page .dm-filter-bar vaadin-select::part(toggle-button) {
+    color: var(--navy) !important;
+}
+
+.md-page.dm-page .dm-filter-bar vaadin-select::part(label) {
+    color: var(--muted) !important;
+    font-family: var(--font) !important;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
+}
+
+.md-page.dm-page .dm-filter-bar vaadin-select vaadin-select-value-button,
+.md-page.dm-page .dm-filter-bar vaadin-select [slot="value"] {
+    font-family: var(--font);
+    font-weight: 500;
+    color: var(--ink);
+}
+
+/* =====================================================
+   TUGMALAR
+   ===================================================== */
+
+.md-page.dm-page .dm-btn,
+.tv-phone-box .dm-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    min-height: 48px;
+    padding: 0 22px;
+
+    border: 1.5px solid transparent;
+    border-radius: 12px;
+    box-shadow: none;
+    font-family: var(--font);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -.005em;
+    text-decoration: none;
+    white-space: nowrap;
+
+    cursor: pointer;
+    transition: background .2s ease, color .2s ease, border-color .2s ease, transform .15s ease;
+}
+
+.md-page.dm-page .dm-btn--solid,
+.tv-phone-box .dm-btn--solid {
+    background: var(--blue);
+    color: #fff;
+}
+
+.md-page.dm-page .dm-btn--solid:hover,
+.tv-phone-box .dm-btn--solid:hover {
+    background: var(--blue-dark);
+    color: #fff;
+}
+
+.md-page.dm-page .dm-btn--ghost,
+.tv-phone-box .dm-btn--ghost {
+    border-color: #c6d3e6;
+    background: #fff;
+    color: var(--navy);
+}
+
+.md-page.dm-page .dm-btn--ghost:hover,
+.tv-phone-box .dm-btn--ghost:hover {
+    border-color: var(--navy);
+    color: var(--navy);
+}
+
+.md-page.dm-page .dm-btn:active,
+.tv-phone-box .dm-btn:active {
+    transform: scale(.985);
+}
+
+.md-page.dm-page .dm-clear {
+    width: 100%;
+}
+
+/* =====================================================
+   XABARLAR: ogohlantirish va yangilanish
+   ===================================================== */
+
+.md-page.dm-page .dm-alert {
+    margin: 0 0 18px;
+    padding: 14px 18px;
+
+    border: 1px solid #f3c6c6;
+    border-radius: 12px;
+    background: #fdecec;
+    color: #9c2222;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+.md-page.dm-page .dm-banner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+
+    margin: 0 0 18px;
+    padding: 14px 18px;
+
+    border: 1px solid #c7dafb;
+    border-radius: 12px;
+    background: var(--soft-blue);
+    color: var(--navy);
+    font-size: 15px;
+    font-weight: 600;
+}
+
+/* =====================================================
+   JAMI SONI VA SARLAVHA QATORI
+   ===================================================== */
+
+.md-page.dm-page .dm-total {
+    display: block;
+    margin: 0 0 14px;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.md-page.dm-page .dm-total:empty {
+    display: none;
+}
+
+.md-page.dm-page .tv-head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 14px;
+}
+
+.md-page.dm-page .tv-head .dm-total {
+    margin: 0;
+}
+
+.md-page.dm-page .tv-create {
+    width: 100%;
+}
+
+/* =====================================================
+   KARTALAR
+   ===================================================== */
+
+.md-page.dm-page .dm-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.md-page.dm-page .dm-card {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    gap: 18px;
+
+    margin: 0;
+    padding: 24px 20px;
+
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(16, 43, 80, .04);
+    transform: none;
+
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.md-page.dm-page .dm-card:hover {
+    border-color: #b7cdf6;
+    box-shadow: 0 14px 34px rgba(16, 43, 80, .09);
+}
+
+.md-page.dm-page .dm-card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    width: 60px;
+    height: 60px;
+    padding: 14px;
+
+    border: 0;
+    border-radius: 50%;
+    background: var(--soft-blue);
+    box-shadow: none;
+    color: var(--navy);
+}
+
+.md-page.dm-page .dm-card-icon svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.md-page.dm-page .dm-card-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.md-page.dm-page .dm-route {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px 12px;
+
+    color: var(--navy);
+    font-family: var(--font);
+    font-size: clamp(20px, 5.4vw, 24px);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -.02em;
+}
+
+.md-page.dm-page .dm-route-line {
+    position: relative;
+    display: inline-block;
+    flex: 0 0 36px;
+    width: 36px;
+    height: 2px;
+    border-radius: 2px;
+    background: #aebfd9;
+}
+
+.md-page.dm-page .dm-route-line::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: -1px;
+    width: 8px;
+    height: 8px;
+    border-top: 2px solid #aebfd9;
+    border-right: 2px solid #aebfd9;
+    transform: translateY(-50%) rotate(45deg);
+}
+
+.md-page.dm-page .dm-tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+}
+
+.md-page.dm-page .dm-tags > * {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 12px;
+
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--soft);
+    box-shadow: none;
+    color: #44566f;
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: 0;
+}
+
+.md-page.dm-page .dm-date {
+    color: var(--muted);
+    font-family: var(--font);
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.md-page.dm-page .dm-card-side {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-width: 0;
+}
+
+.md-page.dm-page .dm-reward {
+    color: var(--navy);
+    font-family: var(--font);
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -.03em;
+}
+
+.md-page.dm-page .dm-deliver {
+    width: 100%;
+}
+
+/* kartaning qo'shimcha qismi (kontakt ma'lumoti yoki izoh) */
+.md-page.dm-page .dm-extra {
+    grid-column: 1 / -1;
+    width: 100%;
+    margin: 0;
+    padding: 18px 0 0;
+
+    border-top: 1px solid var(--line);
+    color: #44566f;
+    font-family: var(--font);
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.md-page.dm-page p.dm-extra {
+    padding: 14px 16px;
+    border: 0;
+    border-radius: 12px;
+    background: var(--soft);
+}
+
+.md-page.dm-page .df-contact {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+}
+
+.md-page.dm-page .df-contact-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.md-page.dm-page .df-hint {
+    margin: 14px 0 0;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.55;
+}
+
+/* =====================================================
+   KURYER (avatar va ism)
+   ===================================================== */
+
+.md-page.dm-page .cc-identity {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.md-page.dm-page .cc-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    width: 46px;
+    height: 46px;
+
+    border: 0;
+    border-radius: 50%;
+    box-shadow: none;
+    font-family: var(--font);
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: .02em;
+}
+
+.md-page.dm-page .cc-avatar--blue   { background: #dbe8ff; color: #1648b0; }
+.md-page.dm-page .cc-avatar--amber  { background: #ffefc7; color: #8a5a00; }
+.md-page.dm-page .cc-avatar--green  { background: #d9f4e5; color: #0e6b3e; }
+.md-page.dm-page .cc-avatar--violet { background: #e9e3ff; color: #4a32a8; }
+
+.md-page.dm-page .cc-identity-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    text-align: left;
+}
+
+.md-page.dm-page .cc-identity-name {
+    max-width: 220px;
+    overflow: hidden;
+
+    color: var(--navy);
+    font-family: var(--font);
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.md-page.dm-page .cc-identity-role {
+    color: var(--muted);
+    font-family: var(--font);
+    font-size: 13px;
+    line-height: 1.3;
+}
+
+/* =====================================================
+   BO'SH HOLAT
+   ===================================================== */
+
+.md-page.dm-page .dm-empty {
+    padding: 56px 24px;
+    border: 0;
+    border-radius: 22px;
+    background: var(--soft);
+    box-shadow: none;
+    text-align: center;
+}
+
+.md-page.dm-page .dm-empty-title {
+    margin: 0 0 8px;
+    color: var(--navy);
+    font-family: var(--font) !important;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -.02em !important;
+}
+
+.md-page.dm-page .dm-empty-text {
+    max-width: 420px;
+    margin: 0 auto;
+    color: var(--muted);
+    font-family: var(--font);
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+/* =====================================================
+   SAHIFALASH
+   ===================================================== */
+
+.md-page.dm-page .dm-pager {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 28px;
+}
+
+.md-page.dm-page .dm-page-btn {
+    min-height: 46px;
+    padding: 0 18px;
+
+    border: 1.5px solid #c6d3e6;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: none;
+    color: var(--navy);
+    font-family: var(--font);
+    font-size: 15px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: border-color .2s ease;
+}
+
+.md-page.dm-page .dm-page-btn:hover:not(:disabled) {
+    border-color: var(--navy);
+}
+
+.md-page.dm-page .dm-page-btn:disabled {
+    opacity: .4;
+    cursor: default;
+}
+
+.md-page.dm-page .dm-page-label {
+    color: var(--muted);
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* =====================================================
+   KIRISHGA CHAQIRUV (agar yoqilsa)
+   ===================================================== */
+
+.md-page.dm-page .dm-gate {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+
+    margin: 0 0 22px;
+    padding: 22px;
+
+    border: 0;
+    border-radius: 18px;
+    background: var(--soft-blue);
+    box-shadow: none;
+}
+
+.md-page.dm-page .dm-gate-title {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--navy);
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.md-page.dm-page .dm-gate-text {
+    margin: 0;
+    color: #44566f;
+    font-size: 15px;
+    line-height: 1.55;
+}
+
+.md-page.dm-page .dm-gate-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* =====================================================
+   TELEFON RAQAMI OYNASI (Dialog)
+   ===================================================== */
+
+.tv-phone-box {
+    display: grid;
+    gap: 16px;
+    min-width: min(360px, 78vw);
+    padding: 8px 4px 4px;
+
+    color: var(--ink);
+    font-family: var(--font);
+    text-align: center;
+}
+
+.tv-phone-box .tv-phone-title {
+    margin: 0;
+    color: var(--navy);
+    font-family: var(--font);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -.02em;
+}
+
+.tv-phone-box .tv-phone-number {
+    color: var(--blue);
+    font-family: var(--font);
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -.02em;
+}
+
+.tv-phone-box .tv-phone-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.tv-phone-box .tv-phone-actions .dm-btn {
+    width: 100%;
+}
+
+/* =====================================================
+   PLANSHET (≥ 700px)
+   ===================================================== */
+
+@media (min-width: 700px) {
+    .md-page.dm-page {
+        --feed-top: 44px;
+    }
+
+    .md-page.dm-page .page-fold {
+        padding: var(--feed-top) 32px 72px;
+    }
+
+    .md-page.dm-page .dm-page-head {
+        margin-bottom: 36px;
+    }
+
+    .md-page.dm-page .dm-filter-bar {
+        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto;
+        padding: 18px 20px;
+    }
+
+    .md-page.dm-page .dm-filter-arrow {
+        display: block;
+    }
+
+    .md-page.dm-page .dm-clear {
+        width: auto;
+    }
+
+    .md-page.dm-page .dm-banner {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .md-page.dm-page .tv-head {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .md-page.dm-page .tv-create {
+        width: auto;
+    }
+
+    .md-page.dm-page .dm-card {
+        grid-template-columns: 64px minmax(0, 1fr) auto;
+        justify-items: start;
+        align-items: center;
+        gap: 18px 24px;
+        padding: 24px 28px;
+        text-align: left;
+    }
+
+    .md-page.dm-page .dm-card-icon {
+        width: 64px;
+        height: 64px;
+    }
+
+    .md-page.dm-page .dm-card-main {
+        align-items: flex-start;
+    }
+
+    .md-page.dm-page .dm-route,
+    .md-page.dm-page .dm-tags {
+        justify-content: flex-start;
+    }
+
+    .md-page.dm-page .dm-card-side {
+        align-items: flex-end;
+        width: auto;
+        min-width: 190px;
+    }
+
+    .md-page.dm-page .dm-deliver {
+        width: auto;
+        min-width: 190px;
+    }
+
+    .md-page.dm-page .dm-extra {
+        text-align: left;
+    }
+
+    .md-page.dm-page .df-contact {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .md-page.dm-page .df-contact-row {
+        justify-content: flex-start;
+    }
+
+    .md-page.dm-page .cc-identity {
+        justify-content: flex-end;
+    }
+
+    .md-page.dm-page .dm-gate {
+        flex-direction: row;
+        justify-content: space-between;
+        text-align: left;
+    }
+
+    .tv-phone-box .tv-phone-actions {
+        flex-direction: row;
+    }
+
+    .tv-phone-box .tv-phone-actions .dm-btn {
+        width: auto;
+        flex: 1 1 0;
+    }
+}
+
+/* =====================================================
+   KOMPYUTER (≥ 1050px) — sarlavha chapga tekis
+   ===================================================== */
+
+@media (min-width: 1050px) {
+    .md-page.dm-page {
+        --feed-top: 56px;
+    }
+
+    .md-page.dm-page .page-fold {
+        padding-left: 48px;
+        padding-right: 48px;
+    }
+
+    .md-page.dm-page .dm-page-head {
+        margin-left: 0;
+        margin-right: 0;
+        text-align: left;
+    }
+
+    .md-page.dm-page .dm-total {
+        text-align: left;
+    }
+}
+
+/* Animatsiyalarni kamaytirish sozlamasi */
+@media (prefers-reduced-motion: reduce) {
+    .md-page.dm-page *,
+    .md-page.dm-page *::before,
+    .md-page.dm-page *::after {
+        transition-duration: .01ms !important;
+        animation: none !important;
+    }
+}

@@ -1,621 +1,634 @@
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap");
+
 /* =========================================
-   YUKBOR — LOGIN / REGISTER / NAVBAR
-   ========================================= */
+   YUKBOR — KIRISH VA RO'YXATDAN O'TISH
+   Bosh sahifa va navbar bilan bir xil uslub.
+========================================= */
 
-html,
-body {
-    margin: 0;
-    height: 100%;
+/* Sahifa atrofi ham qora bo'lsin: oq chiziq ko'rinmasin */
+html:has(.login-page),
+body:has(.login-page) {
+    background: #121212;
 }
 
-body {
-    font-family: "Manrope", "Inter", system-ui, Arial, sans-serif;
-}
+.login-page {
+    --lg-asphalt: #121212;
+    --lg-asphalt-2: #1b1b1b;
+    --lg-line: #353535;
+    --lg-yellow: #ffd21f;
+    --lg-yellow-hover: #ffe266;
+    --lg-yellow-deep: #b89500;
+    --lg-white: #f5f3ee;
+    --lg-soft: #d9d4c8;
+    --lg-muted: #a9a59b;
+    --lg-blue: #1d5fd1;
+    --lg-blue-hover: #2a6fe6;
+    --lg-blue-deep: #123f8f;
+    --lg-danger: #ff7a6b;
+    --lg-font-display: "Barlow Condensed", "Arial Narrow", Impact, sans-serif;
+    --lg-font-body: "Barlow", "Segoe UI", system-ui, sans-serif;
 
-/* ================= MAKET ================= */
-
-.yb-shell {
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 100vh;
-    height: 100dvh;
+    min-height: calc(100dvh - var(--yb-nav-h, 98px));
+    padding: 32px 16px 40px;
+    box-sizing: border-box;
+
+    background-color: var(--lg-asphalt);
+    background-image: radial-gradient(rgba(255, 255, 255, .045) 1px, transparent 1px);
+    background-size: 20px 20px;
+    color: var(--lg-white);
+    font-family: var(--lg-font-body);
+}
+
+.login-page *,
+.login-page *::before,
+.login-page *::after {
+    box-sizing: border-box;
+}
+
+/* =========================================
+   KARTA
+========================================= */
+
+.login-card {
+    position: relative;
+    width: 100%;
+    max-width: 440px;
+    margin: auto;
+    padding: 30px 28px 22px;
+
+    background: var(--lg-asphalt-2);
+    border: 2px solid var(--lg-white);
+    border-radius: 18px;
+    box-shadow: 10px 10px 0 var(--lg-yellow);
     overflow: hidden;
-    background: #eaf2ff;
 }
 
-/* Kontent navbar ostidagi butun joyni egallaydi, sig'masa scroll bo'ladi */
-.yb-content {
-    flex: 1 1 auto;
-    min-height: 0;
-    box-sizing: border-box;
-    display: flex;
-    padding: 24px 16px;
-    overflow-x: hidden;
-    overflow-y: auto;
-    background: #eaf2ff url("/images/login.png") center / cover no-repeat;
+/* Yuqoridagi sariq-qora ogohlantirish lentasi */
+.login-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 12px;
+    background: repeating-linear-gradient(
+        -45deg,
+        var(--lg-asphalt) 0 14px,
+        var(--lg-yellow) 14px 28px
+    );
 }
 
-/* LoginView o'rami kartani to'g'ridan-to'g'ri maketga qo'yadi */
-.yb-content > .login-page {
-    display: contents;
+.register-card {
+    max-width: 460px;
 }
 
-/* ================= KARTA (login va register) ================= */
-
-.yb-content .login-card,
-.yb-content .register-card {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    margin-left: auto;
-    margin-right: auto;
-    flex: 0 0 auto;
-    width: 100%;
-    max-width: 560px;
-    box-sizing: border-box;
-    padding: 32px 40px 28px;
-
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-
-    background: rgba(255, 255, 255, 0.97);
-    border: 1px solid rgba(210, 228, 255, 0.9);
-    border-radius: 28px;
-    box-shadow:
-        0 22px 65px rgba(30, 66, 125, 0.18),
-        0 3px 12px rgba(40, 90, 170, 0.05);
-
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    animation: yb-card-in 0.4s ease-out both;
-}
-
-@keyframes yb-card-in {
-    from { opacity: 0; transform: translateY(10px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-
-/* ---------- Brend ---------- */
+/* =========================================
+   BRAND (markazda)
+========================================= */
 
 .yukbor-brand {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 6px;
-    width: 100%;
-    margin-bottom: 22px;
+    gap: 4px;
+    margin-bottom: 2px;
     text-align: center;
 }
 
 .brand-name {
-    display: flex;
-    align-items: center;
+    display: inline-flex;
     justify-content: center;
-    font-size: 38px;
-    font-weight: 900;
-    letter-spacing: -1.8px;
-    line-height: 1.1;
+    gap: 6px;
+
+    font-family: var(--lg-font-display);
+    font-size: 34px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 1px;
+    text-transform: uppercase;
 }
 
 .brand-yuk {
-    color: #17366b;
+    color: var(--lg-white);
 }
 
 .brand-bor {
-    background: linear-gradient(110deg, #2878ff, #7055ed);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--lg-yellow);
 }
 
 .brand-tagline {
-    color: #71809a;
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.3px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+
+    color: var(--lg-muted);
+    font-family: var(--lg-font-display);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
 }
 
-/* ---------- Sarlavha ---------- */
+.brand-tagline::before {
+    content: "";
+    width: 18px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--lg-yellow);
+}
 
-.login-title {
-    width: 100%;
-    margin: 0;
-    color: #111d37;
-    font-size: clamp(26px, 3.5vw, 34px);
+/* =========================================
+   SARLAVHA VA MATN (markazda)
+========================================= */
+
+.login-page .login-title,
+.login-page .login-title span {
+    color: var(--lg-white);
+}
+
+.login-page .login-title {
+    margin: 16px 0 6px;
+
+    font-family: var(--lg-font-display);
+    font-size: 40px;
     font-weight: 800;
-    letter-spacing: -1px;
-    line-height: 1.2;
+    line-height: 1;
+    letter-spacing: .3px;
     text-align: center;
+    text-transform: uppercase;
+    text-wrap: balance;
 }
 
-.login-title-highlight {
-    color: #2166f3;
+.login-page .login-title .login-title-highlight {
+    display: inline-block;
+    padding: 0 .14em;
+    border-radius: 6px;
+    background: var(--lg-yellow);
+    color: var(--lg-asphalt);
+    transform: rotate(-1.5deg);
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+}
+
+.login-page .login-title .login-title-highlight,
+.login-page .login-title .login-title-highlight span {
+    color: var(--lg-asphalt);
 }
 
 .login-description {
-    width: 100%;
-    margin: 10px 0 24px;
-    color: #45536d;
-    font-size: 14px;
-    line-height: 1.6;
+    margin: 0 0 16px;
+    color: var(--lg-muted);
+    font-size: 15px;
+    line-height: 1.5;
     text-align: center;
 }
 
-/* ---------- Forma ---------- */
+/* =========================================
+   RO'YXATDAN O'TISH: BOSQICHLAR
+========================================= */
 
-.login-form,
-.register-form {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 16px;
-    width: 100%;
-    min-width: 0;
-    box-sizing: border-box;
-    margin: 0 0 18px;
-    padding: 0;
+.register-steps {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin: 0 0 16px;
 }
 
+.register-step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    padding: 7px 10px;
+
+    border: 2px dashed var(--lg-line);
+    border-radius: 10px;
+    color: var(--lg-muted);
+}
+
+.register-step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    background: var(--lg-line);
+    color: var(--lg-soft);
+
+    font-family: var(--lg-font-display);
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.register-step-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    font-family: var(--lg-font-display);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: .6px;
+    text-transform: uppercase;
+}
+
+.register-step--active {
+    border: 2px solid var(--lg-yellow);
+    color: var(--lg-white);
+}
+
+.register-step--active .register-step-num {
+    background: var(--lg-yellow);
+    color: var(--lg-asphalt);
+}
+
+.register-hint {
+    margin: 10px 0 0;
+    text-align: center;
+    color: var(--lg-muted);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* =========================================
+   MAYDONLAR
+========================================= */
+
+.login-form,
 .register-form {
     gap: 12px;
 }
 
 .login-input {
-    display: block;
     width: 100%;
-    min-width: 0;
-    box-sizing: border-box;
-
-    --vaadin-input-field-border-color: #d6e4fb;
-    --vaadin-input-field-background: #f7faff;
-    --vaadin-input-field-border-radius: 16px;
-    --vaadin-input-field-value-color: #14213d;
-    --vaadin-input-field-placeholder-color: #7a879d;
-}
-
-.login-input::part(label) {
-    padding-bottom: 6px;
-    color: #182641;
-    font-size: 13px;
-    font-weight: 700;
+    font-family: var(--lg-font-body);
+    font-size: 17px;
+    color: var(--lg-white);
+    --vaadin-input-field-value-color: var(--lg-white);
+    --vaadin-input-field-placeholder-color: #8f8a7f;
 }
 
 .login-input::part(input-field) {
-    min-height: 54px;
-    padding-inline: 12px;
-    background: #f7faff;
-    border: 1px solid #d6e4fb;
-    border-radius: 16px;
-    box-shadow: 0 2px 4px rgba(36, 76, 137, 0.025);
-    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    background: var(--lg-asphalt);
+    border: 2px solid var(--lg-line);
+    border-radius: 12px;
+    box-shadow: none;
+    transition: border-color .2s ease, box-shadow .2s ease;
 }
 
-.login-input:focus-within::part(input-field) {
-    background: #fff;
-    border-color: #83adff;
-    box-shadow: 0 0 0 3px rgba(33, 102, 243, 0.09);
+.login-input:hover::part(input-field) {
+    border-color: #4a4a4a;
 }
 
-.login-input::part(prefix) {
-    color: #2166f3;
+.login-input[focused]::part(input-field) {
+    border-color: var(--lg-yellow);
+    box-shadow: 0 0 0 3px rgba(255, 210, 31, .22);
 }
 
-/* ---------- Tugma ---------- */
+.login-input[invalid]::part(input-field) {
+    border-color: var(--lg-danger);
+}
+
+.login-input::part(label) {
+    color: var(--lg-soft);
+    font-family: var(--lg-font-display);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+}
+
+.login-input::part(error-message) {
+    color: var(--lg-danger);
+    font-weight: 600;
+}
+
+.login-input::part(value) {
+    color: var(--lg-white);
+}
+
+.login-input::part(toggle-button) {
+    color: var(--lg-yellow);
+}
+
+.login-input [slot="prefix"] {
+    color: var(--lg-yellow);
+}
+
+.login-input [slot="suffix"] {
+    color: var(--lg-muted);
+}
+
+vaadin-select-overlay::part(overlay) {
+    background: var(--lg-asphalt-2);
+    border: 2px solid var(--lg-yellow);
+    border-radius: 12px;
+    box-shadow: 6px 6px 0 var(--lg-yellow);
+}
+
+/* =========================================
+   ASOSIY TUGMA (oddiy HTML tugma)
+========================================= */
 
 .login-submit {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    gap: 10px;
+
     width: 100%;
-    min-height: 58px;
-    box-sizing: border-box;
-    margin: 0 0 18px;
+    height: 52px;
+    margin-top: 4px;
     padding: 0 20px;
 
-    color: #fff !important;
-    background: linear-gradient(105deg, #1764f5 0%, #3b65e8 60%, #6259eb 100%) !important;
-    border: none !important;
-    border-radius: 16px;
+    background: var(--lg-yellow);
+    color: var(--lg-asphalt);
+    border: 3px solid var(--lg-yellow);
+    border-radius: 12px;
+    box-shadow: 0 5px 0 var(--lg-yellow-deep);
 
-    font-family: inherit;
-    font-size: 15px;
+    font-family: var(--lg-font-display);
+    font-size: 21px;
     font-weight: 800;
-    box-shadow: 0 10px 24px rgba(36, 100, 235, 0.22);
+    letter-spacing: .8px;
+    text-transform: uppercase;
+
     cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    transition: transform .15s ease, box-shadow .15s ease, background .2s ease;
 }
 
 .login-submit:hover {
-    filter: brightness(1.05);
-    transform: translateY(-1px);
-    box-shadow: 0 14px 28px rgba(36, 100, 235, 0.27);
+    background: var(--lg-yellow-hover);
+    border-color: var(--lg-yellow-hover);
+    transform: translateY(2px);
+    box-shadow: 0 3px 0 var(--lg-yellow-deep);
 }
 
 .login-submit:active {
-    transform: none;
+    transform: translateY(5px);
+    box-shadow: 0 0 0 var(--lg-yellow-deep);
+}
+
+.login-submit:focus-visible {
+    outline: 3px solid var(--lg-white);
+    outline-offset: 3px;
 }
 
 .login-submit:disabled {
-    opacity: 0.7;
+    opacity: .6;
     cursor: wait;
     transform: none;
-    box-shadow: none;
+    box-shadow: 0 5px 0 var(--lg-yellow-deep);
 }
 
-.login-submit vaadin-icon {
-    width: 19px;
-    height: 19px;
-    color: #fff;
+.login-submit-icon {
+    display: inline-flex;
+    width: 22px;
+    height: 22px;
+    color: inherit;
 }
 
-/* Ro'yxatdan o'tishda strelka yo'q */
-.register-card .login-submit vaadin-icon {
-    display: none;
+.login-submit-icon svg,
+.login-submit-icon vaadin-icon {
+    width: 22px;
+    height: 22px;
 }
 
-/* ---------- Pastki havola ---------- */
+/* =========================================
+   AJRATGICH: "YOKI"
+========================================= */
 
-.login-footer {
+.login-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    margin: 14px 0 12px;
+}
+
+.login-divider-line {
+    flex: 1;
+    height: 2px;
+    background: repeating-linear-gradient(90deg, var(--lg-line) 0 8px, transparent 8px 14px);
+}
+
+.login-divider-text {
+    color: var(--lg-muted);
+    font-family: var(--lg-font-display);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+}
+
+/* =========================================
+   IJTIMOIY TUGMALAR: ustma-ust, to'liq kenglik
+========================================= */
+
+.login-social {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    margin: 0 0 14px;
+}
+
+.social-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-wrap: wrap;
-    gap: 5px;
-    color: #34425d;
-    font-size: 13px;
-    line-height: 1.6;
+
+    width: 100%;
+    height: 52px;
+    margin: 0;
+    padding: 0 16px;
+
+    border: 2px solid transparent;
+    border-radius: 12px;
+
+    font-family: var(--lg-font-display);
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: .6px;
+    text-transform: uppercase;
+
+    cursor: pointer;
+    transition: transform .15s ease, box-shadow .15s ease, background .2s ease, border-color .2s ease;
+}
+
+.social-btn:focus-visible {
+    outline: 3px solid var(--lg-yellow);
+    outline-offset: 3px;
+}
+
+.social-btn-content {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+    font-family: var(--lg-font-display);
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: .6px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.social-btn-content svg {
+    flex-shrink: 0;
+}
+
+/* Google: qora tugma, yorug' chegara */
+.social-google {
+    background: var(--lg-asphalt);
+    border-color: var(--lg-line);
+    color: var(--lg-white);
+}
+
+.social-google:hover {
+    background: #1f1f1f;
+    border-color: var(--lg-white);
+    transform: translateY(1px);
+}
+
+/* Telegram: ko'k tugma, soyali */
+.social-telegram {
+    background: var(--lg-blue);
+    border-color: var(--lg-blue);
+    color: #ffffff;
+    box-shadow: 0 4px 0 var(--lg-blue-deep);
+}
+
+.social-telegram:hover {
+    background: var(--lg-blue-hover);
+    border-color: var(--lg-blue-hover);
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 var(--lg-blue-deep);
+}
+
+.social-btn-content,
+.social-btn-content span {
+    color: inherit;
+}
+
+/* =========================================
+   PASTKI QISM: LINKLAR (markazda)
+========================================= */
+
+.login-footer {
+    margin-top: 8px;
     text-align: center;
+    color: var(--lg-muted);
+    font-size: 15px;
 }
 
 .login-register-link {
-    color: #155ce8;
-    font-weight: 800;
+    display: inline-block;
+    margin-left: 4px;
+
+    color: var(--lg-yellow);
+    font-weight: 700;
     text-decoration: none;
-    transition: color 0.2s ease;
+    border-bottom: 2px solid var(--lg-yellow);
+    padding-bottom: 1px;
+    transition: color .2s ease, background .2s ease;
 }
 
 .login-register-link:hover {
-    color: #594de5;
-    text-decoration: underline;
+    color: var(--lg-asphalt);
+    background: var(--lg-yellow);
+    border-bottom-color: transparent;
+    border-radius: 4px;
+    padding: 1px 6px;
+    margin-left: 0;
 }
 
-/* ================= NAVBAR ================= */
-
-.main-navbar {
-    position: relative;
-    z-index: 50;
-    flex: 0 0 auto;
-    width: 100%;
-    background: #102747;
-    color: #fff;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 5px 20px rgba(16, 39, 71, 0.14);
+.login-register-link:focus-visible {
+    outline: 3px solid var(--lg-yellow);
+    outline-offset: 3px;
+    border-radius: 4px;
 }
 
-.main-navbar .navbar-inner {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
-    box-sizing: border-box;
-    max-width: 1280px;
-    height: 72px;
-    margin: 0 auto;
-    padding: 0 32px;
-}
+/* =========================================
+   MOBIL (≤ 520px)
+========================================= */
 
-/* Desktopda panel yo'q: menyu va tugmalar to'g'ridan-to'g'ri gridga tushadi */
-.main-navbar .navbar-panel {
-    display: contents;
-}
+@media (max-width: 520px) {
 
-.main-navbar .navbar-logo {
-    justify-self: start;
-    color: #fff;
-    font-size: 27px;
-    font-weight: 800;
-    letter-spacing: -0.8px;
-    text-decoration: none;
-    white-space: nowrap;
-    transition: color 0.2s ease;
-}
-
-.main-navbar .navbar-logo:hover {
-    color: #4d8dff;
-}
-
-.main-navbar .navbar-menu {
-    grid-column: 2;
-    justify-self: center;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.main-navbar .navbar-actions {
-    grid-column: 3;
-    justify-self: end;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.main-navbar .navbar-link {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-    min-height: 40px;
-    padding: 0 14px;
-    border: 1px solid transparent;
-    border-radius: 10px;
-    color: #d8e3f3;
-    background: transparent;
-    font-size: 14px;
-    font-weight: 600;
-    text-decoration: none;
-    white-space: nowrap;
-    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-}
-
-.main-navbar .navbar-link:hover {
-    color: #fff;
-    background: rgba(77, 141, 255, 0.16);
-}
-
-.main-navbar .navbar-login {
-    color: #fff;
-}
-
-.main-navbar .navbar-register,
-.main-navbar .navbar-profile {
-    color: #fff;
-    border-color: rgba(77, 141, 255, 0.5);
-}
-
-.main-navbar .navbar-register:hover,
-.main-navbar .navbar-profile:hover {
-    background: #4d8dff;
-    border-color: #4d8dff;
-}
-
-/* Hamburger: desktopda yashirin */
-vaadin-button.navbar-toggle {
-    display: none;
-    justify-self: end;
-    min-width: 44px;
-    width: 44px;
-    height: 44px;
-    margin: 0;
-    padding: 0;
-    color: #fff;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    border-radius: 12px;
-    cursor: pointer;
-}
-
-/* ================= RESPONSIVE ================= */
-
-/* Planshet va telefon: navbar hamburger menyuga o'tadi */
-@media (max-width: 820px) {
-    .main-navbar .navbar-inner {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        height: 60px;
-        padding: 0 16px;
+    .login-page {
+        padding: 24px 12px 36px;
     }
 
-    .main-navbar .navbar-logo {
-        font-size: 24px;
-    }
-
-    vaadin-button.navbar-toggle {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    /* Ochiladigan panel: kontent ustidan chiqadi, joyni siljitmaydi */
-    .main-navbar .navbar-panel {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        flex-direction: column;
-        gap: 14px;
-        box-sizing: border-box;
-        padding: 12px 16px 20px;
-        background: #102747;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        box-shadow: 0 20px 30px rgba(10, 24, 48, 0.35);
-    }
-
-    .main-navbar.open .navbar-panel {
-        display: flex;
-    }
-
-    .main-navbar .navbar-menu {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 4px;
-    }
-
-    .main-navbar .navbar-link {
-        justify-content: flex-start;
-        min-height: 48px;
-        padding: 0 14px;
-        font-size: 16px;
-    }
-
-    .main-navbar .navbar-actions {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 10px;
-        padding-top: 14px;
-        border-top: 1px solid rgba(255, 255, 255, 0.12);
-    }
-
-    .main-navbar .navbar-actions .navbar-link {
-        justify-content: center;
-        border-color: rgba(255, 255, 255, 0.25);
-    }
-
-    .main-navbar .navbar-actions .navbar-register {
-        background: #2f6bff;
-        border-color: #2f6bff;
-    }
-}
-
-/* Telefon */
-@media (max-width: 480px) {
-    .yb-content {
-        padding: 14px 12px 20px;
-    }
-
-    .yb-content .login-card,
-    .yb-content .register-card {
-        padding: 24px 20px 22px;
-        border-radius: 22px;
+    .login-card {
+        padding: 30px 20px 22px;
+        box-shadow: 6px 6px 0 var(--lg-yellow);
     }
 
     .brand-name {
-        font-size: 32px;
-        letter-spacing: -1.4px;
+        font-size: 34px;
     }
 
-    .yukbor-brand {
-        margin-bottom: 18px;
+    .login-page .login-title {
+        font-size: 38px;
     }
 
-    .login-title {
-        font-size: 26px;
-        letter-spacing: -0.8px;
+    .social-btn,
+    .social-btn-content {
+        font-size: 17px;
     }
 
-    .login-description {
-        margin: 8px 0 20px;
+    .register-steps {
+        gap: 6px;
+    }
+
+    .register-step {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+        padding: 8px;
+    }
+
+    .register-step-label {
         font-size: 13px;
     }
+}
 
-    .login-form {
-        gap: 14px;
+/* =========================================
+   KICHIK TELEFONLAR (≤ 360px)
+========================================= */
+
+@media (max-width: 360px) {
+
+    .login-card {
+        padding: 26px 16px 20px;
     }
 
-    .login-input::part(input-field) {
-        min-height: 50px;
+    .login-page .login-title {
+        font-size: 34px;
     }
 
-    .login-submit {
-        min-height: 54px;
-        border-radius: 15px;
+    .register-step-label {
+        font-size: 12px;
     }
 }
 
-/* Past ekranlar (masalan, gorizontal telefon): kartani ixchamlash */
-@media (max-height: 700px) {
-    .yb-content .login-card,
-    .yb-content .register-card {
-        padding-top: 18px;
-        padding-bottom: 16px;
-    }
-
-    .yukbor-brand {
-        margin-bottom: 12px;
-    }
-
-    .login-description {
-        margin-bottom: 14px;
-    }
-}
+/* =========================================
+   HARAKATNI KAMAYTIRISH
+========================================= */
 
 @media (prefers-reduced-motion: reduce) {
-    .yb-content .login-card,
-    .yb-content .register-card {
-        animation: none;
-    }
 
+    .login-input::part(input-field),
     .login-submit,
-    .login-register-link,
-    .main-navbar .navbar-link,
-    .main-navbar .navbar-logo {
+    .social-btn,
+    .login-register-link {
         transition: none;
-    }
-}
-
-/* Foydalanuvchi: rasm + ism + strelka */
-.main-navbar .navbar-user {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 4px 12px 4px 4px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 999px;
-    color: #fff;
-    background: rgba(255, 255, 255, 0.08);
-    cursor: pointer;
-    transition: background 0.2s ease;
-}
-
-.main-navbar .navbar-user:hover {
-    background: rgba(255, 255, 255, 0.15);
-}
-
-.main-navbar .navbar-avatar {
-    width: 38px;
-    height: 38px;
-    flex: none;
-    overflow: hidden;
-    border-radius: 50%;
-    background: #1b3a66;
-}
-
-.main-navbar .navbar-profile-img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transform: scale(1.25);
-}
-
-.main-navbar .navbar-user-name {
-    max-width: 140px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: 14px;
-    font-weight: 600;
-}
-
-.main-navbar .navbar-user vaadin-icon {
-    width: 14px;
-    height: 14px;
-    color: #b9c9e3;
-}
-
-@media (max-width: 820px) {
-    .main-navbar .navbar-actions .navbar-user {
-        align-self: flex-start;
-    }
-}
-/* Google va Telegram yonma-yon */
-.login-social {
-    flex-direction: row;
-    gap: 10px;
-}
-
-vaadin-button.social-btn {
-    flex: 1 1 0;
-    min-width: 0;
-    font-size: 13px;
-}
-
-/* Telefonda ustma-ust */
-@media (max-width: 480px) {
-    .login-social {
-        flex-direction: column;
     }
 }
