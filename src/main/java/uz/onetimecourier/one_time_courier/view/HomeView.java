@@ -17,67 +17,66 @@ public class HomeView extends Div {
 
     // =====================================================================
     //  IKONKALAR
-    //  Yagona uslub: qalin (3px) yumaloq kontur + yengil to'ldirma.
-    //  Rangi atrofdagi CSS (currentColor) dan olinadi, shuning uchun
-    //  sariq, oq, ko'k yoki yashil fonda bir xil yaxshi ko'rinadi.
+    //  Uslub: ingichka (2.4px) kontur + bitta aksent chiziq + yengil dog'.
+    //  Ranglar CSS dan keladi:
+    //    kontur  -> currentColor
+    //    class a -> var(--accent)   (aksent chiziq)
+    //    class f -> yengil to'ldirma
+    //    class w -> g'ildirak to'ldirmasi
     // =====================================================================
 
     private static final String ICON_PACKAGE = """
             <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-              <path d="M7 14.5 24 6l17 8.5v19L24 42 7 33.5z" fill="currentColor" fill-opacity=".2"/>
-              <g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <path class="f" d="M7 14.5 24 6l17 8.5v19L24 42 7 33.5z"/>
+              <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M7 14.5 24 6l17 8.5v19L24 42 7 33.5z"/>
                 <path d="M7 14.5 24 23l17-8.5"/>
                 <path d="M24 23v19"/>
-                <path d="M15.5 10.2l17 8.6"/>
+                <path class="a" d="M15.5 10.2l17 8.7"/>
               </g>
             </svg>
             """;
 
     private static final String ICON_TRUCK = """
             <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-              <path d="M3 12h26v23H3z" fill="currentColor" fill-opacity=".2"/>
-              <g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <path class="f" d="M3 12h26v23H3z"/>
+              <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M3 12h26v23H3z"/>
-                <path d="M29 19h8.5l7 8.500V35H29"/>
-                <path d="M33 22.500h3.700l3.800 4.500H33z"/>
-                <path d="M9 20h12"/>
-              </g>
-              <g fill="none" stroke="currentColor" stroke-width="3">
-                <circle cx="13" cy="36" r="4.800" fill="#121212"/>
-                <circle cx="36" cy="36" r="4.800" fill="#121212"/>
+                <path d="M29 19h8.5l7 8.5V35H29"/>
+                <path class="a" d="M33 22.5h3.7l3.8 4.5H33z"/>
+                <path d="M9 19h12"/>
+                <circle class="w" cx="13" cy="36" r="4.8"/>
+                <circle class="w" cx="36" cy="36" r="4.8"/>
               </g>
             </svg>
             """;
 
     private static final String ICON_SHIELD = """
             <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-              <path d="M24 5 40 11v11c0 9.500-6.500 16.500-16 20C14.500 38.500 8 31.500 8 22V11z"
-                    fill="currentColor" fill-opacity=".2"/>
-              <g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M24 5 40 11v11c0 9.500-6.500 16.500-16 20C14.500 38.500 8 31.500 8 22V11z"/>
-                <path d="M16.500 24l5.500 5.500L32 19"/>
+              <path class="f" d="M24 5 40 11v11c0 9.5-6.5 16.5-16 20C14.5 38.5 8 31.5 8 22V11z"/>
+              <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M24 5 40 11v11c0 9.5-6.5 16.5-16 20C14.5 38.5 8 31.5 8 22V11z"/>
+                <path class="a" stroke-width="3.2" d="M16.5 24l5.500 5.500L32 19"/>
               </g>
             </svg>
             """;
 
     private static final String ICON_PIN = """
             <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-              <path d="M24 5c-7.200 0-13 5.400-13 12.300C11 27.500 24 43 24 43s13-15.500 13-25.700C37 10.400 31.200 5 24 5z"
-                    fill="currentColor" fill-opacity=".2"/>
-              <g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M24 5c-7.200 0-13 5.400-13 12.300C11 27.500 24 43 24 43s13-15.500 13-25.700C37 10.400 31.200 5 24 5z"/>
-                <circle cx="24" cy="17.500" r="5"/>
+              <path class="f" d="M24 5c-7.2 0-13 5.4-13 12.3C11 27.5 24 43 24 43s13-15.5 13-25.7C37 10.4 31.200 5 24 5z"/>
+              <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M24 5c-7.2 0-13 5.4-13 12.3C11 27.5 24 43 24 43s13-15.5 13-25.7C37 10.4 31.200 5 24 5z"/>
+                <circle class="a" cx="24" cy="17.500" r="5"/>
               </g>
             </svg>
             """;
 
     private static final String ICON_CLOCK = """
             <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="24" cy="24" r="18" fill="currentColor" fill-opacity=".2"/>
-              <g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <circle class="f" cx="24" cy="24" r="18"/>
+              <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="24" cy="24" r="18"/>
-                <path d="M24 13v11l7.500 4.500"/>
+                <path class="a" stroke-width="3" d="M24 13v11l7.500 4.500"/>
                 <path d="M24 3.500V6M44.500 24H42M24 44.500V42M3.500 24H6"/>
               </g>
             </svg>
@@ -85,26 +84,28 @@ public class HomeView extends Div {
 
     private static final String ICON_BOLT = """
             <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-              <path d="M27 4 10 27h12l-2 17 18-25H26z" fill="currentColor" fill-opacity=".2"/>
-              <path d="M27 4 10 27h12l-2 17 18-25H26z" fill="none" stroke="currentColor"
-                    stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+              <path class="f" d="M27 4 10 27h12l-2 17 18-25H26z"/>
+              <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M27 4 10 27h12l-2 17 18-25H26z"/>
+                <path class="a" d="M37 9l3-3M40.500 15H45"/>
+              </g>
             </svg>
             """;
 
     private static final String ICON_TELEGRAM = """
             <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-              <path d="M43 6 6 21l12 5 5 13z" fill="#2aabee" fill-opacity=".25"/>
-              <g fill="none" stroke="#2aabee" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <path class="f" d="M43 6 6 21l12 5 5 13z"/>
+              <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M43 6 6 21l12 5 5 13z"/>
-                <path d="M18 26 43 6"/>
+                <path class="a" d="M18 26 43 6"/>
                 <path d="M23 39l5-8"/>
               </g>
             </svg>
             """;
 
-    // Tugma va accordion ichidagi ikonkalar (24x24, currentColor)
+    // Tugma va accordion ikonkalari (24x24, currentColor)
     private static final String ICON_SEARCH = """
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"
                  stroke-linecap="round" xmlns="http://www.w3.org/2000/svg">
               <circle cx="11" cy="11" r="7"/>
               <path d="M20 20l-4.200-4.200"/>
@@ -119,7 +120,7 @@ public class HomeView extends Div {
             """;
 
     private static final String ICON_ARROW = """
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"
                  stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
               <path d="M4 12h15M13 6l6 6-6 6"/>
             </svg>
@@ -128,41 +129,75 @@ public class HomeView extends Div {
     private static final String ICON_CHEVRON = """
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
                  stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
-              <path d="M6 9.500l6 5.500 6-5.500"/>
+              <path d="M6 9.5l6 5.5 6-5.5"/>
             </svg>
             """;
 
-    // Hero ostidagi yo'lda yurib o'tadigan yuk mashinasi
-    private static final String ICON_BIG_TRUCK = """
-            <svg viewBox="0 0 230 96" xmlns="http://www.w3.org/2000/svg">
-              <rect x="4" y="10" width="140" height="58" rx="5" fill="#f5f3ee"/>
-              <rect x="4" y="52" width="140" height="8" fill="#ffd21f"/>
-              <text x="74" y="40" text-anchor="middle" font-family="'Barlow Condensed', Impact, sans-serif"
-                    font-size="28" font-weight="800" fill="#121212" letter-spacing="1.5">YUKBOR</text>
-              <path d="M148 24h36c5 0 8 2 11 6l14 18c2 3 3 5 3 9v13H148z" fill="#ffd21f"/>
-              <path d="M156 31h24l13 17h-37z" fill="#2b3a4c"/>
-              <rect x="4" y="68" width="210" height="8" rx="3" fill="#2a2a2a"/>
-              <rect x="207" y="56" width="8" height="9" rx="2" fill="#fff6c2"/>
-              <g fill="#0b0b0b" stroke="#f5f3ee" stroke-width="3">
-                <circle cx="36" cy="78" r="13"/>
-                <circle cx="104" cy="78" r="13"/>
-                <circle cx="182" cy="78" r="13"/>
+    // =====================================================================
+    //  HERO RASMI: yo'l xaritasi (Buxoro -> Samarqand -> Toshkent)
+    // =====================================================================
+
+    private static final String HERO_ART = """
+            <svg viewBox="0 0 520 440" xmlns="http://www.w3.org/2000/svg" role="img"
+                 aria-label="Shaharlar orasidagi yo'l xaritasi">
+              <rect x="6" y="6" width="508" height="428" rx="30" fill="#dfece3" stroke="#111512" stroke-width="2.5"/>
+
+              <!-- xarita to'ri -->
+              <g stroke="#fffefb" stroke-width="2" opacity=".8">
+                <path d="M6 110H514M6 220H514M6 330H514"/>
+                <path d="M130 6V434M260 6V434M390 6V434"/>
               </g>
-              <g fill="#f5f3ee">
-                <circle cx="36" cy="78" r="4.500"/>
-                <circle cx="104" cy="78" r="4.500"/>
-                <circle cx="182" cy="78" r="4.500"/>
+
+              <!-- daryo -->
+              <path d="M-10 250 C 90 210, 150 300, 250 270 S 420 200, 540 240"
+                    fill="none" stroke="#c4ddcd" stroke-width="22" stroke-linecap="round"/>
+
+              <!-- yo'l -->
+              <path id="ybRoute" d="M78 354 C 128 262, 236 336, 272 236 S 400 150, 446 84"
+                    fill="none" stroke="#111512" stroke-width="3" stroke-linecap="round"
+                    stroke-dasharray="1 11"/>
+              <path d="M78 354 C 128 262, 236 336, 272 236 S 400 150, 446 84"
+                    fill="none" stroke="#ff5a1f" stroke-width="5" stroke-linecap="round"
+                    stroke-dasharray="26 14" opacity=".9"/>
+
+              <!-- bekatlar -->
+              <g stroke="#111512" stroke-width="4">
+                <circle cx="78" cy="354" r="12" fill="#fffefb"/>
+                <circle cx="272" cy="236" r="12" fill="#fffefb"/>
+                <circle cx="446" cy="84" r="15" fill="#ff5a1f"/>
+              </g>
+              <g font-family="'DM Mono', ui-monospace, monospace" font-size="15" font-weight="500"
+                 fill="#111512" letter-spacing="1">
+                <text x="98" y="392">BUXORO</text>
+                <text x="292" y="274">SAMARQAND</text>
+                <text x="426" y="124" text-anchor="end">TOSHKENT</text>
+              </g>
+
+              <!-- harakatlanuvchi yuk -->
+              <g class="home-art-dot">
+                <circle r="9" fill="#111512" stroke="#fffefb" stroke-width="3">
+                  <animateMotion dur="7s" repeatCount="indefinite" rotate="auto">
+                    <mpath href="#ybRoute"/>
+                  </animateMotion>
+                </circle>
+              </g>
+
+              <!-- yopishtirilgan izoh -->
+              <g transform="translate(46 70) rotate(-5)">
+                <rect width="172" height="74" rx="10" fill="#fffefb" stroke="#111512" stroke-width="2.5"/>
+                <rect x="62" y="-9" width="48" height="17" rx="3" fill="#ff5a1f" stroke="#111512" stroke-width="2"/>
+                <text x="86" y="34" text-anchor="middle" font-family="Caveat, 'Segoe Print', cursive"
+                      font-size="27" font-weight="700" fill="#111512">yo'lingizdagi yuk</text>
+                <text x="86" y="60" text-anchor="middle" font-family="Caveat, 'Segoe Print', cursive"
+                      font-size="27" font-weight="700" fill="#ff5a1f">= daromad</text>
               </g>
             </svg>
             """;
 
-    // Tablo uchun namuna yo'nalishlar
-    private static final String[][] SAMPLE_ROUTES = {
-            {"Toshkent", "Samarqand"},
-            {"Samarqand", "Buxoro"},
-            {"Andijon", "Toshkent"},
-            {"Farg'ona", "Namangan"},
-            {"Qarshi", "Toshkent"}
+    // Lenta uchun shaharlar
+    private static final String[] MARQUEE_CITIES = {
+            "Toshkent", "Samarqand", "Buxoro", "Andijon",
+            "Farg'ona", "Namangan", "Qarshi", "Nukus", "Termiz"
     };
 
     public HomeView() {
@@ -170,6 +205,7 @@ public class HomeView extends Div {
 
         add(
                 hero(),
+                marquee(),
                 steps(),
                 features(),
                 faq(),
@@ -181,7 +217,7 @@ public class HomeView extends Div {
 
     /**
      * Telefonda: hero tugmalari ekrandan chiqib ketgach, pastda doimiy
-     * "Yuklarni ko'rish / Yuk joylash" paneli paydo bo'ladi.
+     * "Yuklar / Yuk joylash" paneli paydo bo'ladi.
      */
     @Override
     protected void onAttach(AttachEvent event) {
@@ -211,17 +247,15 @@ public class HomeView extends Div {
         Div grid = new Div();
         grid.addClassName("home-hero-grid");
 
-        // ---- matn qismi ----
+        // ---- matn ----
         Div copy = new Div();
         copy.addClassName("home-hero-copy");
 
-        Div plate = new Div();
-        plate.addClassName("home-plate");
-        Span flag = new Span("UZ");
-        flag.addClassName("home-plate-flag");
-        Span number = new Span("01 YUKBOR");
-        number.addClassName("home-plate-num");
-        plate.add(flag, number);
+        Span chip = new Span();
+        chip.addClassName("home-chip");
+        Span dot = new Span();
+        dot.addClassName("home-chip-dot");
+        chip.add(dot, new Span("yo'ldosh yuk · yo'ldosh kuryer"));
 
         H1 title = new H1();
         title.addClassName("home-title");
@@ -230,8 +264,8 @@ public class HomeView extends Div {
         line1.addClassName("home-title-line");
 
         Span line2 = new Span();
-        line2.addClassNames("home-title-line", "home-title-accent");
-        Span mark = new Span("Daromad");
+        line2.addClassName("home-title-line");
+        Span mark = new Span("daromad");
         mark.addClassName("home-title-mark");
         line2.add(new Span("Qo'shimcha "), mark, new Span(" oling."));
 
@@ -248,8 +282,8 @@ public class HomeView extends Div {
         Anchor findButton = new Anchor("/deliveries");
         findButton.addClassNames("home-btn", "home-btn-primary");
         findButton.add(
-                svgBox(ICON_SEARCH, "home-btn-icon"),
-                new Span("Yuklarni ko'rish")
+                new Span("Yuklarni ko'rish"),
+                svgBox(ICON_ARROW, "home-btn-icon")
         );
 
         Anchor sendButton = new Anchor("/deliveries/new");
@@ -269,21 +303,15 @@ public class HomeView extends Div {
         );
         stats.addClassName("home-stats");
 
-        copy.add(plate, title, description, actions, stats);
+        copy.add(chip, title, description, actions, stats);
 
-        // ---- yo'nalishlar tablosi ----
-        Div board = board();
+        // ---- xarita ----
+        Div art = svgBox(HERO_ART, "home-art");
+        art.getElement().removeAttribute("aria-hidden");
 
-        grid.add(copy, board);
+        grid.add(copy, art);
         container.add(grid);
-
-        // ---- yo'l va yuk mashinasi ----
-        Div road = new Div();
-        road.addClassName("home-road");
-        road.getElement().setAttribute("aria-hidden", "true");
-        road.add(svgBox(ICON_BIG_TRUCK, "home-truck"));
-
-        hero.add(container, road);
+        hero.add(container);
         return hero;
     }
 
@@ -310,40 +338,41 @@ public class HomeView extends Div {
         return box;
     }
 
-    private Div board() {
+    // ================= SHAHARLAR LENTASI =================
 
-        Div board = new Div();
-        board.addClassName("home-board");
+    private Div marquee() {
 
-        Div head = new Div();
-        head.addClassName("home-board-head");
-        head.add(new Span("Yo'nalishlar"));
-        Span sample = new Span("namuna");
-        sample.addClassName("home-board-sample");
-        head.add(sample);
+        Div wrap = new Div();
+        wrap.addClassName("home-marquee");
 
-        board.add(head);
+        Div track = new Div();
+        track.addClassName("home-marquee-track");
 
-        for (int i = 0; i < SAMPLE_ROUTES.length; i++) {
-            Div row = new Div();
-            row.addClassName("home-board-row");
+        // Bir xil ikki nusxa: CSS animatsiyasi uzluksiz aylanishi uchun
+        track.add(marqueeGroup(false), marqueeGroup(true));
 
-            Span num = new Span(String.format("%02d", i + 1));
-            num.addClassName("home-board-num");
+        wrap.add(track);
+        return wrap;
+    }
 
-            Span from = new Span(SAMPLE_ROUTES[i][0]);
-            from.addClassName("home-board-city");
+    private Div marqueeGroup(boolean duplicate) {
 
-            Div arrow = svgBox(ICON_ARROW, "home-board-arrow");
-
-            Span to = new Span(SAMPLE_ROUTES[i][1]);
-            to.addClassName("home-board-city");
-
-            row.add(num, from, arrow, to);
-            board.add(row);
+        Div group = new Div();
+        group.addClassName("home-marquee-group");
+        if (duplicate) {
+            group.getElement().setAttribute("aria-hidden", "true");
         }
 
-        return board;
+        for (String city : MARQUEE_CITIES) {
+            Span name = new Span(city);
+            name.addClassName("home-marquee-city");
+
+            Span dot = new Span();
+            dot.addClassName("home-marquee-dot");
+
+            group.add(name, dot);
+        }
+        return group;
     }
 
     // ================= QADAMLAR =================
@@ -369,19 +398,19 @@ public class HomeView extends Div {
 
         grid.add(
                 step(
-                        "1",
+                        "01",
                         ICON_PACKAGE,
                         "Yuk joylashtiring",
                         "Yukingiz haqida ma'lumot kiriting va o'zingizga mos kuryerni toping."
                 ),
                 step(
-                        "2",
+                        "02",
                         ICON_TRUCK,
                         "Kuryer toping",
                         "O'z yo'nalishingizga mos keladigan yuklarni tanlang."
                 ),
                 step(
-                        "3",
+                        "03",
                         ICON_SHIELD,
                         "Ishonchli yetkazish",
                         "Har bir yetkazma ikki tomonlama tasdiqlash tizimi orqali nazorat qilinadi."
@@ -400,15 +429,11 @@ public class HomeView extends Div {
 
         Span num = new Span(number);
         num.addClassName("home-step-number");
-        num.getElement().setAttribute("aria-hidden", "true");
-
-        Div top = new Div(svgBox(iconSvg, "home-step-icon"));
-        top.addClassName("home-step-top");
 
         H3 heading = new H3(title);
         Paragraph text = new Paragraph(description);
 
-        step.add(num, top, heading, text);
+        step.add(num, svgBox(iconSvg, "home-step-icon"), heading, text);
         return step;
     }
 
@@ -417,7 +442,7 @@ public class HomeView extends Div {
     private Div features() {
 
         Div section = new Div();
-        section.addClassName("home-section");
+        section.addClassNames("home-section", "home-section-dark");
 
         Div container = new Div();
         container.addClassName("home-container");
@@ -466,12 +491,7 @@ public class HomeView extends Div {
         Div card = new Div();
         card.addClassName("home-feature");
 
-        Div iconBox = svgBox(iconSvg, "home-feature-icon");
-
-        Div body = new Div();
-        body.add(new H3(title), new Paragraph(description));
-
-        card.add(iconBox, body);
+        card.add(svgBox(iconSvg, "home-feature-icon"), new H3(title), new Paragraph(description));
         return card;
     }
 
@@ -577,6 +597,9 @@ public class HomeView extends Div {
         Div panel = new Div();
         panel.addClassName("home-cta-panel");
 
+        Span sticker = new Span("yo'lga chiqdikmi?");
+        sticker.addClassName("home-cta-sticker");
+
         Div content = new Div();
         content.addClassName("home-cta-content");
 
@@ -598,7 +621,7 @@ public class HomeView extends Div {
         Div actions = new Div(primary, ghost);
         actions.addClassName("home-cta-actions");
 
-        panel.add(content, actions);
+        panel.add(sticker, content, actions);
         container.add(panel);
         section.add(container);
         return section;
