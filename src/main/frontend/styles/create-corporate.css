@@ -1,4 +1,4 @@
-/* ===== create-corporate.css: Yuk joylash / tahrirlash sahifasi (oq-qora uslub) =====
+/* ===== create-corporate.css: Yuk joylash / Safar e'lon qilish sahifalari (oq-qora uslub) =====
    create-delivery.css dan KEYIN ulanadi. */
 
 html:has(.cd-page),
@@ -186,6 +186,47 @@ body:has(.cd-page) { background: #fff; }
 .cd-page vaadin-text-area::part(error-message),
 .cd-page vaadin-select::part(error-message) { color: var(--cd-black); font-weight: 700; }
 
+/* ---------- Sana va vaqt maydonlari (Safar e'lon qilish) ---------- */
+.cd-page vaadin-date-picker,
+.cd-page vaadin-time-picker { min-width: 0; width: 100%; }
+
+.cd-page vaadin-date-picker::part(label),
+.cd-page vaadin-time-picker::part(label) {
+  margin-bottom: 4px;
+  color: var(--cd-black);
+  font-weight: 600;
+  font-size: .9rem;
+}
+.cd-page vaadin-date-picker::part(required-indicator),
+.cd-page vaadin-time-picker::part(required-indicator) { color: var(--cd-black); }
+
+.cd-page vaadin-date-picker::part(input-field),
+.cd-page vaadin-time-picker::part(input-field) {
+  min-height: 50px;
+  border-radius: 14px;
+  background: var(--cd-field);
+  box-shadow: inset 0 0 0 1px transparent;
+  transition: box-shadow .15s ease, background .15s ease;
+}
+.cd-page vaadin-date-picker:hover::part(input-field),
+.cd-page vaadin-time-picker:hover::part(input-field) { background: #ececec; }
+
+.cd-page vaadin-date-picker[focused]::part(input-field),
+.cd-page vaadin-date-picker[opened]::part(input-field),
+.cd-page vaadin-time-picker[focused]::part(input-field),
+.cd-page vaadin-time-picker[opened]::part(input-field),
+.cd-page vaadin-date-picker[invalid]::part(input-field),
+.cd-page vaadin-time-picker[invalid]::part(input-field) {
+  background: var(--cd-white);
+  box-shadow: inset 0 0 0 2px var(--cd-black);
+}
+.cd-page vaadin-date-picker::part(helper-text),
+.cd-page vaadin-time-picker::part(helper-text) { color: var(--cd-muted); font-size: .8rem; }
+.cd-page vaadin-date-picker::part(error-message),
+.cd-page vaadin-time-picker::part(error-message) { color: var(--cd-black); font-weight: 700; }
+.cd-page vaadin-date-picker::part(toggle-button),
+.cd-page vaadin-time-picker::part(toggle-button) { color: var(--cd-black); }
+
 /* ---------- Yuk turi tugmalari ---------- */
 .cd-page .cd-size-group {
   display: grid;
@@ -356,20 +397,20 @@ body:has(.cd-page) { background: #fff; }
 .cd-page .cd-error { margin-top: 8px; padding: 8px 14px; font-size: .88rem; }
 .cd-page .cd-actions .cd-submit { width: 100%; }
 
-/* ---------- Xulosa paneli (qora karta) ---------- */
+/* ---------- Xulosa paneli (oq karta, qalin qora ramka) ---------- */
 .cd-page .cd-summary {
   position: sticky;
   top: calc(var(--yb-nav-h, 98px) + 16px);
   padding: 26px 26px 22px;
+  border: 2px solid var(--cd-black) !important;
   border-radius: 20px;
-  background: var(--cd-black) !important;
-  color: var(--cd-white) !important;
-  border: 0 !important;
-  box-shadow: 0 16px 36px rgba(0, 0, 0, .2);
+  background: var(--cd-white) !important;
+  color: var(--cd-black) !important;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .08);
 }
 .cd-page .cd-summary-title {
   margin: 0 0 10px !important;
-  color: var(--cd-white) !important;
+  color: var(--cd-black) !important;
   font-size: 1.2rem !important;
   font-weight: 800 !important;
 }
@@ -378,8 +419,8 @@ body:has(.cd-page) { background: #fff; }
   margin-bottom: 14px;
   padding: 4px 14px;
   border-radius: 999px;
-  background: var(--cd-white);
-  color: var(--cd-black);
+  background: var(--cd-black);
+  color: var(--cd-white);
   font-size: .8rem;
   font-weight: 700;
 }
@@ -390,17 +431,17 @@ body:has(.cd-page) { background: #fff; }
   align-items: baseline;
   gap: 16px;
   padding: 11px 0;
-  border-top: 1px dashed #4a4a4a;
+  border-top: 1px dashed #bdbdbd;
 }
-.cd-page .cd-summary-label { color: #a3a3a3 !important; font-size: .85rem; }
+.cd-page .cd-summary-label { color: var(--cd-muted) !important; font-size: .85rem; }
 .cd-page .cd-summary-value {
   min-width: 0;
-  color: var(--cd-white) !important;
+  color: var(--cd-black) !important;
   font-weight: 700;
   text-align: right;
   overflow-wrap: anywhere;
 }
-.cd-page .cd-summary-note { margin: 14px 0 0; color: #a3a3a3; font-size: .82rem; line-height: 1.45; }
+.cd-page .cd-summary-note { margin: 14px 0 0; color: var(--cd-muted); font-size: .82rem; line-height: 1.45; }
 
 /* ---------- Muvaffaqiyat / bloklangan holat ---------- */
 .cd-page .cd-success {
@@ -428,9 +469,6 @@ body:has(.cd-page) { background: #fff; }
   font-weight: 800 !important;
 }
 .cd-page .cd-success .cd-summary-list { margin: 16px 0 22px; }
-.cd-page .cd-success .cd-summary-row { border-top: 1px dashed #bdbdbd; }
-.cd-page .cd-success .cd-summary-label { color: var(--cd-muted) !important; }
-.cd-page .cd-success .cd-summary-value { color: var(--cd-black) !important; }
 .cd-page .cd-success-actions { display: flex; flex-wrap: wrap; gap: 12px; }
 .cd-page .cd-blocked .cd-submit { width: auto; }
 
@@ -454,10 +492,10 @@ body:has(.cd-page) { background: #fff; }
   .cd-page .cd-size, .cd-page .cd-chip, .cd-btn, .cd-submit { transition: none; }
 }
 
-/* ---------- Planshet ---------- */
+/* ---------- Planshet va mobil: xulosa formadan KEYIN, pastda ---------- */
 @media (max-width: 1000px) {
   .cd-page .cd-layout { grid-template-columns: minmax(0, 1fr); }
-  .cd-page .cd-summary { position: static; order: -1; }
+  .cd-page .cd-summary { position: static; }
   .cd-page .cd-size-group { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
@@ -481,43 +519,47 @@ body:has(.cd-page) { background: #fff; }
 @media (max-width: 420px) {
   .cd-page .cd-size-group { grid-template-columns: minmax(0, 1fr); }
 }
-/* ---------- Sana va vaqt maydonlari (Safar e'lon qilish sahifasi) ---------- */
-.cd-page vaadin-date-picker,
-.cd-page vaadin-time-picker { min-width: 0; width: 100%; }
+/* =========================================
+   TUZATMALAR
+   1) Yashirilgan (hidden) elementlar !important qoidalar tufayli ko'rinib qolmasin
+   2) "Tezkor tanlash" summalari 3 ta bitta qatorda
+========================================= */
 
-.cd-page vaadin-date-picker::part(label),
-.cd-page vaadin-time-picker::part(label) {
-  margin-bottom: 4px;
-  color: var(--cd-black);
-  font-weight: 600;
-  font-size: .9rem;
+.cd-page [hidden],
+.cd-dialog [hidden] {
+  display: none !important;
 }
-.cd-page vaadin-date-picker::part(required-indicator),
-.cd-page vaadin-time-picker::part(required-indicator) { color: var(--cd-black); }
 
-.cd-page vaadin-date-picker::part(input-field),
-.cd-page vaadin-time-picker::part(input-field) {
-  min-height: 50px;
-  border-radius: 14px;
-  background: var(--cd-field);
-  box-shadow: inset 0 0 0 1px transparent;
-  transition: box-shadow .15s ease, background .15s ease;
+/* Yuk joylandi / bloklangan panel ochilganda sahifada faqat shu qoladi */
+.cd-page .cd-success:not([hidden]) {
+  display: block;
+  width: 100%;
 }
-.cd-page vaadin-date-picker:hover::part(input-field),
-.cd-page vaadin-time-picker:hover::part(input-field) { background: #ececec; }
 
-.cd-page vaadin-date-picker[focused]::part(input-field),
-.cd-page vaadin-date-picker[opened]::part(input-field),
-.cd-page vaadin-time-picker[focused]::part(input-field),
-.cd-page vaadin-time-picker[opened]::part(input-field),
-.cd-page vaadin-date-picker[invalid]::part(input-field),
-.cd-page vaadin-time-picker[invalid]::part(input-field) {
-  background: var(--cd-white);
-  box-shadow: inset 0 0 0 2px var(--cd-black);
+/* Tezkor tanlash: yorliq tepada, ostida 3 ta tugma bitta qatorda */
+.cd-page .cd-chips {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  align-items: stretch;
+  margin-top: 14px;
 }
-.cd-page vaadin-date-picker::part(helper-text),
-.cd-page vaadin-time-picker::part(helper-text) { color: var(--cd-muted); font-size: .8rem; }
-.cd-page vaadin-date-picker::part(error-message),
-.cd-page vaadin-time-picker::part(error-message) { color: var(--cd-black); font-weight: 700; }
-.cd-page vaadin-date-picker::part(toggle-button),
-.cd-page vaadin-time-picker::part(toggle-button) { color: var(--cd-black); }
+
+.cd-page .cd-chips .cd-chips-label {
+  grid-column: 1 / -1;
+}
+
+.cd-page .cd-chips .cd-chip {
+  width: 100%;
+  min-width: 0;
+  padding: 10px 8px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+@media (max-width: 360px) {
+  .cd-page .cd-chips .cd-chip {
+    padding: 10px 4px;
+    font-size: .8rem;
+  }
+}

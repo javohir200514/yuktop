@@ -1,0 +1,333 @@
+/* =========================================
+   YUKBOR — TELEFON: PASTKI PANEL, ORQAGA TUGMASI, ILOVA REJIMI
+   navbar-links.css dan KEYIN ulanadi. Kompyuterda (>820px) pastki panel ko'rinmaydi.
+========================================= */
+
+.main-navbar .mtb { display: none; }
+.main-navbar .navbar-back { display: none; }
+
+/* ---------- Ilova rejimi (PWA): footer kerak emas ---------- */
+html.app-mode footer,
+html.app-mode .site-footer,
+html.app-mode [class*="site-footer"] {
+    display: none !important;
+}
+
+@media (display-mode: standalone) {
+    footer,
+    .site-footer { display: none !important; }
+}
+
+@media (max-width: 820px) {
+
+    :root {
+        --yb-nav-h: 64px;
+        --mtb-h: 64px;
+        --safe-top: env(safe-area-inset-top, 0px);
+        --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    /* Ilova hissi: tortib yangilash va tasodifiy belgilash o'chiriladi */
+    html, body {
+        overscroll-behavior-y: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .main-navbar,
+    .mtb-bar,
+    .mtb-sheet,
+    button,
+    [role="button"] {
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-touch-callout: none;
+    }
+
+    /* ---------- Tepa: logotip (va orqaga tugmasi) ---------- */
+    .main-navbar {
+        height: calc(var(--yb-nav-h) + var(--safe-top)) !important;
+        padding-top: var(--safe-top);
+        box-sizing: border-box;
+        overflow: visible !important;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, .45);
+    }
+
+    body:has(.main-navbar) {
+        padding-top: calc(var(--yb-nav-h) + var(--safe-top));
+        padding-bottom: calc(var(--mtb-h) + var(--safe-bottom) + 8px);
+    }
+
+    html { scroll-padding-top: calc(var(--yb-nav-h) + var(--safe-top) + 16px); }
+
+    .main-navbar .navbar-inner {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        align-items: center !important;
+        align-content: center !important;
+        justify-content: flex-start;
+        gap: 8px;
+
+        height: 100% !important;
+        min-height: 0 !important;
+        padding: 0 16px !important;
+        box-sizing: border-box;
+    }
+
+    .main-navbar .navbar-panel,
+    .main-navbar vaadin-button.navbar-toggle {
+        display: none !important;
+    }
+
+    .main-navbar .navbar-logo {
+        align-self: center;
+        margin: 0;
+        line-height: 1;
+    }
+
+    .navbar-logo-plate { width: 38px; height: 38px; font-size: 19px; }
+    .navbar-logo-word { font-size: 25px; line-height: 1; }
+
+    /* Orqaga tugmasi: faqat ichki sahifalarda */
+    .main-navbar.navbar--back .navbar-back {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 40px;
+        height: 40px;
+        margin: 0 4px 0 -6px;
+        padding: 0;
+
+        border: 0;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, .08);
+        color: var(--nb-yellow, #ffd21f);
+        cursor: pointer;
+    }
+
+    .main-navbar.navbar--back .navbar-back:active {
+        background: rgba(255, 210, 31, .2);
+    }
+
+    .main-navbar .navbar-back vaadin-icon {
+        width: 22px;
+        height: 22px;
+    }
+
+    /* ---------- Pastki panel ---------- */
+    .main-navbar .mtb { display: block; }
+
+    .mtb-bar {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1002;
+
+        display: flex;
+        align-items: stretch;
+        justify-content: space-around;
+
+        height: calc(var(--mtb-h) + var(--safe-bottom));
+        padding: 0 4px var(--safe-bottom);
+        box-sizing: border-box;
+
+        background: #121212;
+        border-top: 3px solid var(--nb-yellow, #ffd21f);
+        box-shadow: 0 -8px 24px rgba(0, 0, 0, .35);
+    }
+
+    .mtb-item {
+        position: relative;
+        flex: 1 1 0;
+        min-width: 0;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+
+        margin: 0;
+        padding: 6px 2px 4px;
+        box-sizing: border-box;
+
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        color: #a9a59b;
+
+        font-family: var(--nb-font-display, "Barlow Condensed", "Arial Narrow", sans-serif);
+        text-decoration: none;
+        cursor: pointer;
+        transition: color .2s ease;
+    }
+
+    .mtb-icon {
+        width: 22px;
+        height: 22px;
+        color: inherit;
+        flex-shrink: 0;
+    }
+
+    .mtb-label {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: .5px;
+        line-height: 1.1;
+        text-transform: uppercase;
+    }
+
+    .mtb-item:active { color: #fff; }
+
+    .mtb-item--active { color: var(--nb-yellow, #ffd21f); }
+
+    .mtb-item--active::before {
+        content: "";
+        position: absolute;
+        top: -3px;
+        left: 24%;
+        right: 24%;
+        height: 3px;
+        border-radius: 0 0 3px 3px;
+        background: #fff;
+    }
+
+    .mtb-item:focus-visible {
+        outline: 3px solid var(--nb-yellow, #ffd21f);
+        outline-offset: -3px;
+    }
+
+    /* Markazdagi asosiy tugma: ko'tarilgan sariq doira */
+    .mtb-item--center {
+        overflow: visible;
+        color: #121212;
+    }
+
+    .mtb-item--center .mtb-icon {
+        box-sizing: border-box;
+        width: 56px;
+        height: 56px;
+        padding: 14px;
+        margin-top: -26px;
+
+        border: 4px solid #121212;
+        border-radius: 50%;
+        background: var(--nb-yellow, #ffd21f);
+        color: #121212;
+        box-shadow: 0 4px 0 var(--nb-yellow-deep, #b89500), 0 8px 18px rgba(0, 0, 0, .4);
+    }
+
+    .mtb-item--center .mtb-label {
+        color: #e8e4d9;
+        margin-top: 1px;
+    }
+
+    .mtb-item--center.mtb-item--active .mtb-label { color: var(--nb-yellow, #ffd21f); }
+    .mtb-item--center.mtb-item--active::before { display: none; }
+
+    /* ---------- Profil varag'i ---------- */
+    .mtb-backdrop {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        background: rgba(0, 0, 0, .55);
+    }
+
+    .mtb-sheet {
+        display: none;
+        position: fixed;
+        left: 12px;
+        right: 12px;
+        bottom: calc(var(--mtb-h) + var(--safe-bottom) + 12px);
+        z-index: 1001;
+
+        max-height: calc(100dvh - var(--yb-nav-h) - var(--safe-top) - var(--mtb-h) - var(--safe-bottom) - 40px);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding: 8px;
+        box-sizing: border-box;
+
+        background: #1b1b1b;
+        border: 2px solid var(--nb-yellow, #ffd21f);
+        border-radius: 18px;
+        box-shadow: 0 16px 40px rgba(0, 0, 0, .6);
+
+        font-family: var(--nb-font-body, "Barlow", "Segoe UI", system-ui, sans-serif);
+    }
+
+    .mtb.mtb-open .mtb-backdrop,
+    .mtb.mtb-open .mtb-sheet { display: block; }
+
+    .mtb-sheet-head {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+        padding: 10px 12px 12px;
+        margin-bottom: 4px;
+        border-bottom: 1px solid var(--nb-line, #353535);
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .mtb-sheet-name { color: #fff; font-size: 17px; font-weight: 700; }
+    .mtb-sheet-sub { color: #a9a59b; font-size: 14px; }
+    .mtb-sheet-head .navbar-role { margin-top: 6px; }
+
+    .mtb-sheet-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        width: 100%;
+        min-height: 46px;
+        margin: 0;
+        padding: 0 12px;
+        box-sizing: border-box;
+
+        border: 0;
+        border-radius: 12px;
+        background: transparent;
+        color: #f5f3ee;
+
+        font: inherit;
+        font-size: 16px;
+        font-weight: 600;
+        text-align: left;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .mtb-sheet-item:active,
+    .mtb-sheet-item:hover { background: rgba(255, 210, 31, .12); }
+
+    .mtb-sheet-icon {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+        color: var(--nb-yellow, #ffd21f);
+    }
+
+    .mtb-sheet-item--danger {
+        color: #ff7a6b;
+        margin-top: 4px;
+        border-top: 1px solid var(--nb-line, #353535);
+        border-radius: 0 0 12px 12px;
+    }
+}
+
+@media (max-width: 360px) {
+    .mtb-label { font-size: 11px; letter-spacing: .3px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mtb-item { transition: none; }
+}

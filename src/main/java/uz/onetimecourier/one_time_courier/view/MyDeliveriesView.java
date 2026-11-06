@@ -50,10 +50,16 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * Jo'natuvchining yuklari. Dizayn (korporativ uslub) my-deliveries-corporate.css da.
+ * Barcha klasslar "mdv-" prefiksi bilan, shuning uchun eski my-deliveries.css (boshqa sahifalar
+ * ham ishlatadi) bilan to'qnashmaydi. Eski import RatingDialog va boshqa umumiy qismlar uchun qoldirilgan.
+ */
 @Route(value = "deliveries/mine", layout = PageLayout.class)
 @PageTitle("Mening yuklarim | YukBor")
 @RolesAllowed("SENDER")
 @CssImport("./styles/my-deliveries.css")
+@CssImport("./styles/my-deliveries-corporate.css")
 public class MyDeliveriesView extends Div {
 
     private static final Logger log = LoggerFactory.getLogger(MyDeliveriesView.class);
@@ -117,37 +123,40 @@ public class MyDeliveriesView extends Div {
                 .map(CustomUserDetails::getId)
                 .orElse(null);
 
-        addClassName("md-page");
+        addClassName("mdv-page");
+
+        Span kicker = new Span("Jo'natuvchi paneli");
+        kicker.addClassName("mdv-kicker");
 
         H1 title = new H1("Mening yuklarim");
-        title.addClassName("md-title");
+        title.addClassName("mdv-title");
         Paragraph subtitle = new Paragraph("Joylagan yuklaringiz holatini shu yerda kuzatib boring.");
-        subtitle.addClassName("md-subtitle");
-        Div titleBox = new Div(title, subtitle);
-        titleBox.addClassName("md-title-box");
+        subtitle.addClassName("mdv-subtitle");
+        Div titleBox = new Div(kicker, title, subtitle);
+        titleBox.addClassName("mdv-title-box");
 
         NativeButton create = new NativeButton("+ Yuk joylash");
-        create.addClassName("md-primary");
+        create.addClassName("mdv-primary");
         create.getElement().setAttribute("type", "button");
         create.addClickListener(e -> UI.getCurrent().navigate("deliveries/new"));
 
         Div head = new Div(titleBox, create);
-        head.addClassName("md-head");
+        head.addClassName("mdv-head");
 
         Div filters = buildFilters();
 
-        alert.addClassName("md-alert");
+        alert.addClassName("mdv-alert");
         alert.getElement().setAttribute("role", "alert");
         alert.setVisible(false);
 
-        totalLabel.addClassName("md-total");
+        totalLabel.addClassName("mdv-total");
 
         // Ekran o'qish dasturlari uchun: holat o'zgarganda e'lon qilinadi
-        liveRegion.addClassName("md-sr-only");
+        liveRegion.addClassName("mdv-sr-only");
         liveRegion.getElement().setAttribute("role", "status");
         liveRegion.getElement().setAttribute("aria-live", "polite");
 
-        listBox.addClassName("md-list");
+        listBox.addClassName("mdv-list");
 
         buildPager();
 
@@ -196,15 +205,17 @@ public class MyDeliveriesView extends Div {
             log.warn("Jonli yangilanishda xato: {}", e.getClass().getSimpleName());
         }
     }
+
     private void showDeliveryToast(Long deliveryId) {
         Notification n = new Notification();
         n.setDuration(0);
         n.setPosition(Notification.Position.TOP_CENTER);
 
         Span text = new Span("Kuryer yukni yetkazganini bildirdi. Tasdiqlaysizmi?");
+        text.addClassName("mdv-toast-text");
 
         NativeButton ok = new NativeButton("Ha, yetkazildi");
-        ok.addClassNames("md-btn", "md-btn--solid");
+        ok.addClassNames("mdv-btn", "mdv-btn--solid");
         ok.getElement().setAttribute("type", "button");
         ok.addClickListener(e -> {
             n.close();
@@ -212,11 +223,17 @@ public class MyDeliveriesView extends Div {
         });
 
         NativeButton later = new NativeButton("Keyinroq");
-        later.addClassNames("md-btn", "md-btn--outline");
+        later.addClassNames("mdv-btn", "mdv-btn--outline");
         later.getElement().setAttribute("type", "button");
         later.addClickListener(e -> n.close());
 
-        n.add(new Div(text, new Div(ok, later)));
+        Div actions = new Div(ok, later);
+        actions.addClassName("mdv-toast-actions");
+
+        Div box = new Div(text, actions);
+        box.addClassName("mdv-toast");
+
+        n.add(box);
         n.open();
     }
 
@@ -273,9 +290,10 @@ public class MyDeliveriesView extends Div {
         n.setPosition(Notification.Position.TOP_CENTER);
 
         Span text = new Span("Kuryer yukni olganini bildirdi. Tasdiqlaysizmi?");
+        text.addClassName("mdv-toast-text");
 
         NativeButton ok = new NativeButton("Ha, tasdiqlayman");
-        ok.addClassNames("md-btn", "md-btn--solid");
+        ok.addClassNames("mdv-btn", "mdv-btn--solid");
         ok.getElement().setAttribute("type", "button");
         ok.addClickListener(e -> {
             n.close();
@@ -283,11 +301,17 @@ public class MyDeliveriesView extends Div {
         });
 
         NativeButton later = new NativeButton("Keyinroq");
-        later.addClassNames("md-btn", "md-btn--outline");
+        later.addClassNames("mdv-btn", "mdv-btn--outline");
         later.getElement().setAttribute("type", "button");
         later.addClickListener(e -> n.close());
 
-        n.add(new Div(text, new Div(ok, later)));
+        Div actions = new Div(ok, later);
+        actions.addClassName("mdv-toast-actions");
+
+        Div box = new Div(text, actions);
+        box.addClassName("mdv-toast");
+
+        n.add(box);
         n.open();
     }
 
@@ -312,13 +336,13 @@ public class MyDeliveriesView extends Div {
 
     private Div buildFilters() {
         Div bar = new Div();
-        bar.addClassName("md-filters");
+        bar.addClassName("mdv-filters");
         bar.getElement().setAttribute("role", "group");
         bar.getElement().setAttribute("aria-label", "Holat bo'yicha filtr");
 
         for (Filter f : Filter.values()) {
             NativeButton b = new NativeButton(f.label);
-            b.addClassName("md-filter");
+            b.addClassName("mdv-filter");
             b.getElement().setAttribute("type", "button");
             b.addClickListener(e -> {
                 currentFilter = f;
@@ -333,9 +357,9 @@ public class MyDeliveriesView extends Div {
     }
 
     private void buildPager() {
-        pager.addClassName("md-pager");
+        pager.addClassName("mdv-pager");
 
-        prevButton.addClassName("md-page-btn");
+        prevButton.addClassName("mdv-page-btn");
         prevButton.getElement().setAttribute("type", "button");
         prevButton.addClickListener(e -> {
             if (page > 0) {
@@ -344,14 +368,14 @@ public class MyDeliveriesView extends Div {
             }
         });
 
-        nextButton.addClassName("md-page-btn");
+        nextButton.addClassName("mdv-page-btn");
         nextButton.getElement().setAttribute("type", "button");
         nextButton.addClickListener(e -> {
             page++;
             load();
         });
 
-        pageLabel.addClassName("md-page-label");
+        pageLabel.addClassName("mdv-page-label");
         pageLabel.getElement().setAttribute("aria-live", "polite");
 
         pager.add(prevButton, pageLabel, nextButton);
@@ -362,7 +386,7 @@ public class MyDeliveriesView extends Div {
         filterButtons.forEach((f, b) -> {
             boolean active = f == currentFilter;
             b.getElement().setAttribute("aria-pressed", String.valueOf(active));
-            b.getClassNames().set("md-filter--active", active);
+            b.getClassNames().set("mdv-filter--active", active);
         });
     }
 
@@ -418,18 +442,18 @@ public class MyDeliveriesView extends Div {
 
     private Div emptyState() {
         Div box = new Div();
-        box.addClassName("md-empty");
+        box.addClassName("mdv-empty");
 
         boolean filtered = currentFilter != Filter.ALL;
         H2 h = new H2(filtered ? "Bu holatda yuk yo'q" : "Hali yuk joylamagansiz");
-        h.addClassName("md-empty-title");
+        h.addClassName("mdv-empty-title");
         Paragraph p = new Paragraph(filtered
                 ? "Boshqa holatni tanlang yoki yangi yuk joylang."
                 : "Birinchi yukingizni joylang, shu yo'nalishda ketayotgan kuryerlar uni ko'radi.");
-        p.addClassName("md-empty-text");
+        p.addClassName("mdv-empty-text");
 
         NativeButton create = new NativeButton("Yuk joylash");
-        create.addClassName("md-primary");
+        create.addClassName("mdv-primary");
         create.getElement().setAttribute("type", "button");
         create.addClickListener(e -> UI.getCurrent().navigate("deliveries/new"));
 
@@ -441,51 +465,51 @@ public class MyDeliveriesView extends Div {
 
     private Div card(DeliverySummaryDto d) {
         Div card = new Div();
-        card.addClassNames("md-card", "md-card--" + d.status().name().toLowerCase());
+        card.addClassNames("mdv-card", "mdv-card--" + d.status().name().toLowerCase());
         if (Objects.equals(d.id(), highlightId)) {
-            card.addClassName("md-card--updated");
+            card.addClassName("mdv-card--updated");
         }
 
         // Yuqori qator: yo'nalish va holat belgisi
         Span from = new Span(d.fromRegion().getLabel());
         Span arrow = new Span("→");
-        arrow.addClassName("md-route-arrow");
+        arrow.addClassName("mdv-route-arrow");
         arrow.getElement().setAttribute("aria-hidden", "true");
         Span to = new Span(d.toRegion().getLabel());
         Div route = new Div(from, arrow, to);
-        route.addClassName("md-route");
+        route.addClassName("mdv-route");
 
         Span dot = new Span();
-        dot.addClassName("md-dot");
+        dot.addClassName("mdv-dot");
         dot.getElement().setAttribute("aria-hidden", "true");
         Span badgeText = new Span(statusLabel(d.status()));
         Span badge = new Span(dot, badgeText);
-        badge.addClassNames("md-badge", "md-badge--" + d.status().name().toLowerCase());
+        badge.addClassNames("mdv-badge", "mdv-badge--" + d.status().name().toLowerCase());
 
         Div top = new Div(route, badge);
-        top.addClassName("md-card-top");
+        top.addClassName("mdv-card-top");
 
         // Teglar
         Div tags = new Div(
                 tag(typeLabel(d.deliveryType())),
                 tag(sizeLabel(d.packageSize())),
                 tag(weightText(d.weightKg())));
-        tags.addClassName("md-tags");
+        tags.addClassName("mdv-tags");
 
         // Manzillar
         Div blocks = new Div(
                 block("Olib ketish", d.pickupAddress()),
                 block("Yetkazish", d.dropoffAddress()),
                 block("Qabul qiluvchi", d.recipientName()));
-        blocks.addClassName("md-blocks");
+        blocks.addClassName("mdv-blocks");
 
         // Pastki qator
         Span date = new Span("Joylangan: " + formatDate(d.createdAt()));
-        date.addClassName("md-date");
+        date.addClassName("mdv-date");
         Span reward = new Span(formatMoney(d.reward()));
-        reward.addClassName("md-reward");
+        reward.addClassName("mdv-reward");
         Div bottom = new Div(date, reward);
-        bottom.addClassName("md-card-bottom");
+        bottom.addClassName("mdv-card-bottom");
 
         card.add(top, tags, tracker(d.status()), blocks, bottom);
 
@@ -497,12 +521,12 @@ public class MyDeliveriesView extends Div {
 
         // Amallar: olinganini tasdiqlash, baholash, tahrirlash (CREATED), bekor qilish (CREATED yoki MATCHED)
         Div actions = new Div();
-        actions.addClassName("md-actions");
+        actions.addClassName("mdv-actions");
         boolean hasActions = false;
 
         if (courier.isPresent() && awaitingSender(courier.get())) {
             NativeButton confirmPickup = new NativeButton("Yuk olinganini tasdiqlayman");
-            confirmPickup.addClassNames("md-btn", "md-btn--solid");
+            confirmPickup.addClassNames("mdv-btn", "mdv-btn--solid");
             confirmPickup.getElement().setAttribute("type", "button");
             confirmPickup.addClickListener(e -> confirmPickup(d.id()));
             actions.add(confirmPickup);
@@ -513,7 +537,7 @@ public class MyDeliveriesView extends Div {
         if (d.status() == DeliveryStatus.DELIVERED && userId != null
                 && !ratingService.hasRated(d.id(), userId)) {
             NativeButton rate = new NativeButton("Kuryerni baholash");
-            rate.addClassNames("md-btn", "md-btn--solid");
+            rate.addClassNames("mdv-btn", "mdv-btn--solid");
             rate.getElement().setAttribute("type", "button");
             rate.addClickListener(e ->
                     new RatingDialog(ratingService, userId, d.id(), this::load).open());
@@ -523,7 +547,7 @@ public class MyDeliveriesView extends Div {
         if (d.status() == DeliveryStatus.PICKED_UP && userId != null
                 && deliveryService.awaitingDeliveryConfirmation(userId, d.id())) {
             NativeButton confirmDelivery = new NativeButton("Yetkazilganini tasdiqlayman");
-            confirmDelivery.addClassNames("md-btn", "md-btn--solid");
+            confirmDelivery.addClassNames("mdv-btn", "mdv-btn--solid");
             confirmDelivery.getElement().setAttribute("type", "button");
             confirmDelivery.addClickListener(e -> confirmDelivery(d.id()));
             actions.add(confirmDelivery);
@@ -532,7 +556,7 @@ public class MyDeliveriesView extends Div {
 
         if (canEdit(d.status())) {
             NativeButton edit = new NativeButton("Tahrirlash");
-            edit.addClassNames("md-btn", "md-btn--outline");
+            edit.addClassNames("mdv-btn", "mdv-btn--outline");
             edit.getElement().setAttribute("type", "button");
             edit.getElement().setAttribute("aria-label",
                     "Yukni tahrirlash: " + d.fromRegion().getLabel() + " → " + d.toRegion().getLabel());
@@ -542,7 +566,7 @@ public class MyDeliveriesView extends Div {
         }
         if (canCancel(d.status())) {
             NativeButton cancel = new NativeButton("Bekor qilish");
-            cancel.addClassNames("md-btn", "md-btn--danger");
+            cancel.addClassNames("mdv-btn", "mdv-btn--danger");
             cancel.getElement().setAttribute("type", "button");
             cancel.getElement().setAttribute("aria-label",
                     "Yukni bekor qilish: " + d.fromRegion().getLabel() + " → " + d.toRegion().getLabel());
@@ -567,10 +591,10 @@ public class MyDeliveriesView extends Div {
     /** Kuryer ma'lumoti: ism, telefon, Telegram, transport. Tugmalar bu yerda emas. */
     private Div courierBlock(CourierInfoDto c) {
         Div box = new Div();
-        box.addClassName("md-courier");
+        box.addClassName("mdv-courier");
 
         Span heading = new Span("Kuryer");
-        heading.addClassName("md-courier-title");
+        heading.addClassName("mdv-courier-title");
 
         box.add(heading, block("Ism", c.fullName()), block("Telefon", c.phone()));
         if (c.telegramUsername() != null && !c.telegramUsername().isBlank()) {
@@ -580,7 +604,7 @@ public class MyDeliveriesView extends Div {
 
         if (awaitingSender(c)) {
             Span notice = new Span("Kuryer yukni olganini bildirdi. Tasdiqlang.");
-            notice.addClassName("md-pickup-notice");
+            notice.addClassName("mdv-pickup-notice");
             box.add(notice);
         }
         return box;
@@ -616,17 +640,17 @@ public class MyDeliveriesView extends Div {
         });
 
         Div content = new Div();
-        content.addClassName("md-dialog");
+        content.addClassName("mdv-dialog");
 
         H2 heading = new H2("Yukni bekor qilasizmi?");
-        heading.addClassName("md-dialog-title");
+        heading.addClassName("mdv-dialog-title");
 
         String routeText = d.fromRegion().getLabel() + " → " + d.toRegion().getLabel();
         String body = routeText + " yo'nalishidagi yuk bekor qilinadi."
                 + (d.status() == DeliveryStatus.MATCHED ? " Bu yukka kuryer allaqachon topilgan." : "")
                 + " Bu amalni qaytarib bo'lmaydi.";
         Paragraph text = new Paragraph(body);
-        text.addClassName("md-dialog-text");
+        text.addClassName("mdv-dialog-text");
 
         TextField reason = new TextField("Sababi (ixtiyoriy)");
         reason.setMaxLength(DeliveryService.MAX_CANCEL_REASON);
@@ -634,16 +658,16 @@ public class MyDeliveriesView extends Div {
         reason.setPlaceholder("Masalan: fikrim o'zgardi");
 
         Div error = new Div();
-        error.addClassName("md-dialog-error");
+        error.addClassName("mdv-dialog-error");
         error.getElement().setAttribute("role", "alert");
         error.setVisible(false);
 
         NativeButton confirm = new NativeButton("Ha, bekor qilish");
-        confirm.addClassNames("md-btn", "md-btn--danger-solid");
+        confirm.addClassNames("mdv-btn", "mdv-btn--danger-solid");
         confirm.getElement().setAttribute("type", "button");
 
         NativeButton back = new NativeButton("Yo'q, qaytish");
-        back.addClassNames("md-btn", "md-btn--outline");
+        back.addClassNames("mdv-btn", "mdv-btn--outline");
         back.getElement().setAttribute("type", "button");
         back.addClickListener(e -> dialog.close());
 
@@ -653,7 +677,7 @@ public class MyDeliveriesView extends Div {
         });
 
         Div actions = new Div(confirm, back);
-        actions.addClassName("md-dialog-actions");
+        actions.addClassName("mdv-dialog-actions");
 
         content.add(heading, text, reason, error, actions);
         dialog.add(content);
@@ -701,7 +725,7 @@ public class MyDeliveriesView extends Div {
 
         if (current < 0) {
             Div note = new Div();
-            note.addClassNames("md-note", "md-note--" + status.name().toLowerCase());
+            note.addClassNames("mdv-note", "mdv-note--" + status.name().toLowerCase());
             note.setText(status == DeliveryStatus.CANCELLED
                     ? "Bu yuk bekor qilingan."
                     : "Bu yuk bo'yicha nizo ko'rib chiqilmoqda.");
@@ -709,20 +733,20 @@ public class MyDeliveriesView extends Div {
         }
 
         Div track = new Div();
-        track.addClassName("md-track");
+        track.addClassName("mdv-track");
         track.getElement().setAttribute("role", "list");
         track.getElement().setAttribute("aria-label",
                 "Yetkazish bosqichlari. Hozirgi holat: " + STEP_LABELS[current]);
 
         for (int i = 0; i < STEP_LABELS.length; i++) {
             Div step = new Div(new Span(STEP_LABELS[i]));
-            step.addClassName("md-step");
+            step.addClassName("mdv-step");
             step.getElement().setAttribute("role", "listitem");
             if (i <= current) {
-                step.addClassName("md-step--done");
+                step.addClassName("mdv-step--done");
             }
             if (i == current) {
-                step.addClassName("md-step--current");
+                step.addClassName("mdv-step--current");
                 step.getElement().setAttribute("aria-current", "step");
             }
             track.add(step);
@@ -732,17 +756,17 @@ public class MyDeliveriesView extends Div {
 
     private Span tag(String text) {
         Span t = new Span(text);
-        t.addClassName("md-tag");
+        t.addClassName("mdv-tag");
         return t;
     }
 
     private Div block(String label, String value) {
         Span l = new Span(label);
-        l.addClassName("md-block-label");
+        l.addClassName("mdv-block-label");
         Span v = new Span(value == null || value.isBlank() ? "—" : value);
-        v.addClassName("md-block-value");
+        v.addClassName("mdv-block-value");
         Div b = new Div(l, v);
-        b.addClassName("md-block");
+        b.addClassName("mdv-block");
         return b;
     }
 

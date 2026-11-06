@@ -30,27 +30,29 @@ import uz.onetimecourier.one_time_courier.service.DeliveryFeedBroadcaster;
 import uz.onetimecourier.one_time_courier.service.DeliveryService;
 import uz.onetimecourier.one_time_courier.service.RatingService;
 
-import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
 import static uz.onetimecourier.one_time_courier.view.DeliveryViewSupport.formatDate;
 import static uz.onetimecourier.one_time_courier.view.DeliveryViewSupport.formatMoney;
-import static uz.onetimecourier.one_time_courier.view.DeliveryViewSupport.infoBlock;
 import static uz.onetimecourier.one_time_courier.view.DeliveryViewSupport.sizeLabel;
-import static uz.onetimecourier.one_time_courier.view.DeliveryViewSupport.tag;
-import static uz.onetimecourier.one_time_courier.view.DeliveryViewSupport.text;
 import static uz.onetimecourier.one_time_courier.view.DeliveryViewSupport.typeLabel;
 import static uz.onetimecourier.one_time_courier.view.DeliveryViewSupport.weightText;
 
-/** Kuryer qabul qilgan yuklar: to'liq ma'lumot, "Olib ketdim" / "Yetkazdim" va jo'natuvchini baholash. */
+/**
+ * Kuryer qabul qilgan yuklar: to'liq ma'lumot, "Olib ketdim" / "Yetkazdim".
+ *
+ * Dizayn (korporativ uslub) my-deliveries-corporate.css da, klasslar "mdv-" prefiksi bilan.
+ * U eski stillardan KEYIN ulanishi kerak, shuning uchun annotatsiyalar ro'yxatida oxirgi turadi.
+ */
 @Route(value = "courier/deliveries", layout = PageLayout.class)
 @PageTitle("Mening yetkazishlarim | YukBor")
 @RolesAllowed("COURIER")
 @CssImport("./styles/my-deliveries.css")
 @CssImport("./styles/deliveries-feed.css")
+@CssImport("./styles/my-deliveries-corporate.css")
 public class MyCourierDeliveriesView extends Div {
 
     private static final Logger log = LoggerFactory.getLogger(MyCourierDeliveriesView.class);
@@ -58,6 +60,8 @@ public class MyCourierDeliveriesView extends Div {
     private static final int PAGE_SIZE = 10;
     private static final String GENERIC_ERROR =
             "Kutilmagan xato yuz berdi. Birozdan keyin qayta urinib ko'ring.";
+
+    private static final String[] STEP_LABELS = {"Joylandi", "Kuryer topildi", "Yo'lda", "Yetkazildi"};
 
     private enum Tab {
         ACTIVE("Faol", Set.of(DeliveryStatus.MATCHED, DeliveryStatus.PICKED_UP)),
@@ -103,26 +107,30 @@ public class MyCourierDeliveriesView extends Div {
                 .map(CustomUserDetails::getId)
                 .orElse(null);
 
-        addClassName("md-page");
+        addClassName("mdv-page");
+
+        Span kicker = new Span("Kuryer paneli");
+        kicker.addClassName("mdv-kicker");
 
         H1 title = new H1("Mening yetkazishlarim");
-        title.addClassName("md-title");
+        title.addClassName("mdv-title");
         Paragraph subtitle = new Paragraph("Siz qabul qilgan yuklar va ularning to'liq ma'lumoti.");
-        subtitle.addClassName("md-subtitle");
-        Div titleBox = new Div(title, subtitle);
+        subtitle.addClassName("mdv-subtitle");
+        Div titleBox = new Div(kicker, title, subtitle);
+        titleBox.addClassName("mdv-title-box");
 
         Anchor browse = new Anchor("/deliveries", "Ochiq yuklar");
-        browse.addClassNames("md-primary", "df-link-btn");
+        browse.addClassName("mdv-primary");
 
         Div head = new Div(titleBox, browse);
-        head.addClassName("md-head");
+        head.addClassName("mdv-head");
 
-        alert.addClassName("md-alert");
+        alert.addClassName("mdv-alert");
         alert.getElement().setAttribute("role", "alert");
         alert.setVisible(false);
 
-        totalLabel.addClassName("md-total");
-        listBox.addClassName("md-list");
+        totalLabel.addClassName("mdv-total");
+        listBox.addClassName("mdv-list");
         buildPager();
 
         add(head, buildTabs(), alert, totalLabel, listBox, pager);
@@ -154,13 +162,13 @@ public class MyCourierDeliveriesView extends Div {
 
     private Div buildTabs() {
         Div bar = new Div();
-        bar.addClassName("md-filters");
+        bar.addClassName("mdv-filters");
         bar.getElement().setAttribute("role", "group");
         bar.getElement().setAttribute("aria-label", "Holat bo'yicha filtr");
 
         for (Tab t : Tab.values()) {
             NativeButton b = new NativeButton(t.label);
-            b.addClassName("md-filter");
+            b.addClassName("mdv-filter");
             b.getElement().setAttribute("type", "button");
             b.addClickListener(e -> {
                 currentTab = t;
@@ -178,14 +186,14 @@ public class MyCourierDeliveriesView extends Div {
         tabButtons.forEach((t, b) -> {
             boolean active = t == currentTab;
             b.getElement().setAttribute("aria-pressed", String.valueOf(active));
-            b.getClassNames().set("md-filter--active", active);
+            b.getClassNames().set("mdv-filter--active", active);
         });
     }
 
     private void buildPager() {
-        pager.addClassName("md-pager");
+        pager.addClassName("mdv-pager");
 
-        prevButton.addClassName("md-page-btn");
+        prevButton.addClassName("mdv-page-btn");
         prevButton.getElement().setAttribute("type", "button");
         prevButton.addClickListener(e -> {
             if (page > 0) {
@@ -194,14 +202,14 @@ public class MyCourierDeliveriesView extends Div {
             }
         });
 
-        nextButton.addClassName("md-page-btn");
+        nextButton.addClassName("mdv-page-btn");
         nextButton.getElement().setAttribute("type", "button");
         nextButton.addClickListener(e -> {
             page++;
             load();
         });
 
-        pageLabel.addClassName("md-page-label");
+        pageLabel.addClassName("mdv-page-label");
         pageLabel.getElement().setAttribute("aria-live", "polite");
 
         pager.add(prevButton, pageLabel, nextButton);
@@ -258,17 +266,17 @@ public class MyCourierDeliveriesView extends Div {
 
     private Div emptyState() {
         Div box = new Div();
-        box.addClassName("md-empty");
+        box.addClassName("mdv-empty");
 
         H2 h = new H2(currentTab == Tab.ACTIVE ? "Faol yuk yo'q" : "Yakunlangan yuk yo'q");
-        h.addClassName("md-empty-title");
+        h.addClassName("mdv-empty-title");
         Paragraph p = new Paragraph(currentTab == Tab.ACTIVE
                 ? "Ochiq yuklardan birini qabul qiling, u shu yerda paydo bo'ladi."
                 : "Yetkazilgan yoki bekor qilingan yuklar shu yerda ko'rinadi.");
-        p.addClassName("md-empty-text");
+        p.addClassName("mdv-empty-text");
 
         Anchor browse = new Anchor("/deliveries", "Ochiq yuklarga o'tish");
-        browse.addClassNames("md-primary", "df-link-btn");
+        browse.addClassName("mdv-primary");
 
         box.add(h, p, browse);
         return box;
@@ -278,75 +286,79 @@ public class MyCourierDeliveriesView extends Div {
 
     private Div card(CourierDeliveryDto d) {
         Div card = new Div();
-        card.addClassNames("md-card", "md-card--" + d.status().name().toLowerCase());
+        card.addClassNames("mdv-card", "mdv-card--" + d.status().name().toLowerCase());
 
+        // Yuqori qator: yo'nalish va holat belgisi
         Span from = new Span(d.fromRegion().getLabel());
         Span arrow = new Span("→");
-        arrow.addClassName("md-route-arrow");
+        arrow.addClassName("mdv-route-arrow");
         arrow.getElement().setAttribute("aria-hidden", "true");
         Span to = new Span(d.toRegion().getLabel());
         Div route = new Div(from, arrow, to);
-        route.addClassName("md-route");
+        route.addClassName("mdv-route");
 
-        Div top = new Div(route, DeliveryViewSupport.statusBadge(d.status()));
-        top.addClassName("md-card-top");
+        Div top = new Div(route, statusBadge(d.status()));
+        top.addClassName("mdv-card-top");
 
+        // Teglar
         Div tags = new Div(
                 tag(typeLabel(d.deliveryType())),
                 tag(sizeLabel(d.packageSize())),
                 tag(weightText(d.weightKg())));
-        tags.addClassName("md-tags");
+        tags.addClassName("mdv-tags");
 
+        // Jo'natuvchi, manzillar va qabul qiluvchi
         Div blocks = new Div(
                 senderBlock(d),
-                infoBlock("Olib ketish", text(d.pickupAddress()),
-                        DeliveryViewSupport.mapLink("Xaritada ko'rish", d.pickupLat(), d.pickupLng())),
-                infoBlock("Yetkazish", text(d.dropoffAddress()),
-                        DeliveryViewSupport.mapLink("Xaritada ko'rish", d.dropoffLat(), d.dropoffLng())),
-                infoBlock("Qabul qiluvchi", text(d.recipientName()),
-                        DeliveryViewSupport.telLink(d.recipientPhone())));
-        blocks.addClassName("df-blocks");
+                block("Olib ketish", plain(d.pickupAddress()),
+                        mapLink(d.pickupLat(), d.pickupLng())),
+                block("Yetkazish", plain(d.dropoffAddress()),
+                        mapLink(d.dropoffLat(), d.dropoffLng())),
+                block("Qabul qiluvchi", plain(d.recipientName()),
+                        telLink(d.recipientPhone())));
+        blocks.addClassNames("mdv-blocks", "mdv-blocks--4");
 
-        card.add(top, tags, DeliveryViewSupport.tracker(d.status(), "Jo'natuvchi bu yukni bekor qildi."), blocks);
+        card.add(top, tags, tracker(d.status()), blocks);
 
         if (d.description() != null && !d.description().isBlank()) {
-            Div desc = infoBlock("Tavsif", text(d.description()));
-            desc.addClassName("df-desc");
+            Div desc = block("Tavsif", plain(d.description()));
+            desc.addClassName("mdv-desc");
             card.add(desc);
         }
 
+        // Pastki qator
         Span date = new Span("Qabul qilingan: " + formatDate(d.matchedAt()));
-        date.addClassName("md-date");
+        date.addClassName("mdv-date");
         Span reward = new Span(formatMoney(d.reward()));
-        reward.addClassName("md-reward");
+        reward.addClassName("mdv-reward");
         Div bottom = new Div(date, reward);
-        bottom.addClassName("md-card-bottom");
+        bottom.addClassName("mdv-card-bottom");
         card.add(bottom);
 
+        // Amallar
         Div actions = new Div();
-        actions.addClassName("md-actions");
+        actions.addClassName("mdv-actions");
 
         if (d.status() == DeliveryStatus.MATCHED) {
             if (d.courierPickupRequested()) {
                 // So'rov allaqachon yuborilgan: tugma yo'q, faqat kutish holati
                 Span wait = new Span("Olib ketganingizni bildirdingiz. Jo'natuvchi tasdiqlashini kuting.");
-                wait.addClassName("md-pickup-wait");
+                wait.addClassName("mdv-pickup-wait");
                 actions.add(wait);
             } else {
                 NativeButton pickUp = new NativeButton("Olib ketdim");
-                pickUp.addClassNames("md-btn", "md-btn--solid");
+                pickUp.addClassNames("mdv-btn", "mdv-btn--solid");
                 pickUp.getElement().setAttribute("type", "button");
                 pickUp.addClickListener(e -> confirmStep(d, true));
                 actions.add(pickUp);
             }
         } else if (d.status() == DeliveryStatus.PICKED_UP) {
             NativeButton deliver = new NativeButton("Yetkazdim");
-            deliver.addClassNames("md-btn", "md-btn--solid");
+            deliver.addClassNames("mdv-btn", "mdv-btn--solid");
             deliver.getElement().setAttribute("type", "button");
             deliver.addClickListener(e -> confirmStep(d, false));
             actions.add(deliver);
         }
-
 
         if (actions.getChildren().findAny().isPresent()) {
             card.add(actions);
@@ -356,23 +368,28 @@ public class MyCourierDeliveriesView extends Div {
 
     /** Jo'natuvchi aloqa ma'lumoti. Telefon va Telegram yo'q bo'lsa, "Ko'rsatilmagan" chiqadi. */
     private Div senderBlock(CourierDeliveryDto d) {
-        List<Component> items = new ArrayList<>();
-        items.add(text(d.senderName()));
+        Component phone = telLink(d.senderContactPhone());
+        Component telegram = telegramLink(d.senderContactTelegram());
 
-        Component phone = DeliveryViewSupport.telLink(d.senderContactPhone());
-        Component telegram = DeliveryViewSupport.telegramLink(d.senderContactTelegram());
+        Div block = block("Jo'natuvchi", plain(d.senderName()));
+
+        Div links = new Div();
+        links.addClassName("mdv-block-links");
         if (phone != null) {
-            items.add(phone);
+            links.add(phone);
         }
         if (telegram != null) {
-            items.add(telegram);
+            links.add(telegram);
         }
         if (phone == null && telegram == null) {
-            items.add(text("Ko'rsatilmagan"));
+            links.add(plain("Ko'rsatilmagan"));
         }
+        block.add(links);
 
-        Div block = infoBlock("Jo'natuvchi", items.toArray(Component[]::new));
-        block.add(DeliveryViewSupport.verifyBadge(d.senderContactVerified()));
+        boolean verified = Boolean.TRUE.equals(d.senderContactVerified());
+        Span verify = new Span(verified ? "Tasdiqlangan" : "Tasdiqlanmagan");
+        verify.addClassNames("mdv-tag", "mdv-verify", verified ? "mdv-verify--yes" : "mdv-verify--no");
+        block.add(verify);
         return block;
     }
 
@@ -416,5 +433,138 @@ public class MyCourierDeliveriesView extends Div {
     private void showAlert(String message) {
         alert.setText(message);
         alert.setVisible(true);
+    }
+
+    // ---------------------------------------------------------------- bosqichlar va belgilar
+
+    /** Bosqichlar chizig'i. Faqat yukning haqiqiy holatidan chiqariladi. */
+    private Component tracker(DeliveryStatus status) {
+        int current = switch (status) {
+            case CREATED -> 0;
+            case MATCHED -> 1;
+            case PICKED_UP -> 2;
+            case DELIVERED -> 3;
+            default -> -1;
+        };
+
+        if (current < 0) {
+            Div note = new Div();
+            note.addClassNames("mdv-note", "mdv-note--" + status.name().toLowerCase());
+            note.setText(status == DeliveryStatus.CANCELLED
+                    ? "Jo'natuvchi bu yukni bekor qildi."
+                    : "Bu yuk bo'yicha nizo ko'rib chiqilmoqda.");
+            return note;
+        }
+
+        Div track = new Div();
+        track.addClassName("mdv-track");
+        track.getElement().setAttribute("role", "list");
+        track.getElement().setAttribute("aria-label",
+                "Yetkazish bosqichlari. Hozirgi holat: " + STEP_LABELS[current]);
+
+        for (int i = 0; i < STEP_LABELS.length; i++) {
+            Div step = new Div(new Span(STEP_LABELS[i]));
+            step.addClassName("mdv-step");
+            step.getElement().setAttribute("role", "listitem");
+            if (i <= current) {
+                step.addClassName("mdv-step--done");
+            }
+            if (i == current) {
+                step.addClassName("mdv-step--current");
+                step.getElement().setAttribute("aria-current", "step");
+            }
+            track.add(step);
+        }
+        return track;
+    }
+
+    private static Span statusBadge(DeliveryStatus status) {
+        Span dot = new Span();
+        dot.addClassName("mdv-dot");
+        dot.getElement().setAttribute("aria-hidden", "true");
+        Span badge = new Span(dot, new Span(statusLabel(status)));
+        badge.addClassNames("mdv-badge", "mdv-badge--" + status.name().toLowerCase());
+        return badge;
+    }
+
+    private static String statusLabel(DeliveryStatus status) {
+        return switch (status) {
+            case CREATED -> "Kuryer qidirilmoqda";
+            case MATCHED -> "Kuryer topildi";
+            case PICKED_UP -> "Yo'lda";
+            case DELIVERED -> "Yetkazildi";
+            case CANCELLED -> "Bekor qilindi";
+            case DISPUTED -> "Nizo ko'rib chiqilmoqda";
+        };
+    }
+
+    // ---------------------------------------------------------------- kichik elementlar
+
+    private static Span tag(String text) {
+        Span t = new Span(text);
+        t.addClassName("mdv-tag");
+        return t;
+    }
+
+    private static Span plain(String value) {
+        Span s = new Span(value == null || value.isBlank() ? "—" : value);
+        s.addClassName("mdv-block-value");
+        return s;
+    }
+
+    private static Div block(String label, Component... values) {
+        Span l = new Span(label);
+        l.addClassName("mdv-block-label");
+        Div b = new Div(l);
+        b.addClassName("mdv-block");
+        for (Component v : values) {
+            if (v != null) {
+                b.add(v);
+            }
+        }
+        return b;
+    }
+
+    /** Xaritadagi nuqtaga havola. Koordinata yo'q bo'lsa, null. */
+    private static Component mapLink(Double lat, Double lng) {
+        if (lat == null || lng == null) {
+            return null;
+        }
+        Anchor a = new Anchor(String.format(Locale.ROOT,
+                "https://www.openstreetmap.org/?mlat=%.6f&mlon=%.6f#map=17/%.6f/%.6f",
+                lat, lng, lat, lng), "Xaritada ko'rish");
+        a.setTarget("_blank");
+        a.getElement().setAttribute("rel", "noopener noreferrer");
+        a.addClassName("mdv-link");
+        return a;
+    }
+
+    /** Telefon raqamiga havola. Raqam yo'q bo'lsa, null. */
+    private static Component telLink(String phone) {
+        if (phone == null || phone.isBlank()) {
+            return null;
+        }
+        Anchor a = new Anchor("tel:" + phone.replaceAll("[^+0-9]", ""), phone.strip());
+        a.addClassName("mdv-link");
+        return a;
+    }
+
+    /** Telegram profiliga havola. Username yo'q bo'lsa, null. */
+    private static Component telegramLink(String username) {
+        if (username == null || username.isBlank()) {
+            return null;
+        }
+        String clean = username.strip();
+        if (clean.startsWith("@")) {
+            clean = clean.substring(1);
+        }
+        if (clean.isEmpty()) {
+            return null;
+        }
+        Anchor a = new Anchor("https://t.me/" + clean, "@" + clean);
+        a.setTarget("_blank");
+        a.getElement().setAttribute("rel", "noopener noreferrer");
+        a.addClassName("mdv-link");
+        return a;
     }
 }

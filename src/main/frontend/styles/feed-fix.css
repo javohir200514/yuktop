@@ -1,6 +1,6 @@
-/* ===== feed-fix.css: Yuklar va Kuryerlar sahifalari tuzatmalari =====
+/* ===== feed-fix.css: Yuklar va Kuryerlar sahifalari (yakuniy) =====
    Eng OXIRIDA ulanadi (feed-corporate.css dan keyin).
-   Eski stillar rang, o'lcham va joylashuvni buzgani uchun !important ishlatilgan. */
+   Eski stillar joylashuvni buzgani uchun !important ishlatilgan. */
 
 .dm-page.md-page {
   --dm-black: #0a0a0a;
@@ -8,6 +8,19 @@
   --dm-muted: #737373;
   --dm-line: #e5e5e5;
   --dm-field: #f4f4f4;
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+.dm-page.md-page *,
+.dm-page.md-page *::before,
+.dm-page.md-page *::after { box-sizing: border-box; }
+
+.dm-page.md-page .page-fold,
+.dm-page.md-page .dm-list {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }
 
 /* ---------- Jami yozuvi ---------- */
@@ -28,19 +41,22 @@
 }
 .dm-page.md-page .dm-total:empty { display: none !important; }
 
-/* ---------- Karta ---------- */
+/* ---------- Karta (desktop) ---------- */
 .dm-page.md-page .dm-card {
   position: relative;
   overflow: hidden;
   display: grid !important;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   gap: 16px 24px;
   align-items: center;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
   padding: 22px 28px 22px 30px;
   background: var(--dm-white) !important;
   border: 1px solid var(--dm-line);
   border-radius: 20px;
-  box-sizing: border-box;
+  direction: ltr;
 }
 
 /* ---------- Ikonka ---------- */
@@ -59,26 +75,32 @@
   box-shadow: none !important;
   transform: none !important;
 }
-.dm-page.md-page .dm-card-icon svg {
-  display: block;
-  width: 30px;
-  height: 30px;
-}
+.dm-page.md-page .dm-card-icon svg { display: block; width: 30px; height: 30px; }
 .dm-page.md-page .dm-card-icon .f { fill: rgba(255, 255, 255, .16); stroke: none; }
 .dm-page.md-page .dm-card-icon .a { stroke: var(--dm-white); }
 .dm-page.md-page .dm-card-icon .w { fill: var(--dm-black); }
 
-/* ---------- Yo'nalish ---------- */
-.dm-page.md-page .dm-card-main { min-width: 0; }
+/* ---------- O'rta qism ---------- */
+.dm-page.md-page .dm-card-main {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+  margin: 0;
+  text-align: left;
+}
 .dm-page.md-page .dm-route {
   display: flex !important;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: flex-start !important;
   gap: 8px 14px;
   color: var(--dm-black) !important;
   font-size: 1.3rem;
   font-weight: 800;
   letter-spacing: -.015em;
+  text-align: left;
 }
 .dm-page.md-page .dm-route::before,
 .dm-page.md-page .dm-route::after { content: none !important; }
@@ -94,6 +116,7 @@
   flex: 0 0 64px;
   width: 64px !important;
   height: 2px !important;
+  margin: 0 5px;
   border-radius: 2px;
   background: var(--dm-black) !important;
   font-size: 0;
@@ -116,7 +139,8 @@
 }
 .dm-page.md-page .dm-route-line::after { right: -5px; background: var(--dm-black); }
 
-.dm-page.md-page .dm-date { color: var(--dm-muted) !important; }
+.dm-page.md-page .dm-tags { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 8px; }
+.dm-page.md-page .dm-date { color: var(--dm-muted) !important; text-align: left; }
 
 /* ---------- O'ng ustun ---------- */
 .dm-page.md-page .dm-card-side {
@@ -125,11 +149,12 @@
   align-items: flex-end;
   gap: 12px;
   min-width: 190px;
+  margin: 0;
   padding-left: 28px;
   border-left: 1px dashed #bdbdbd;
 }
 
-/* Status va kuryer bloki eski ":first-child" qoidasidan tozalanadi */
+/* eski ":first-child" qoidasidan tozalash */
 .dm-page.md-page .dm-card-side > .dm-status,
 .dm-page.md-page .dm-card-side > .cc-identity {
   background: transparent !important;
@@ -160,13 +185,12 @@
   display: inline-flex !important;
   align-items: center;
   justify-content: center;
-  box-sizing: border-box;
   width: 100% !important;
   min-width: 0 !important;
   max-width: none !important;
   height: auto !important;
   min-height: 46px;
-  margin-top: auto;
+  margin: auto 0 0 !important;
   padding: 12px 20px !important;
   border: 0 !important;
   border-radius: 12px !important;
@@ -177,17 +201,16 @@
   overflow: visible !important;
   text-overflow: clip !important;
 }
-.dm-page.md-page .dm-card-side .dm-deliver:hover {
-  background: #262626 !important;
+.dm-page.md-page .dm-card-side .dm-deliver:hover { background: #262626 !important; }
+
+/* ---------- Kuryer uchun qo'shimcha blok ---------- */
+.dm-page.md-page .dm-extra {
+  grid-column: 1 / -1;
+  min-width: 0;
 }
 
 /* ---------- Kuryer kartasi: avatar ---------- */
-.dm-page.md-page .cc-identity {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
-}
+.dm-page.md-page .cc-identity { display: flex; align-items: center; gap: 12px; min-width: 0; }
 .dm-page.md-page .cc-avatar {
   display: inline-flex;
   align-items: center;
@@ -215,36 +238,209 @@
 }
 .dm-page.md-page .cc-identity-role { color: var(--dm-muted) !important; font-size: .8rem; }
 
-/* ---------- Mobil / planshet ---------- */
+/* =====================================================
+   MOBIL / PLANSHET (≤820px)
+   Karta: oddiy ustun. Eski grid va siljishlar tozalanadi.
+   ===================================================== */
 @media (max-width: 820px) {
+
+  .dm-page.md-page { padding-left: 14px; padding-right: 14px; }
+
   .dm-page.md-page .dm-card {
-    grid-template-columns: minmax(0, 1fr) !important;
-    gap: 14px;
-    padding: 20px 18px 18px 22px;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start;
+    gap: 14px !important;
+    padding: 20px 18px 18px 22px !important;
+    grid-template-columns: none !important;
   }
+
+  /* Karta ichidagi hamma narsadan siljish va joylashuv qoidalarini tozalash */
+  .dm-page.md-page .dm-card > *,
+  .dm-page.md-page .dm-card-main > *,
+  .dm-page.md-page .dm-card-side > * {
+    position: static !important;
+    inset: auto !important;
+    float: none !important;
+    transform: none !important;
+    max-width: 100% !important;
+    min-width: 0;
+  }
+
   .dm-page.md-page .dm-card-icon { display: none !important; }
 
-  .dm-page.md-page .dm-route { font-size: 1.15rem; gap: 6px 10px; }
-  .dm-page.md-page .dm-route-line { flex-basis: 36px; width: 36px !important; }
+  .dm-page.md-page .dm-card-main {
+    width: 100% !important;
+    align-items: flex-start !important;
+    margin: 0 !important;
+    text-align: left;
+  }
 
+  .dm-page.md-page .dm-route {
+    justify-content: flex-start !important;
+    font-size: 1.15rem;
+    gap: 6px 10px;
+  }
+  .dm-page.md-page .dm-route-line {
+    flex-basis: 36px;
+    width: 36px !important;
+  }
+
+  .dm-page.md-page .dm-tags { justify-content: flex-start; }
+
+  /* O'ng ustun: pastga o'tadi, status + narx bir qatorda, tugma to'liq kenglikda */
   .dm-page.md-page .dm-card-side {
-    display: grid !important;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-    justify-items: start;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap;
+    align-items: center !important;
+    justify-content: space-between;
     gap: 12px;
-    width: 100%;
-    min-width: 0;
-    padding: 14px 0 0;
-    border-left: 0;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 14px 0 0 !important;
+    border-left: 0 !important;
     border-top: 1px dashed #bdbdbd;
   }
+
+  .dm-page.md-page .dm-card-side > .dm-status { order: 1; }
   .dm-page.md-page .dm-card-side .dm-reward {
-    justify-self: end;
+    order: 2;
+    margin-left: auto !important;
     font-size: 1.4rem;
   }
   .dm-page.md-page .dm-card-side .dm-deliver {
+    order: 3;
+    flex: 0 0 100%;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  /* Kuryerlar sahifasi: identity bloki */
+  .dm-page.md-page .dm-card-side > .cc-identity { order: 1; flex: 1 1 auto; }
+}
+
+@media (max-width: 380px) {
+  .dm-page.md-page { padding-left: 10px; padding-right: 10px; }
+  .dm-page.md-page .dm-card { padding: 18px 14px 16px 18px !important; }
+  .dm-page.md-page .dm-route { font-size: 1.05rem; }
+  .dm-page.md-page .dm-card-side .dm-reward { font-size: 1.25rem; }
+}
+/* =====================================================
+   RANG VA JOYLASHUV (brend ranglari: sariq, ko'k, qora)
+   ===================================================== */
+
+.dm-page.md-page {
+  --dm-yellow: #ffd21f;
+  --dm-yellow-soft: #fff6cf;
+  --dm-yellow-deep: #b89500;
+  --dm-blue: #1d5fd1;
+  --dm-blue-soft: #eaf1fd;
+}
+
+/* Yo'nalishdagi ortiqcha "→" belgisini o'chirish */
+.dm-page.md-page .dm-route > span::before,
+.dm-page.md-page .dm-route > span::after { content: none !important; }
+
+/* Karta: chap tomonda sariq chiziq, yengil sariq-ko'k fon */
+.dm-page.md-page .dm-card {
+  background: linear-gradient(180deg, #ffffff 0%, #fbfcff 100%) !important;
+  border-color: #dfe6f0;
+}
+.dm-page.md-page .dm-card::before {
+  width: 5px !important;
+  background: var(--dm-yellow) !important;
+}
+.dm-page.md-page .dm-card:hover {
+  border-color: var(--dm-blue);
+  box-shadow: 0 14px 32px rgba(29, 95, 209, .14);
+}
+
+/* Ikonka: qora fonda sariq */
+.dm-page.md-page .dm-card-icon {
+  background: var(--dm-black) !important;
+  color: var(--dm-yellow) !important;
+  box-shadow: 3px 3px 0 var(--dm-blue) !important;
+}
+.dm-page.md-page .dm-card-icon .a { stroke: var(--dm-yellow); }
+
+/* Yo'nalish chizig'i: ko'k nuqtalar */
+.dm-page.md-page .dm-route-line { background: var(--dm-blue) !important; }
+.dm-page.md-page .dm-route-line::before { box-shadow: inset 0 0 0 2px var(--dm-blue); }
+.dm-page.md-page .dm-route-line::after { background: var(--dm-blue); }
+
+/* Teglar: yengil ko'k */
+.dm-page.md-page .dm-tags > * {
+  background: var(--dm-blue-soft) !important;
+  color: #1648b0 !important;
+  box-shadow: inset 0 0 0 1px #cfe0fb !important;
+}
+
+/* Jami: qora fonda sariq yozuv */
+.dm-page.md-page .dm-total { color: var(--dm-yellow) !important; }
+
+/* Status: sariq fon */
+.dm-page.md-page .dm-status > * {
+  background: var(--dm-yellow-soft) !important;
+  color: #5c4500 !important;
+  box-shadow: inset 0 0 0 1.5px var(--dm-yellow-deep) !important;
+  white-space: nowrap;
+}
+
+/* Narx: ko'k */
+.dm-page.md-page .dm-reward { color: var(--dm-blue) !important; }
+
+/* Tugma: qora fon, sariq yozuv */
+.dm-page.md-page .dm-card-side .dm-deliver {
+  background: var(--dm-black) !important;
+  color: var(--dm-yellow) !important;
+  box-shadow: 0 3px 0 var(--dm-yellow-deep) !important;
+}
+.dm-page.md-page .dm-card-side .dm-deliver:hover {
+  background: #1b1b1b !important;
+  transform: translateY(1px);
+  box-shadow: 0 2px 0 var(--dm-yellow-deep) !important;
+}
+
+/* ---------- Mobil: pastki qism tartibi ----------
+   1-qator: narx (chapda) va status (o'ngda)
+   2-qator: tugma to'liq kenglikda */
+@media (max-width: 820px) {
+  .dm-page.md-page .dm-card-side {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: center !important;
+    gap: 12px !important;
+  }
+  .dm-page.md-page .dm-card-side .dm-reward {
+    grid-column: 1;
+    grid-row: 1;
+    order: 0;
+    margin: 0 !important;
+    justify-self: start;
+    font-size: 1.45rem;
+  }
+  .dm-page.md-page .dm-card-side > .dm-status {
+    grid-column: 2;
+    grid-row: 1;
+    order: 0;
+    justify-self: end;
+  }
+  .dm-page.md-page .dm-status > * {
+    padding: 4px 10px !important;
+    font-size: .75rem !important;
+  }
+  .dm-page.md-page .dm-card-side .dm-deliver {
     grid-column: 1 / -1;
-    margin-top: 0;
+    grid-row: 2;
+    order: 0;
+    width: 100% !important;
+  }
+  /* Kuryerlar sahifasi: ism bloki chapda, tugma pastda */
+  .dm-page.md-page .dm-card-side > .cc-identity {
+    grid-column: 1 / -1;
+    grid-row: 1;
   }
 }

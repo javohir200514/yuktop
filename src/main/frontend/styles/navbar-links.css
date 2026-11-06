@@ -1,9 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap");
 
 /* =========================================
-   YUKBOR — MAIN NAVBAR
-   Navbar doim tepada turadi (position: fixed).
-   Sahifa kontenti navbar ostida qolmasligi uchun body ga padding-top beriladi.
+   YUKBOR — MAIN NAVBAR (yakuniy)
    Desktop: ≥1051px · Tablet: 821–1050px · Mobil: ≤820px
 ========================================= */
 
@@ -11,58 +9,66 @@
     --yb-nav-h: 98px;
 }
 
-/* Navbar mavjud bo'lganda sahifa tepasiga navbar balandligi qo'shiladi */
+html,
+body {
+    margin: 0;
+}
+
 body:has(.main-navbar) {
     padding-top: var(--yb-nav-h);
 }
 
-/* Ichki havolalar (#id) navbar ostida qolmasin */
 html {
-    scroll-padding-top: var(--yb-nav-h);
+    scroll-padding-top: calc(var(--yb-nav-h) + 16px);
 }
 
 .main-navbar {
     --nb-asphalt: #121212;
-    --nb-asphalt-2: #1b1b1b;
     --nb-line: #353535;
     --nb-yellow: #ffd21f;
     --nb-yellow-hover: #ffe266;
     --nb-yellow-deep: #b89500;
     --nb-white: #f5f3ee;
-    --nb-muted: #a9a59b;
     --nb-blue: #1d5fd1;
     --nb-green: #0f8a52;
-    --nb-danger: #ff7a6b;
     --nb-font-display: "Barlow Condensed", "Arial Narrow", Impact, sans-serif;
     --nb-font-body: "Barlow", "Segoe UI", system-ui, sans-serif;
 
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
     z-index: 1000;
 
-    width: 100%;
+    width: 100% !important;
+    height: var(--yb-nav-h);
     box-sizing: border-box;
+    transform: none !important;
 
-    background: var(--nb-asphalt);
+    background: #121212;
     color: var(--nb-white);
     border-bottom: 3px solid var(--nb-yellow);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, .35);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, .55);
 
     font-family: var(--nb-font-body);
 }
 
-/* ---------- ICHKI KONTEYNER (balandlik: 95px + 3px chiziq = 98px) ---------- */
+.main-navbar,
+.main-navbar * {
+    backdrop-filter: none;
+}
 
-.navbar-inner {
+/* ---------- ICHKI KONTEYNER ---------- */
+
+.main-navbar .navbar-inner {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
 
     width: 100%;
     max-width: 1440px;
-    min-height: 95px;
+    height: 100%;
+    min-height: 0;
 
     margin: 0 auto;
     padding: 0 32px;
@@ -73,11 +79,9 @@ html {
 
 .navbar-logo {
     justify-self: start;
-
     display: inline-flex;
     align-items: center;
     gap: 12px;
-
     color: var(--nb-white);
     text-decoration: none;
     white-space: nowrap;
@@ -91,19 +95,15 @@ html {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
     width: 46px;
     height: 46px;
-
     border-radius: 10px;
     background: var(--nb-yellow);
     color: var(--nb-asphalt);
-
     font-family: var(--nb-font-display);
     font-size: 23px;
     font-weight: 800;
     letter-spacing: 1px;
-
     box-shadow: 3px 3px 0 var(--nb-blue);
     transform: rotate(-4deg);
     transition: transform .2s ease, box-shadow .2s ease;
@@ -117,7 +117,6 @@ html {
 .navbar-logo-word {
     display: inline-flex;
     gap: 6px;
-
     font-family: var(--nb-font-display);
     font-size: 30px;
     font-weight: 800;
@@ -130,7 +129,7 @@ html {
     color: var(--nb-yellow);
 }
 
-/* ---------- PANEL (desktopda ko'rinmas qatlam) ---------- */
+/* ---------- PANEL ---------- */
 
 .navbar-panel {
     display: contents;
@@ -140,20 +139,15 @@ html {
 
 .navbar-menu {
     grid-column: 2;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     gap: 4px;
     white-space: nowrap;
 }
 
-/* Barcha navbar havolalari */
-
 .navbar-link {
     position: relative;
-
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -162,11 +156,9 @@ html {
     min-height: 44px;
     padding: 0 14px;
     box-sizing: border-box;
-
     border-radius: 10px;
 
     color: #e8e4d9;
-
     font-family: var(--nb-font-display);
     font-size: 18px;
     font-weight: 700;
@@ -178,8 +170,6 @@ html {
     transition: color .2s ease, background .2s ease, box-shadow .2s ease, transform .2s ease;
 }
 
-/* Havola tagidagi sariq chiziq: hover va faol holatda ochiladi */
-
 .navbar-link::after {
     content: "";
     position: absolute;
@@ -188,7 +178,6 @@ html {
     bottom: 6px;
     height: 3px;
     border-radius: 2px;
-
     background: var(--nb-yellow);
     transform: scaleX(0);
     transform-origin: left center;
@@ -196,20 +185,17 @@ html {
 }
 
 .navbar-link:hover {
-    color: #ffffff;
+    color: #fff;
     background: rgba(255, 255, 255, .06);
 }
 
-.navbar-link:hover::after {
+.navbar-link:hover::after,
+.navbar-link--active::after {
     transform: scaleX(1);
 }
 
 .navbar-link--active {
-    color: #ffffff;
-}
-
-.navbar-link--active::after {
-    transform: scaleX(1);
+    color: #fff;
 }
 
 .navbar-link-icon {
@@ -218,8 +204,6 @@ html {
     height: 18px;
     color: var(--nb-yellow);
 }
-
-/* "Yuk joylash": sariq tugma ko'rinishida, chiziqsiz */
 
 .navbar-link--cta {
     background: var(--nb-yellow);
@@ -248,28 +232,21 @@ html {
 .navbar-actions {
     grid-column: 3;
     justify-self: end;
-
     display: flex;
     align-items: center;
     justify-content: flex-end;
-
     gap: 12px;
     min-width: 0;
 }
-
-/* ---------- KIRISH ---------- */
 
 .navbar-login {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
     min-height: 44px;
     padding: 0 16px;
-
     border-radius: 10px;
-
-    color: #ffffff;
+    color: #fff;
     font-family: var(--nb-font-display);
     font-size: 18px;
     font-weight: 700;
@@ -277,36 +254,30 @@ html {
     text-decoration: none;
     text-transform: uppercase;
     white-space: nowrap;
-
     transition: background .2s ease, color .2s ease;
 }
 
-.navbar-login::after {
+.navbar-login::after,
+.navbar-register::after {
     display: none;
 }
 
 .navbar-login:hover {
-    color: #ffffff;
+    color: #fff;
     background: rgba(255, 255, 255, .08);
 }
-
-/* ---------- RO'YXATDAN O'TISH ---------- */
 
 .navbar-register {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
     min-height: 44px;
     padding: 0 18px;
     box-sizing: border-box;
-
     border: 2px solid var(--nb-yellow);
     border-radius: 10px;
-
     background: var(--nb-yellow);
     color: var(--nb-asphalt);
-
     font-family: var(--nb-font-display);
     font-size: 18px;
     font-weight: 800;
@@ -314,13 +285,8 @@ html {
     text-decoration: none;
     text-transform: uppercase;
     white-space: nowrap;
-
     box-shadow: 0 3px 0 var(--nb-yellow-deep);
     transition: transform .15s ease, box-shadow .15s ease, background .2s ease;
-}
-
-.navbar-register::after {
-    display: none;
 }
 
 .navbar-register:hover {
@@ -331,24 +297,20 @@ html {
 }
 
 /* =========================================
-   FOYDALANUVCHI PROFILI (chip)
+   PROFIL CHIPI
 ========================================= */
 
 .navbar-user {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-
     min-height: 48px;
     padding: 4px 12px 4px 4px;
     box-sizing: border-box;
-
     border: 2px solid var(--nb-line);
     border-radius: 999px;
-
-    color: #ffffff;
+    color: #fff;
     background: rgba(255, 255, 255, .05);
-
     cursor: pointer;
     transition: background .2s ease, border-color .2s ease;
 }
@@ -364,17 +326,13 @@ html {
     outline-offset: 2px;
 }
 
-/* Avatar: ko'k halqa + sariq chegara */
-
 .navbar-avatar {
     display: flex;
     align-items: center;
     justify-content: center;
-
     width: 38px;
     height: 38px;
     flex-shrink: 0;
-
     overflow: hidden;
     border-radius: 50%;
     border: 2px solid var(--nb-yellow);
@@ -394,8 +352,7 @@ html {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-
-    color: #ffffff;
+    color: #fff;
     font-family: var(--nb-font-display);
     font-size: 19px;
     font-weight: 700;
@@ -403,16 +360,12 @@ html {
     text-transform: uppercase;
 }
 
-/* Rol belgisi: kuryer yashil, jo'natuvchi ko'k */
-
 .navbar-role {
     display: inline-flex;
     align-items: center;
-
     padding: 3px 9px 2px;
     border-radius: 999px;
-
-    color: #ffffff;
+    color: #fff;
     font-family: var(--nb-font-display);
     font-size: 12px;
     font-weight: 700;
@@ -421,19 +374,13 @@ html {
     white-space: nowrap;
 }
 
-.navbar-role--courier {
-    background: var(--nb-green);
-}
-
-.navbar-role--sender {
-    background: var(--nb-blue);
-}
+.navbar-role--courier { background: var(--nb-green); }
+.navbar-role--sender  { background: var(--nb-blue); }
 
 .navbar-user-arrow {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
     flex-shrink: 0;
     width: 18px;
     height: 18px;
@@ -451,30 +398,22 @@ html {
     transform: rotate(180deg);
 }
 
-/* =========================================
-   MOBIL MENYU TUGMASI (faqat ≤820px)
-========================================= */
+/* ---------- MOBIL TUGMA ---------- */
 
 vaadin-button.navbar-toggle {
     display: none;
-
     align-items: center;
     justify-content: center;
-
     width: 46px;
     min-width: 46px;
     height: 46px;
-
     margin: 0;
     padding: 0;
-
     background: var(--nb-yellow);
     color: var(--nb-asphalt);
-
     border: none;
     border-radius: 12px;
     box-shadow: 0 3px 0 var(--nb-yellow-deep);
-
     cursor: pointer;
 }
 
@@ -488,103 +427,52 @@ vaadin-button.navbar-toggle:hover {
 
 @media (max-width: 1050px) and (min-width: 821px) {
 
-    :root {
-        --yb-nav-h: 91px;
-    }
+    :root { --yb-nav-h: 91px; }
 
-    .navbar-inner {
+    .main-navbar .navbar-inner {
         grid-template-columns: auto 1fr auto;
         column-gap: 16px;
         padding: 0 22px;
-        min-height: 88px;
     }
 
-    .navbar-logo {
-        gap: 9px;
-    }
-
-    .navbar-logo-plate {
-        width: 40px;
-        height: 40px;
-        font-size: 20px;
-    }
-
-    .navbar-logo-word {
-        font-size: 26px;
-    }
-
-    .navbar-menu {
-        gap: 2px;
-    }
-
-    .navbar-link {
-        padding: 0 9px;
-        font-size: 16px;
-    }
-
-    .navbar-link::after {
-        left: 9px;
-        right: 9px;
-    }
-
-    .navbar-actions {
-        gap: 8px;
-    }
-
-    .navbar-login {
-        padding: 0 10px;
-        font-size: 16px;
-    }
-
-    .navbar-register {
-        padding: 0 12px;
-        font-size: 16px;
-    }
-
-    .navbar-user-name {
-        max-width: 110px;
-    }
-
-    /* Tabletda rol belgisi joy egallamasin */
-    .navbar-role {
-        display: none;
-    }
+    .navbar-logo { gap: 9px; }
+    .navbar-logo-plate { width: 40px; height: 40px; font-size: 20px; }
+    .navbar-logo-word { font-size: 26px; }
+    .navbar-menu { gap: 2px; }
+    .navbar-link { padding: 0 9px; font-size: 16px; }
+    .navbar-link::after { left: 9px; right: 9px; }
+    .navbar-actions { gap: 8px; }
+    .navbar-login { padding: 0 10px; font-size: 16px; }
+    .navbar-register { padding: 0 12px; font-size: 16px; }
+    .navbar-user-name { max-width: 110px; }
+    .navbar-role { display: none; }
 }
 
 /* =========================================
-   MOBIL (≤820px)
+   MOBIL (≤820px) — ixcham menyu
 ========================================= */
 
 @media (max-width: 820px) {
 
-    :root {
-        --yb-nav-h: 75px;
+    :root { --yb-nav-h: 75px; }
+
+    .main-navbar {
+        box-shadow: 0 6px 16px rgba(0, 0, 0, .5);
     }
 
-    .navbar-inner {
+    .main-navbar .navbar-inner {
         display: flex;
         flex-wrap: wrap;
         align-items: center;
+        align-content: flex-start;
         justify-content: space-between;
-
-        min-height: 72px;
-        padding: 10px 18px;
+        padding: 10px 16px;
         gap: 0;
     }
 
-    .navbar-logo {
-        gap: 10px;
-    }
-
-    .navbar-logo-plate {
-        width: 40px;
-        height: 40px;
-        font-size: 20px;
-    }
-
-    .navbar-logo-word {
-        font-size: 26px;
-    }
+    .navbar-logo { gap: 10px; }
+    .navbar-logo-plate { width: 40px; height: 40px; font-size: 20px; }
+    .navbar-logo-word { font-size: 26px; }
 
     vaadin-button.navbar-toggle {
         display: inline-flex;
@@ -592,27 +480,50 @@ vaadin-button.navbar-toggle:hover {
         margin-left: auto;
     }
 
-    /* Yopiq holatda menyu yashirin */
+    /* Yopiq holat */
+    .main-navbar:not(.open) { overflow: hidden; }
+
     .navbar-panel {
         display: none;
-
         flex: 0 0 100%;
         width: 100%;
         min-width: 0;
         box-sizing: border-box;
     }
 
-    /* Ochilgan holat: sariq chiziq bilan ajratilgan panel.
-       Navbar fixed bo'lgani uchun ochilgan menyu kontent ustida turadi. */
+    /* Ochiq holat: balandlik kontentga qarab, ortiqcha cho'zilmaydi */
+    .main-navbar.open {
+        height: auto !important;
+        max-height: 100vh;
+        max-height: 100dvh;
+        overflow: hidden !important;
+    }
+
+    .main-navbar.open .navbar-inner {
+        height: auto;
+        min-height: 0;
+    }
+
     .main-navbar.open .navbar-panel {
         display: flex;
         flex-direction: column;
         align-items: stretch;
-        gap: 14px;
+        gap: 8px;
 
-        margin-top: 12px;
-        padding: 14px 0 18px;
+        position: static;
+        width: 100%;
+        max-width: 100%;
+        margin-top: 8px;
+        padding: 8px 0 12px;
         border-top: 2px solid var(--nb-line);
+
+        /* faqat juda past ekranlar uchun zaxira */
+        max-height: calc(100vh - 84px);
+        max-height: calc(100dvh - 84px);
+        overflow-x: hidden;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
     }
 
     .navbar-menu {
@@ -620,34 +531,32 @@ vaadin-button.navbar-toggle:hover {
         flex-direction: column;
         align-items: stretch;
         justify-content: flex-start;
-
+        position: static;
         width: 100%;
-        gap: 4px;
+        gap: 2px;
         white-space: normal;
     }
 
     .navbar-link {
         display: flex;
         justify-content: flex-start;
-
         width: 100%;
-        min-height: 52px;
-        padding: 0 16px;
-
-        font-size: 20px;
-        letter-spacing: .8px;
+        min-height: 44px;
+        padding: 0 14px;
+        font-size: 18px;
+        letter-spacing: .7px;
     }
 
     .navbar-link::after {
-        left: 16px;
+        left: 14px;
         right: auto;
-        width: 36px;
-        bottom: 9px;
+        width: 30px;
+        bottom: 5px;
     }
 
     .navbar-link--cta {
         justify-content: center;
-        margin-top: 6px;
+        margin-top: 4px;
     }
 
     .navbar-link--cta:hover,
@@ -655,16 +564,15 @@ vaadin-button.navbar-toggle:hover {
         transform: none;
     }
 
-    /* Kirish va ro'yxatdan o'tish */
     .navbar-actions {
         display: flex;
         flex-direction: column;
         align-items: stretch;
         justify-content: flex-start;
-
+        position: static;
         width: 100%;
-        gap: 10px;
-        padding-top: 14px;
+        gap: 8px;
+        padding-top: 10px;
         border-top: 1px solid var(--nb-line);
     }
 
@@ -672,15 +580,17 @@ vaadin-button.navbar-toggle:hover {
     .navbar-register {
         display: flex;
         justify-content: center;
-
+        position: static;
         width: 100%;
-        min-height: 50px;
+        min-height: 46px;
         box-sizing: border-box;
+        transform: none;
     }
 
     .navbar-user {
         width: 100%;
         max-width: 100%;
+        min-height: 46px;
         justify-content: flex-start;
     }
 
@@ -690,8 +600,74 @@ vaadin-button.navbar-toggle:hover {
         max-width: none;
     }
 
-    .navbar-role {
-        display: inline-flex;
+    .navbar-role { display: inline-flex; }
+
+    /* ---------- Profil menyusi: chip ostida, zich ---------- */
+    .main-navbar .nu-wrap {
+        position: static !important;
+        display: flex !important;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    .main-navbar .nu-wrap .navbar-user {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .main-navbar .nu-dropdown {
+        display: none !important;
+    }
+
+    .main-navbar .nu-wrap.nu-open .nu-dropdown {
+        display: block !important;
+        position: static !important;
+        inset: auto !important;
+        float: none !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        max-height: none !important;
+        margin: 8px 0 0 !important;
+        padding: 4px 8px;
+        transform: none !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+        box-sizing: border-box;
+        overflow: visible !important;
+        box-shadow: none !important;
+        border-radius: 14px;
+    }
+
+    .main-navbar .nu-dropdown .nu-head {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        min-width: 0;
+        padding: 8px 12px;
+        overflow-wrap: anywhere;
+    }
+
+    .main-navbar .nu-dropdown .nu-item {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        min-height: 42px;
+        padding: 0 12px;
+        box-sizing: border-box;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        text-align: left;
+    }
+
+    .main-navbar .nu-dropdown .nu-sep {
+        width: 100%;
+        margin: 2px 0;
     }
 }
 
@@ -701,19 +677,9 @@ vaadin-button.navbar-toggle:hover {
 
 @media (max-width: 380px) {
 
-    .navbar-inner {
-        padding: 9px 12px;
-    }
-
-    .navbar-logo-plate {
-        width: 36px;
-        height: 36px;
-        font-size: 18px;
-    }
-
-    .navbar-logo-word {
-        font-size: 22px;
-    }
+    .main-navbar .navbar-inner { padding: 9px 12px; }
+    .navbar-logo-plate { width: 36px; height: 36px; font-size: 18px; }
+    .navbar-logo-word { font-size: 22px; }
 
     vaadin-button.navbar-toggle {
         width: 42px;
@@ -737,164 +703,5 @@ vaadin-button.navbar-toggle:hover {
     .navbar-user-arrow,
     vaadin-button.navbar-toggle {
         transition: none;
-    }
-}
-/* =========================================
-   NAVBAR OSTIDAN O'TAYOTGAN KONTENT
-   Navbar doim tepada turadi. Kontent unga yopishib qolmasligi uchun
-   navbar to'liq qora va ostida soya bilan ajratilgan.
-========================================= */
-
-.main-navbar {
-    background: #121212;
-    box-shadow: 0 10px 24px rgba(0, 0, 0, .55);
-}
-
-/* Navbar ichidagi har qanday shaffoflikni o'chiradi */
-.main-navbar,
-.main-navbar * {
-    backdrop-filter: none;
-}
-
-/* Sahifa boshida kontent navbar ostida qolmasligi uchun */
-body:has(.main-navbar) {
-    padding-top: var(--yb-nav-h);
-}
-
-/* Anchor (#faq, #steps) bosilganda sarlavha navbar ostiga tushmasin */
-html {
-    scroll-padding-top: calc(var(--yb-nav-h) + 16px);
-}
-
-@media (max-width: 900px) {
-    .main-navbar {
-        box-shadow: 0 6px 16px rgba(0, 0, 0, .5);
-    }
-}
-/* =========================================
-   NAVBAR BALANDLIGI ANIQ BELGILANADI
-   Navbar balandligi --yb-nav-h ga teng. Sahifa tepasidagi joy ham shu qiymatdan olinadi,
-   shuning uchun kontent navbar ostida qolmaydi.
-========================================= */
-
-.main-navbar {
-    height: var(--yb-nav-h);
-    box-sizing: border-box;
-    background: #121212;
-    box-shadow: 0 10px 24px rgba(0, 0, 0, .55);
-}
-
-.main-navbar .navbar-inner {
-    height: 100%;
-    min-height: 0;
-    box-sizing: border-box;
-}
-
-body:has(.main-navbar) {
-    padding-top: var(--yb-nav-h);
-}
-
-html {
-    scroll-padding-top: calc(var(--yb-nav-h) + 16px);
-}
-/* =========================================
-   NAVBAR BALANDLIGI VA MIXLASH
-   Yopiq holatda balandlik --yb-nav-h ga teng.
-   Mobilda menyu ochilganda navbar kontentga qarab o'sadi,
-   ekrandan oshsa ichida scroll bo'ladi.
-========================================= */
-
-.main-navbar {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    width: 100% !important;
-    transform: none !important;
-
-    height: var(--yb-nav-h);
-    box-sizing: border-box;
-    background: #121212;
-    box-shadow: 0 10px 24px rgba(0, 0, 0, .55);
-}
-
-.main-navbar .navbar-inner {
-    height: 100%;
-    min-height: 0;
-    box-sizing: border-box;
-}
-
-body:has(.main-navbar) {
-    padding-top: var(--yb-nav-h);
-}
-
-html {
-    scroll-padding-top: calc(var(--yb-nav-h) + 16px);
-}
-
-html,
-body {
-    margin: 0;
-}
-
-/* ---------- Mobil: ochiq menyu ---------- */
-@media (max-width: 820px) {
-
-    /* Yopiq holatda ortiqcha narsa ko'rinmasin */
-    .main-navbar:not(.open) {
-        overflow: hidden;
-    }
-
-    /* Ochiq holat: balandlik kontentga qarab o'sadi */
-    .main-navbar.open {
-        height: auto;
-        max-height: 100vh;
-        max-height: 100dvh;
-        overflow-x: hidden;
-        overflow-y: auto;
-        overscroll-behavior: contain;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    .main-navbar.open .navbar-inner {
-        height: auto;
-        min-height: 72px;
-        align-items: center;
-        align-content: flex-start;
-    }
-
-    /* Logo va tugma qatori doim tepada, bir xil balandlikda */
-    .main-navbar.open .navbar-logo,
-    .main-navbar.open vaadin-button.navbar-toggle {
-        align-self: center;
-    }
-
-    /* Panel navbar ichida qoladi va to'liq kenglikni egallaydi */
-    .main-navbar.open .navbar-panel {
-        position: static;
-        flex: 0 0 100%;
-        width: 100%;
-        max-width: 100%;
-        margin-top: 10px;
-        padding: 14px 0 20px;
-        overflow: visible;
-    }
-
-    .main-navbar.open .navbar-menu {
-        position: static;
-        width: 100%;
-    }
-
-    .main-navbar.open .navbar-actions {
-        position: static;
-        width: 100%;
-        margin-top: 4px;
-    }
-
-    .main-navbar.open .navbar-login,
-    .main-navbar.open .navbar-register {
-        position: static;
-        width: 100%;
-        transform: none;
     }
 }

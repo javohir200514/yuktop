@@ -207,13 +207,7 @@ public class HomeView extends Div {
         Div copy = new Div();
         copy.addClassName("home-hero-copy");
 
-        Div plate = new Div();
-        plate.addClassName("home-plate");
-        Span flag = new Span("UZ");
-        flag.addClassName("home-plate-flag");
-        Span number = new Span("01 YUKBOR");
-        number.addClassName("home-plate-num");
-        plate.add(flag, number);
+
 
         H1 title = new H1();
         title.addClassName("home-title");
@@ -247,7 +241,7 @@ public class HomeView extends Div {
         );
         stats.addClassName("home-stats");
 
-        copy.add(plate, title, description, actions, stats);
+        copy.add(title, description, actions, stats);
 
         // ---- o'ng: yo'nalishlar paneli ----
         Div visual = new Div(board());

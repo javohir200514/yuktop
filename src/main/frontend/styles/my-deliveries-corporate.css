@@ -1,0 +1,1004 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+
+/* =====================================================
+   YUKBOR — Mening yuklarim (korporativ uslub, mobile-first)
+   Bosh sahifa va boshqa sahifalar bilan bir xil dizayn.
+   Telefonda matnlar markazda, kompyuterda chapga tekis.
+
+   Barcha klasslar "mdv-" prefiksi bilan, shuning uchun eski
+   my-deliveries.css bilan to'qnashmaydi.
+   ===================================================== */
+
+.mdv-page,
+.mdv-toast,
+.mdv-dialog {
+    --navy: #102b50;
+    --blue: #1764ed;
+    --blue-dark: #104fc4;
+    --ink: #0f1e36;
+    --muted: #5b6b84;
+    --line: #dfe6f0;
+    --soft: #f4f7fb;
+    --soft-blue: #eaf1fd;
+    --danger: #d92d20;
+    --font: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+.mdv-page {
+    /* Navbar ostidagi tepa bo'shliq. Kerak bo'lsa o'zgartiring. */
+    --mdv-top: 36px;
+
+    display: block;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: var(--mdv-top) 20px 64px;
+    min-height: calc(100vh - 92px);
+    min-height: calc(100dvh - 92px);
+
+    color: var(--ink);
+    font-family: var(--font);
+    font-size: 16px;
+    text-align: center;
+    background: #fff;
+
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-font-smoothing: antialiased;
+    box-sizing: border-box;
+}
+
+.mdv-page *,
+.mdv-page *::before,
+.mdv-page *::after,
+.mdv-toast *,
+.mdv-dialog * {
+    box-sizing: border-box;
+}
+
+.mdv-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* =====================================================
+   SARLAVHA
+   ===================================================== */
+
+.mdv-head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+    margin: 0 0 28px;
+}
+
+.mdv-title-box {
+    max-width: 640px;
+}
+
+.mdv-kicker {
+    display: block;
+    margin-bottom: 12px;
+
+    color: var(--blue);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+}
+
+.mdv-title {
+    margin: 0 0 10px;
+
+    color: var(--navy);
+    font-family: var(--font);
+    font-size: clamp(28px, 7.2vw, 42px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -.035em;
+}
+
+.mdv-subtitle {
+    margin: 0;
+    color: var(--muted);
+    font-size: 17px;
+    line-height: 1.6;
+}
+
+/* =====================================================
+   TUGMALAR
+   ===================================================== */
+
+.mdv-primary,
+.mdv-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    border: 1.5px solid transparent;
+    border-radius: 12px;
+    font-family: var(--font);
+    font-weight: 600;
+    letter-spacing: -.005em;
+    text-decoration: none;
+    white-space: nowrap;
+
+    cursor: pointer;
+    transition: background .2s ease, color .2s ease, border-color .2s ease, transform .15s ease;
+}
+
+.mdv-primary {
+    width: 100%;
+    min-height: 54px;
+    padding: 0 26px;
+
+    background: var(--blue);
+    color: #fff;
+    font-size: 16px;
+}
+
+.mdv-primary:hover {
+    background: var(--blue-dark);
+}
+
+.mdv-btn {
+    width: 100%;
+    min-height: 48px;
+    padding: 0 22px;
+    font-size: 15px;
+}
+
+.mdv-primary:active,
+.mdv-btn:active {
+    transform: scale(.985);
+}
+
+.mdv-btn--solid {
+    background: var(--blue);
+    color: #fff;
+}
+
+.mdv-btn--solid:hover {
+    background: var(--blue-dark);
+}
+
+.mdv-btn--outline {
+    border-color: #c6d3e6;
+    background: #fff;
+    color: var(--navy);
+}
+
+.mdv-btn--outline:hover {
+    border-color: var(--navy);
+}
+
+.mdv-btn--danger {
+    border-color: #f1c5c1;
+    background: #fff;
+    color: #b42318;
+}
+
+.mdv-btn--danger:hover {
+    border-color: var(--danger);
+    background: #fdecea;
+}
+
+.mdv-btn--danger-solid {
+    background: var(--danger);
+    color: #fff;
+}
+
+.mdv-btn--danger-solid:hover {
+    background: #b42318;
+}
+
+.mdv-btn:disabled {
+    opacity: .55;
+    cursor: default;
+}
+
+.mdv-primary:focus-visible,
+.mdv-btn:focus-visible,
+.mdv-filter:focus-visible,
+.mdv-page-btn:focus-visible {
+    outline: 3px solid var(--blue);
+    outline-offset: 2px;
+}
+
+/* =====================================================
+   FILTRLAR (holat bo'yicha)
+   ===================================================== */
+
+.mdv-filters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin: 0 0 24px;
+}
+
+.mdv-filter {
+    min-height: 42px;
+    padding: 0 18px;
+
+    border: 1.5px solid var(--line);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--navy);
+    font-family: var(--font);
+    font-size: 14.5px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: background .2s ease, color .2s ease, border-color .2s ease;
+}
+
+.mdv-filter:hover {
+    border-color: var(--navy);
+}
+
+.mdv-filter--active,
+.mdv-filter--active:hover {
+    border-color: var(--navy);
+    background: var(--navy);
+    color: #fff;
+}
+
+/* =====================================================
+   XABARLAR
+   ===================================================== */
+
+.mdv-alert {
+    margin: 0 0 18px;
+    padding: 14px 18px;
+
+    border: 1px solid #f3c6c6;
+    border-radius: 12px;
+    background: #fdecec;
+    color: #9c2222;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+.mdv-total {
+    display: block;
+    margin: 0 0 14px;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.mdv-total:empty {
+    display: none;
+}
+
+/* =====================================================
+   KARTALAR
+   ===================================================== */
+
+.mdv-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.mdv-card {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 22px 18px;
+
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(16, 43, 80, .04);
+
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.mdv-card:hover {
+    border-color: #b7cdf6;
+    box-shadow: 0 14px 34px rgba(16, 43, 80, .09);
+}
+
+.mdv-card--cancelled {
+    background: #fafbfc;
+}
+
+/* holat yangilanganda qisqa ta'kidlash */
+.mdv-card--updated {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 4px rgba(23, 100, 237, .14);
+    animation: mdv-pulse 2.6s ease-out 1;
+}
+
+@keyframes mdv-pulse {
+    from { box-shadow: 0 0 0 0 rgba(23, 100, 237, .45); }
+    to   { box-shadow: 0 0 0 4px rgba(23, 100, 237, .14); }
+}
+
+.mdv-card-top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.mdv-route {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 6px 10px;
+
+    color: var(--navy);
+    font-size: clamp(19px, 5vw, 23px);
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -.02em;
+}
+
+.mdv-route-arrow {
+    color: #8a9bb5;
+    font-weight: 600;
+}
+
+/* holat belgisi */
+.mdv-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 13px;
+
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.mdv-dot {
+    flex-shrink: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.mdv-badge--created   { background: #fff4d9; color: #8a5a00; }
+.mdv-badge--matched   { background: #eaf1fd; color: #1648b0; }
+.mdv-badge--picked_up { background: #e9e6fb; color: #4a32a8; }
+.mdv-badge--delivered { background: #def5e9; color: #0e6b3e; }
+.mdv-badge--cancelled { background: #eef1f5; color: #5b6b84; }
+.mdv-badge--disputed  { background: #fdecec; color: #9c2222; }
+
+.mdv-tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+}
+
+.mdv-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 12px;
+
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--soft);
+    color: #44566f;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+/* =====================================================
+   BOSQICHLAR CHIZIG'I
+   ===================================================== */
+
+.mdv-track {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.mdv-step {
+    position: relative;
+    padding-top: 28px;
+
+    color: var(--muted);
+    font-size: 12.5px;
+    font-weight: 500;
+    line-height: 1.3;
+    text-align: center;
+}
+
+/* doira */
+.mdv-step::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    z-index: 1;
+
+    width: 16px;
+    height: 16px;
+
+    border: 2px solid #c6d3e6;
+    border-radius: 50%;
+    background: #fff;
+    transform: translateX(-50%);
+}
+
+/* keyingi bosqichga chiziq */
+.mdv-step:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 7px;
+    left: 50%;
+    width: 100%;
+    height: 2px;
+    background: #dfe6f0;
+}
+
+.mdv-step--done {
+    color: var(--navy);
+}
+
+.mdv-step--done::before {
+    border-color: var(--blue);
+    background: var(--blue);
+}
+
+/* o'tib bo'lingan bosqichdan keyingi chiziq ko'k */
+.mdv-step--done:not(.mdv-step--current):not(:last-child)::after {
+    background: var(--blue);
+}
+
+.mdv-step--current {
+    font-weight: 700;
+}
+
+.mdv-step--current::before {
+    border-color: var(--blue);
+    background: #fff;
+    box-shadow: inset 0 0 0 3px var(--blue), 0 0 0 4px rgba(23, 100, 237, .18);
+}
+
+/* bekor qilingan yoki nizoli yuk uchun izoh */
+.mdv-note {
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: var(--soft);
+    color: #44566f;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+.mdv-note--cancelled { background: #eef1f5; }
+.mdv-note--disputed  { background: #fff4e5; color: #8a4a00; }
+
+/* =====================================================
+   MANZILLAR VA MA'LUMOT BLOKLARI
+   ===================================================== */
+
+.mdv-blocks {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+    padding: 16px;
+
+    border-radius: 14px;
+    background: var(--soft);
+}
+
+.mdv-block {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.mdv-block-label {
+    color: var(--muted);
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: .02em;
+}
+
+.mdv-block-value {
+    color: var(--navy);
+    font-size: 15.5px;
+    font-weight: 600;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+}
+
+/* kuryer ma'lumoti */
+.mdv-courier {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+    padding: 18px;
+
+    border: 1px solid #cfe0fb;
+    border-radius: 16px;
+    background: var(--soft-blue);
+}
+
+.mdv-courier-title {
+    grid-column: 1 / -1;
+
+    color: var(--blue);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+}
+
+.mdv-pickup-notice {
+    grid-column: 1 / -1;
+    padding: 10px 14px;
+
+    border: 1px solid #b7cdf6;
+    border-radius: 10px;
+    background: #fff;
+    color: var(--navy);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.45;
+}
+
+/* pastki qator */
+.mdv-card-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding-top: 16px;
+
+    border-top: 1px solid var(--line);
+}
+
+.mdv-date {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.mdv-reward {
+    color: var(--navy);
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -.03em;
+}
+
+.mdv-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* =====================================================
+   BO'SH HOLAT
+   ===================================================== */
+
+.mdv-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 56px 24px;
+
+    border-radius: 22px;
+    background: var(--soft);
+}
+
+.mdv-empty-title {
+    margin: 0;
+    color: var(--navy);
+    font-family: var(--font);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -.02em;
+}
+
+.mdv-empty-text {
+    max-width: 440px;
+    margin: 0 0 12px;
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.65;
+}
+
+.mdv-empty .mdv-primary {
+    width: 100%;
+    max-width: 320px;
+}
+
+/* =====================================================
+   SAHIFALASH
+   ===================================================== */
+
+.mdv-pager {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 28px;
+}
+
+.mdv-page-btn {
+    min-height: 46px;
+    padding: 0 18px;
+
+    border: 1.5px solid #c6d3e6;
+    border-radius: 12px;
+    background: #fff;
+    color: var(--navy);
+    font-family: var(--font);
+    font-size: 15px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: border-color .2s ease;
+}
+
+.mdv-page-btn:hover:not(:disabled) {
+    border-color: var(--navy);
+}
+
+.mdv-page-btn:disabled {
+    opacity: .4;
+    cursor: default;
+}
+
+.mdv-page-label {
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* =====================================================
+   BILDIRISHNOMA (Notification ichidagi kontent)
+   ===================================================== */
+
+.mdv-toast {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 420px;
+
+    color: var(--ink);
+    font-family: var(--font);
+}
+
+.mdv-toast-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.45;
+}
+
+.mdv-toast-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.mdv-toast-actions .mdv-btn {
+    width: auto;
+    flex: 1 1 auto;
+    min-height: 42px;
+    padding: 0 16px;
+    font-size: 14px;
+}
+
+/* =====================================================
+   BEKOR QILISH OYNASI (Dialog)
+   ===================================================== */
+
+.mdv-dialog {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: min(420px, 82vw);
+    padding: 4px;
+
+    color: var(--ink);
+    font-family: var(--font);
+    text-align: center;
+}
+
+.mdv-dialog-title {
+    margin: 0;
+    color: var(--navy);
+    font-family: var(--font);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -.02em;
+}
+
+.mdv-dialog-text {
+    margin: 0;
+    color: var(--muted);
+    font-size: 15.5px;
+    line-height: 1.6;
+}
+
+.mdv-dialog vaadin-text-field::part(input-field) {
+    min-height: 48px;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: inset 0 0 0 1.5px #c6d3e6;
+}
+
+.mdv-dialog vaadin-text-field::part(label) {
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.mdv-dialog-error {
+    padding: 12px 14px;
+
+    border: 1px solid #f3c6c6;
+    border-radius: 12px;
+    background: #fdecec;
+    color: #9c2222;
+    font-size: 14.5px;
+    font-weight: 500;
+    line-height: 1.45;
+}
+
+.mdv-dialog-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+/* =====================================================
+   KICHIK TELEFONLAR (≤ 360px)
+   ===================================================== */
+
+@media (max-width: 360px) {
+    .mdv-page {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .mdv-card {
+        padding: 20px 14px;
+    }
+
+    .mdv-step {
+        font-size: 11.5px;
+    }
+
+    .mdv-filter {
+        padding: 0 14px;
+        font-size: 14px;
+    }
+}
+
+/* =====================================================
+   PLANSHET (≥ 700px)
+   ===================================================== */
+
+@media (min-width: 700px) {
+    .mdv-page {
+        --mdv-top: 48px;
+        padding: var(--mdv-top) 32px 88px;
+    }
+
+    .mdv-head {
+        margin-bottom: 36px;
+    }
+
+    .mdv-primary {
+        width: auto;
+        min-width: 200px;
+    }
+
+    .mdv-btn {
+        width: auto;
+        min-width: 180px;
+    }
+
+    .mdv-card {
+        gap: 20px;
+        padding: 26px 28px;
+    }
+
+    .mdv-step {
+        font-size: 13.5px;
+    }
+
+    .mdv-blocks {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 20px;
+        padding: 18px 20px;
+    }
+
+    .mdv-courier {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        padding: 20px 22px;
+    }
+
+    .mdv-actions {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .mdv-dialog-actions {
+        flex-direction: row;
+    }
+
+    .mdv-dialog-actions .mdv-btn {
+        flex: 1 1 0;
+        width: auto;
+        min-width: 0;
+    }
+}
+
+/* =====================================================
+   KOMPYUTER (≥ 1050px) — matnlar chapga tekis
+   ===================================================== */
+
+@media (min-width: 1050px) {
+    .mdv-page {
+        --mdv-top: 56px;
+        padding-left: 48px;
+        padding-right: 48px;
+    }
+
+    .mdv-head {
+        flex-direction: row;
+        align-items: flex-end;
+        justify-content: space-between;
+        text-align: left;
+    }
+
+    .mdv-filters {
+        justify-content: flex-start;
+    }
+
+    .mdv-total {
+        text-align: left;
+    }
+
+    .mdv-card {
+        text-align: left;
+    }
+
+    .mdv-card-top {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+    }
+
+    .mdv-route {
+        justify-content: flex-start;
+    }
+
+    .mdv-tags {
+        justify-content: flex-start;
+    }
+
+    .mdv-card-bottom {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .mdv-actions {
+        justify-content: flex-end;
+    }
+
+    .mdv-toast,
+    .mdv-dialog {
+        text-align: left;
+    }
+}
+
+/* Animatsiyalarni kamaytirish sozlamasi */
+@media (prefers-reduced-motion: reduce) {
+    .mdv-page *,
+    .mdv-page *::before,
+    .mdv-page *::after {
+        transition-duration: .01ms !important;
+        animation: none !important;
+    }
+}
+/* =====================================================
+   KURYER YETKAZISHLARI sahifasi uchun qo'shimchalar
+   ===================================================== */
+
+.mdv-blocks--4 {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.mdv-block-links {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.mdv-link {
+    color: var(--blue);
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    overflow-wrap: anywhere;
+}
+
+.mdv-link:hover {
+    color: var(--blue-dark);
+}
+
+.mdv-link:focus-visible {
+    outline: 3px solid var(--blue);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+.mdv-verify {
+    align-self: flex-start;
+    margin-top: 4px;
+}
+
+.mdv-verify--yes {
+    border-color: #bfe8d1;
+    background: #def5e9;
+    color: #0e6b3e;
+}
+
+.mdv-verify--no {
+    background: #eef1f5;
+    color: #5b6b84;
+}
+
+.mdv-desc {
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: var(--soft);
+    text-align: inherit;
+}
+
+.mdv-pickup-wait {
+    display: block;
+    padding: 12px 16px;
+    border: 1px solid #b7cdf6;
+    border-radius: 12px;
+    background: var(--soft-blue);
+    color: var(--navy);
+    font-size: 14.5px;
+    font-weight: 600;
+    line-height: 1.45;
+}
+
+@media (min-width: 700px) {
+    .mdv-blocks--4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1050px) {
+    .mdv-blocks--4 {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
