@@ -52,6 +52,7 @@ import static uz.onetimecourier.one_time_courier.view.DeliveryViewSupport.tag;
 @CssImport("./styles/couriers-page.css")
 @CssImport("./styles/yb-feed.css")
 @CssImport("./styles/feed-corporate.css")
+@CssImport("./styles/feed-fix.css")
 public class CouriersView extends Div {
 
     private static final Logger log = LoggerFactory.getLogger(CouriersView.class);

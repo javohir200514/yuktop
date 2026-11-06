@@ -36,10 +36,17 @@ import java.time.format.DateTimeFormatter;
 import java.util.EnumMap;
 import java.util.Map;
 
+/**
+ * Kuryer safarini e'lon qilish (/trips/new).
+ *
+ * Dizayn (Yuklar sahifasi bilan bir xil oq-qora uslub) create-corporate.css da.
+ * U eski stildan KEYIN ulanishi kerak, shuning uchun annotatsiyalar ro'yxatida oxirgi turadi.
+ */
 @Route(value = "trips/new", layout = PageLayout.class)
 @PageTitle("Safar e'lon qilish | YukBor")
 @RolesAllowed("COURIER")
 @CssImport("./styles/create-delivery.css")
+@CssImport("./styles/create-corporate.css")
 public class CreateTripView extends Div {
 
     private static final Logger log = LoggerFactory.getLogger(CreateTripView.class);
@@ -53,6 +60,7 @@ public class CreateTripView extends Div {
     private final CourierTripService tripService;
     private final AuthenticationContext authContext;
 
+    private final Span kicker = new Span("Yangi safar");
     private final H1 title = new H1("Safar e'lon qilish");
     private final Paragraph lead = new Paragraph(
             "Qayerdan qayerga, qachon ketayotganingizni kiriting. Jo'nash vaqti o'tgach, "
@@ -90,6 +98,7 @@ public class CreateTripView extends Div {
         this.authContext = authContext;
 
         addClassName("cd-page");
+        kicker.addClassName("cd-kicker");
         title.addClassName("cd-title");
         lead.addClassName("cd-lead");
 
@@ -98,7 +107,7 @@ public class CreateTripView extends Div {
 
         buildSuccessPanel();
 
-        add(title, lead, layoutBox, successPanel);
+        add(kicker, title, lead, layoutBox, successPanel);
         updateSummary();
     }
 
@@ -164,10 +173,12 @@ public class CreateTripView extends Div {
 
         Span label = new Span("Eng katta yuk o'lchami *");
         label.addClassName("cd-label");
+        label.setId("cd-trip-size-label");
 
         Div group = new Div();
         group.addClassName("cd-size-group");
         group.getElement().setAttribute("role", "radiogroup");
+        group.getElement().setAttribute("aria-labelledby", "cd-trip-size-label");
 
         for (PackageSize size : PackageSize.values()) {
             NativeButton b = new NativeButton();

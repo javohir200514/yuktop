@@ -58,11 +58,15 @@ import java.util.function.Consumer;
  * Yuk joylash (/deliveries/new) va tahrirlash (/deliveries/edit/:id) formasi.
  * Tahrirlash rejimida yuk oldindan to'ldiriladi va faqat CREATED holatida ochiladi.
  * Hisobida telefon yo'q (OAuth) jo'natuvchidan aloqa ma'lumoti so'raladi.
+ *
+ * Dizayn (Yuklar sahifasi bilan bir xil oq-qora uslub) create-corporate.css da.
+ * U eski stildan KEYIN ulanishi kerak, shuning uchun annotatsiyalar ro'yxatida oxirgi turadi.
  */
 @Route(value = "deliveries/new", layout = PageLayout.class)
 @RouteAlias(value = "deliveries/edit/:id", layout = PageLayout.class)
 @RolesAllowed("SENDER")
 @CssImport("./styles/create-delivery.css")
+@CssImport("./styles/create-corporate.css")
 public class CreateDeliveryView extends Div implements BeforeEnterObserver, HasDynamicTitle {
 
     private static final Logger log = LoggerFactory.getLogger(CreateDeliveryView.class);
@@ -77,6 +81,7 @@ public class CreateDeliveryView extends Div implements BeforeEnterObserver, HasD
     /** true bo'lsa, hisobida telefon yo'q va "Aloqa" bo'limi ko'rsatiladi. */
     private final boolean contactRequired;
 
+    private final Span kicker = new Span("Yangi yuk");
     private final H1 title = new H1("Yuk joylash");
     private final Paragraph lead = new Paragraph("Yo'nalish, yuk va qabul qiluvchi ma'lumotlarini kiriting. "
             + "Yulduzcha (*) bilan belgilangan maydonlar majburiy.");
@@ -150,6 +155,7 @@ public class CreateDeliveryView extends Div implements BeforeEnterObserver, HasD
 
         addClassName("cd-page");
 
+        kicker.addClassName("cd-kicker");
         title.addClassName("cd-title");
         lead.addClassName("cd-lead");
 
@@ -164,7 +170,7 @@ public class CreateDeliveryView extends Div implements BeforeEnterObserver, HasD
         buildSuccessPanel();
         buildBlockedPanel();
 
-        add(title, lead, layoutBox, successPanel, blockedPanel);
+        add(kicker, title, lead, layoutBox, successPanel, blockedPanel);
         updateSummary();
         updateSubmitEnabled();
     }
@@ -221,6 +227,7 @@ public class CreateDeliveryView extends Div implements BeforeEnterObserver, HasD
             }
             editingId = id;
             prefill(delivery);
+            kicker.setText("Tahrirlash");
             title.setText("Yukni tahrirlash");
             lead.setText("O'zgartirishlar faqat kuryer topilgunga qadar mumkin. "
                     + "Yulduzcha (*) bilan belgilangan maydonlar majburiy.");
@@ -722,6 +729,7 @@ public class CreateDeliveryView extends Div implements BeforeEnterObserver, HasD
     private void showBlocked(String heading, String text) {
         blockedTitle.setText(heading);
         blockedText.setText(text);
+        kicker.setVisible(false);
         title.setVisible(false);
         lead.setVisible(false);
         layoutBox.setVisible(false);

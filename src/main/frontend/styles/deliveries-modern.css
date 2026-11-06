@@ -265,7 +265,7 @@ body:has(.dm-page) {
   border-left: 1px dashed #bdbdbd;
   min-width: 190px;
 }
-/* status belgisi: oq fonda qora ramkali pill */
+
 .dm-page .dm-card-side > :first-child {
   background: var(--dm-white) !important;
   color: var(--dm-black) !important;

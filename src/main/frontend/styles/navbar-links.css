@@ -797,7 +797,13 @@ body:has(.main-navbar) {
 html {
     scroll-padding-top: calc(var(--yb-nav-h) + 16px);
 }
-/* Navbar har doim viewport tepasiga mixlansin (boshqa stillar bekor qilmasin) */
+/* =========================================
+   NAVBAR BALANDLIGI VA MIXLASH
+   Yopiq holatda balandlik --yb-nav-h ga teng.
+   Mobilda menyu ochilganda navbar kontentga qarab o'sadi,
+   ekrandan oshsa ichida scroll bo'ladi.
+========================================= */
+
 .main-navbar {
     position: fixed !important;
     top: 0 !important;
@@ -805,9 +811,90 @@ html {
     right: 0 !important;
     width: 100% !important;
     transform: none !important;
+
+    height: var(--yb-nav-h);
+    box-sizing: border-box;
+    background: #121212;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, .55);
+}
+
+.main-navbar .navbar-inner {
+    height: 100%;
+    min-height: 0;
+    box-sizing: border-box;
+}
+
+body:has(.main-navbar) {
+    padding-top: var(--yb-nav-h);
+}
+
+html {
+    scroll-padding-top: calc(var(--yb-nav-h) + 16px);
 }
 
 html,
 body {
     margin: 0;
+}
+
+/* ---------- Mobil: ochiq menyu ---------- */
+@media (max-width: 820px) {
+
+    /* Yopiq holatda ortiqcha narsa ko'rinmasin */
+    .main-navbar:not(.open) {
+        overflow: hidden;
+    }
+
+    /* Ochiq holat: balandlik kontentga qarab o'sadi */
+    .main-navbar.open {
+        height: auto;
+        max-height: 100vh;
+        max-height: 100dvh;
+        overflow-x: hidden;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .main-navbar.open .navbar-inner {
+        height: auto;
+        min-height: 72px;
+        align-items: center;
+        align-content: flex-start;
+    }
+
+    /* Logo va tugma qatori doim tepada, bir xil balandlikda */
+    .main-navbar.open .navbar-logo,
+    .main-navbar.open vaadin-button.navbar-toggle {
+        align-self: center;
+    }
+
+    /* Panel navbar ichida qoladi va to'liq kenglikni egallaydi */
+    .main-navbar.open .navbar-panel {
+        position: static;
+        flex: 0 0 100%;
+        width: 100%;
+        max-width: 100%;
+        margin-top: 10px;
+        padding: 14px 0 20px;
+        overflow: visible;
+    }
+
+    .main-navbar.open .navbar-menu {
+        position: static;
+        width: 100%;
+    }
+
+    .main-navbar.open .navbar-actions {
+        position: static;
+        width: 100%;
+        margin-top: 4px;
+    }
+
+    .main-navbar.open .navbar-login,
+    .main-navbar.open .navbar-register {
+        position: static;
+        width: 100%;
+        transform: none;
+    }
 }

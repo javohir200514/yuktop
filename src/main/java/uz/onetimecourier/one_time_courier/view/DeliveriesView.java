@@ -3,7 +3,6 @@ package uz.onetimecourier.one_time_courier.view;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.DetachEvent;
-import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Anchor;
@@ -49,8 +48,9 @@ import static uz.onetimecourier.one_time_courier.view.DeliveryViewSupport.weight
  * Ochiq yuklar ro'yxati. Kim ko'rayotganiga qarab ma'lumot turlicha:
  * kirmagan va jo'natuvchi: faqat ochiq maydonlar; kuryer: jo'natuvchi ismi, niqoblangan kontakt, "Qabul qilish".
  *
- * Dizayn (bosh sahifa bilan bir xil korporativ uslub) feed-corporate.css da. U eski stillardan
- * KEYIN ulanishi kerak, shuning uchun annotatsiyalar ro'yxatida oxirgi turadi.
+ * Dizayn (bosh sahifa bilan bir xil korporativ uslub) feed-corporate.css da, mobil tuzatmalar
+ * feed-fix.css da. Ular eski stillardan KEYIN ulanishi kerak, shuning uchun annotatsiyalar
+ * ro'yxatida oxirgi turadi (feed-fix.css eng oxirgi).
  */
 @Route(value = "deliveries", layout = PageLayout.class)
 @PageTitle("Yuklar | YukBor")
@@ -62,6 +62,7 @@ import static uz.onetimecourier.one_time_courier.view.DeliveryViewSupport.weight
 @CssImport("./styles/page-head.css")
 @CssImport("./styles/yb-feed.css")
 @CssImport("./styles/feed-corporate.css")
+@CssImport("./styles/feed-fix.css")
 public class DeliveriesView extends Div {
 
     private static final Logger log = LoggerFactory.getLogger(DeliveriesView.class);
@@ -72,11 +73,10 @@ public class DeliveriesView extends Div {
 
     /**
      * Karta chapidagi quti ikonkasi (inline SVG, tashqi kutubxonasiz). Uslub bosh sahifadagi
-     * ikonkalar bilan bir xil: ingichka kontur (currentColor), yengil to'ldirma (.f), ko'k aksent (.a).
+     * ikonkalar bilan bir xil: ingichka kontur (currentColor), yengil to'ldirma (.f), aksent (.a).
      */
-    private static final String BOX_ICON =
-            "<span class=\"dm-card-icon\" aria-hidden=\"true\">"
-                    + "<svg viewBox=\"0 0 48 48\" xmlns=\"http://www.w3.org/2000/svg\">"
+    private static final String BOX_SVG =
+            "<svg viewBox=\"0 0 48 48\" xmlns=\"http://www.w3.org/2000/svg\">"
                     + "<path class=\"f\" d=\"M7 14.5 24 6l17 8.5v19L24 42 7 33.5z\"/>"
                     + "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" "
                     + "stroke-linecap=\"round\" stroke-linejoin=\"round\">"
@@ -84,7 +84,7 @@ public class DeliveriesView extends Div {
                     + "<path d=\"M7 14.5 24 23l17-8.5\"/>"
                     + "<path d=\"M24 23v19\"/>"
                     + "<path class=\"a\" d=\"M15.5 10.2l17 8.7\"/>"
-                    + "</g></svg></span>";
+                    + "</g></svg>";
 
     private enum Viewer { ANONYMOUS, SENDER, COURIER, OTHER }
 
@@ -210,6 +210,7 @@ public class DeliveriesView extends Div {
 
     // ---------------------------------------------------------------- qurilish
 
+    @SuppressWarnings("unused")
     private Div gate() {
         Div gate = new Div();
         gate.addClassName("dm-gate");
@@ -403,7 +404,7 @@ public class DeliveriesView extends Div {
         Div card = new Div();
         card.addClassName("dm-card");
 
-        Html icon = new Html(BOX_ICON);
+        Div icon = iconBox();
 
         Span from = new Span(d.fromRegion().getLabel());
         Span line = new Span();
@@ -425,16 +426,20 @@ public class DeliveriesView extends Div {
         Div main = new Div(route, tags, date);
         main.addClassName("dm-card-main");
 
-        Component badge = DeliveryViewSupport.statusBadge(DeliveryStatus.CREATED);
+        Div status = new Div(DeliveryViewSupport.statusBadge(DeliveryStatus.CREATED));
+        status.addClassName("dm-status");
+
         Span reward = new Span(formatMoney(d.reward()));
         reward.addClassName("dm-reward");
+
         NativeButton deliver = new NativeButton("Yetkazib berish");
         deliver.addClassNames("dm-btn", "dm-btn--solid", "dm-deliver");
         deliver.getElement().setAttribute("type", "button");
         deliver.getElement().setAttribute("aria-label", "Yukni yetkazib berish: "
                 + d.fromRegion().getLabel() + " → " + d.toRegion().getLabel());
         deliver.addClickListener(e -> onDeliver.run());
-        Div side = new Div(badge, reward, deliver);
+
+        Div side = new Div(status, reward, deliver);
         side.addClassName("dm-card-side");
 
         card.add(icon, main, side);
@@ -443,6 +448,15 @@ public class DeliveriesView extends Div {
             card.add(extra);
         }
         return card;
+    }
+
+    /** Quti ikonkasi: oddiy Div, SVG ichida. Shu sababli klass doim karta elementiga tegadi. */
+    private static Div iconBox() {
+        Div box = new Div();
+        box.addClassName("dm-card-icon");
+        box.getElement().setAttribute("aria-hidden", "true");
+        box.getElement().setProperty("innerHTML", BOX_SVG);
+        return box;
     }
 
     // ---------------------------------------------------------------- qabul qilish

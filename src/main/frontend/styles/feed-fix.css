@@ -1,0 +1,250 @@
+/* ===== feed-fix.css: Yuklar va Kuryerlar sahifalari tuzatmalari =====
+   Eng OXIRIDA ulanadi (feed-corporate.css dan keyin).
+   Eski stillar rang, o'lcham va joylashuvni buzgani uchun !important ishlatilgan. */
+
+.dm-page.md-page {
+  --dm-black: #0a0a0a;
+  --dm-white: #ffffff;
+  --dm-muted: #737373;
+  --dm-line: #e5e5e5;
+  --dm-field: #f4f4f4;
+}
+
+/* ---------- Jami yozuvi ---------- */
+.dm-page.md-page .dm-total {
+  display: inline-flex !important;
+  align-self: flex-start;
+  width: fit-content !important;
+  max-width: 100%;
+  margin: 2px 0 14px !important;
+  padding: 5px 14px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: var(--dm-black) !important;
+  color: var(--dm-white) !important;
+  font-size: .82rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+.dm-page.md-page .dm-total:empty { display: none !important; }
+
+/* ---------- Karta ---------- */
+.dm-page.md-page .dm-card {
+  position: relative;
+  overflow: hidden;
+  display: grid !important;
+  grid-template-columns: auto 1fr auto;
+  gap: 16px 24px;
+  align-items: center;
+  padding: 22px 28px 22px 30px;
+  background: var(--dm-white) !important;
+  border: 1px solid var(--dm-line);
+  border-radius: 20px;
+  box-sizing: border-box;
+}
+
+/* ---------- Ikonka ---------- */
+.dm-page.md-page .dm-card-icon {
+  position: static !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 54px !important;
+  height: 54px !important;
+  margin: 0 !important;
+  border-radius: 16px !important;
+  background: var(--dm-black) !important;
+  color: var(--dm-white) !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+.dm-page.md-page .dm-card-icon svg {
+  display: block;
+  width: 30px;
+  height: 30px;
+}
+.dm-page.md-page .dm-card-icon .f { fill: rgba(255, 255, 255, .16); stroke: none; }
+.dm-page.md-page .dm-card-icon .a { stroke: var(--dm-white); }
+.dm-page.md-page .dm-card-icon .w { fill: var(--dm-black); }
+
+/* ---------- Yo'nalish ---------- */
+.dm-page.md-page .dm-card-main { min-width: 0; }
+.dm-page.md-page .dm-route {
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  color: var(--dm-black) !important;
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: -.015em;
+}
+.dm-page.md-page .dm-route::before,
+.dm-page.md-page .dm-route::after { content: none !important; }
+.dm-page.md-page .dm-route > span:not(.dm-route-line) {
+  color: var(--dm-black) !important;
+  -webkit-text-fill-color: var(--dm-black) !important;
+  opacity: 1 !important;
+  background: none !important;
+}
+.dm-page.md-page .dm-route-line {
+  position: relative;
+  display: block !important;
+  flex: 0 0 64px;
+  width: 64px !important;
+  height: 2px !important;
+  border-radius: 2px;
+  background: var(--dm-black) !important;
+  font-size: 0;
+  color: transparent;
+}
+.dm-page.md-page .dm-route-line::before,
+.dm-page.md-page .dm-route-line::after {
+  content: "" !important;
+  position: absolute;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  margin-top: -5px;
+  border-radius: 50%;
+}
+.dm-page.md-page .dm-route-line::before {
+  left: -5px;
+  background: var(--dm-white);
+  box-shadow: inset 0 0 0 2px var(--dm-black);
+}
+.dm-page.md-page .dm-route-line::after { right: -5px; background: var(--dm-black); }
+
+.dm-page.md-page .dm-date { color: var(--dm-muted) !important; }
+
+/* ---------- O'ng ustun ---------- */
+.dm-page.md-page .dm-card-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  min-width: 190px;
+  padding-left: 28px;
+  border-left: 1px dashed #bdbdbd;
+}
+
+/* Status va kuryer bloki eski ":first-child" qoidasidan tozalanadi */
+.dm-page.md-page .dm-card-side > .dm-status,
+.dm-page.md-page .dm-card-side > .cc-identity {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  color: inherit !important;
+  padding: 0;
+  border-radius: 0;
+}
+.dm-page.md-page .dm-status > * {
+  background: var(--dm-white) !important;
+  color: var(--dm-black) !important;
+  box-shadow: inset 0 0 0 1.5px var(--dm-black);
+  border: 0 !important;
+  font-weight: 700;
+}
+
+.dm-page.md-page .dm-reward {
+  color: var(--dm-black) !important;
+  font-size: 1.7rem;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  white-space: nowrap;
+}
+
+/* ---------- Tugma ---------- */
+.dm-page.md-page .dm-card-side .dm-deliver {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: auto !important;
+  min-height: 46px;
+  margin-top: auto;
+  padding: 12px 20px !important;
+  border: 0 !important;
+  border-radius: 12px !important;
+  background: var(--dm-black) !important;
+  color: var(--dm-white) !important;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: visible !important;
+  text-overflow: clip !important;
+}
+.dm-page.md-page .dm-card-side .dm-deliver:hover {
+  background: #262626 !important;
+}
+
+/* ---------- Kuryer kartasi: avatar ---------- */
+.dm-page.md-page .cc-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.dm-page.md-page .cc-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  font-weight: 800;
+  font-size: .95rem;
+  color: var(--dm-black);
+  background: #e8e8e8;
+}
+.dm-page.md-page .cc-avatar--blue   { background: #dbe8ff; }
+.dm-page.md-page .cc-avatar--amber  { background: #ffeab8; }
+.dm-page.md-page .cc-avatar--green  { background: #d6f3df; }
+.dm-page.md-page .cc-avatar--violet { background: #e9dcff; }
+.dm-page.md-page .cc-identity-text { display: flex; flex-direction: column; min-width: 0; }
+.dm-page.md-page .cc-identity-name {
+  color: var(--dm-black) !important;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dm-page.md-page .cc-identity-role { color: var(--dm-muted) !important; font-size: .8rem; }
+
+/* ---------- Mobil / planshet ---------- */
+@media (max-width: 820px) {
+  .dm-page.md-page .dm-card {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 14px;
+    padding: 20px 18px 18px 22px;
+  }
+  .dm-page.md-page .dm-card-icon { display: none !important; }
+
+  .dm-page.md-page .dm-route { font-size: 1.15rem; gap: 6px 10px; }
+  .dm-page.md-page .dm-route-line { flex-basis: 36px; width: 36px !important; }
+
+  .dm-page.md-page .dm-card-side {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    justify-items: start;
+    gap: 12px;
+    width: 100%;
+    min-width: 0;
+    padding: 14px 0 0;
+    border-left: 0;
+    border-top: 1px dashed #bdbdbd;
+  }
+  .dm-page.md-page .dm-card-side .dm-reward {
+    justify-self: end;
+    font-size: 1.4rem;
+  }
+  .dm-page.md-page .dm-card-side .dm-deliver {
+    grid-column: 1 / -1;
+    margin-top: 0;
+  }
+}
