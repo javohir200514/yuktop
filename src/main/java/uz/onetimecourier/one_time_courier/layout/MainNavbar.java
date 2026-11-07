@@ -28,7 +28,7 @@ import java.util.Set;
 /**
  * Yuqori navbar (kompyuter) va telefon uchun pastki panel (ilova uslubida, 5 ta tugma).
  * Telefonda (≤820px) yuqorida logotip (ichki sahifalarda "orqaga" tugmasi ham), pastda tab panel turadi.
- * Ilova (PWA) rejimida <html> ga "app-mode" klassi qo'yiladi: footer yashiriladi.
+ * Ilova rejimida (PWA, TWA, WebView, ?app=1) <html> ga "app-mode" klassi qo'yiladi: footer yashiriladi.
  */
 @CssImport("./styles/navbar-user-menu.css")
 @CssImport("./styles/navbar-links.css")
@@ -85,13 +85,28 @@ public class MainNavbar extends Div {
             dropdown.addEventListener('click', () => setOpen(false));
             """;
 
-    /** Ilova (PWA) rejimini aniqlab, <html> ga "app-mode" klassini qo'yadi. */
+    /**
+     * Ilova rejimini aniqlaydi: PWA (standalone), Android TWA (referrer), WebView (UA "wv"),
+     * yoki havolada ?app=1 bo'lsa. Natija eslab qolinadi, keyingi sahifalarda ham ishlaydi.
+     * ?app=0 oddiy rejimga qaytaradi.
+     */
     private static final String APP_MODE_JS = """
-            const standalone =
-              window.matchMedia('(display-mode: standalone)').matches ||
-              window.matchMedia('(display-mode: fullscreen)').matches ||
-              window.navigator.standalone === true;
-            document.documentElement.classList.toggle('app-mode', standalone);
+            let app = false;
+            try {
+              const q = new URLSearchParams(window.location.search);
+              if (q.get('app') === '1') { localStorage.setItem('yb-app', '1'); }
+              if (q.get('app') === '0') { localStorage.removeItem('yb-app'); }
+              app = localStorage.getItem('yb-app') === '1';
+            } catch (e) {}
+            const ua = navigator.userAgent || '';
+            app = app
+              || window.matchMedia('(display-mode: standalone)').matches
+              || window.matchMedia('(display-mode: fullscreen)').matches
+              || window.matchMedia('(display-mode: minimal-ui)').matches
+              || window.navigator.standalone === true
+              || (document.referrer || '').startsWith('android-app://')
+              || /; wv\\)/.test(ua);
+            document.documentElement.classList.toggle('app-mode', app);
             """;
 
     /** Sahifa almashganda eng tepaga qaytaradi (bir zumda, silliq aylantirishsiz). */

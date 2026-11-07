@@ -32,7 +32,7 @@ public class SiteFooter extends Footer {
         Div stripe = new Div();
         stripe.addClassName("home-footer-stripe");
         stripe.getElement().setAttribute("aria-hidden", "true");
-
+        addClassName("yb-footer");
         // ---- Asosiy qism ----
         Div inner = new Div();
         inner.addClassName("home-footer-inner");
