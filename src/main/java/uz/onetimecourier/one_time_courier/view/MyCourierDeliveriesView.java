@@ -53,6 +53,7 @@ import static uz.onetimecourier.one_time_courier.view.DeliveryViewSupport.weight
 @CssImport("./styles/my-deliveries.css")
 @CssImport("./styles/deliveries-feed.css")
 @CssImport("./styles/my-deliveries-corporate.css")
+@CssImport("./styles/my-deliveries-mobile.css")
 public class MyCourierDeliveriesView extends Div {
 
     private static final Logger log = LoggerFactory.getLogger(MyCourierDeliveriesView.class);

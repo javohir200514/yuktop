@@ -60,6 +60,7 @@ import java.util.Set;
 @RolesAllowed("SENDER")
 @CssImport("./styles/my-deliveries.css")
 @CssImport("./styles/my-deliveries-corporate.css")
+@CssImport("./styles/my-deliveries-mobile.css")
 public class MyDeliveriesView extends Div {
 
     private static final Logger log = LoggerFactory.getLogger(MyDeliveriesView.class);
