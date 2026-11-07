@@ -9,7 +9,7 @@
 
     .mdv-page {
         --mdv-top: 14px;
-        padding: var(--mdv-top) 12px 24px;
+        padding: var(--mdv-top) 12px calc(var(--mtb-h, 64px) + env(safe-area-inset-bottom, 0px) + 32px);
         min-height: 0;
     }
 

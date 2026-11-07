@@ -1,4 +1,4 @@
-/* ===== feed-fix.css: Yuklar va Kuryerlar sahifalari (yakuniy, toza) =====
+/* ===== feed-fix.css: Yuklar va Safarlar sahifalari (yakuniy) =====
    Eng OXIRIDA ulanadi (feed-corporate.css dan keyin). */
 
 .dm-page.md-page {
@@ -22,6 +22,12 @@
 .dm-page.md-page .page-fold,
 .dm-page.md-page .dm-list { width: 100%; max-width: 100%; min-width: 0; }
 
+.dm-page.md-page .page-fold {
+  min-height: 0 !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
 /* ---------- Jami ---------- */
 .dm-page.md-page .dm-total {
   display: inline-flex !important;
@@ -39,6 +45,21 @@
   line-height: 1.4;
 }
 .dm-page.md-page .dm-total:empty { display: none !important; }
+
+/* ---------- "+ Safar e'lon qilish" tugmasi ---------- */
+.dm-page.md-page .tv-create {
+  background: var(--dm-black) !important;
+  color: var(--dm-yellow) !important;
+  border: 0 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 3px 0 var(--dm-yellow-deep) !important;
+  font-weight: 700;
+}
+.dm-page.md-page .tv-create:hover {
+  background: #1b1b1b !important;
+  transform: translateY(1px);
+  box-shadow: 0 2px 0 var(--dm-yellow-deep) !important;
+}
 
 /* ---------- Karta (kompyuter) ---------- */
 .dm-page.md-page .dm-card {
@@ -218,7 +239,7 @@
 
 .dm-page.md-page .dm-extra { grid-column: 1 / -1; min-width: 0; }
 
-/* Kuryerlar kartasi: avatar */
+/* Kuryer avatari */
 .dm-page.md-page .cc-identity { display: flex; align-items: center; gap: 12px; min-width: 0; }
 .dm-page.md-page .cc-avatar {
   display: inline-flex;
@@ -249,15 +270,19 @@
 
 /* =====================================================
    MOBIL / PLANSHET (≤820px)
-   Status: kartaning yuqori o'ng burchagida
-   Narx: chapda, tugma: pastda to'liq kenglikda
    ===================================================== */
 @media (max-width: 820px) {
 
+  /* Pastda pastki panel balandligicha bo'shliq: oxirgi karta to'liq ko'rinadi */
   .dm-page.md-page {
     padding-left: 14px;
     padding-right: 14px;
-    padding-bottom: 24px !important;
+    padding-bottom: calc(var(--mtb-h, 64px) + env(safe-area-inset-bottom, 0px) + 32px) !important;
+  }
+
+  .dm-page.md-page .tv-create {
+    width: 100%;
+    margin-bottom: 12px;
   }
 
   .dm-page.md-page .dm-card {
@@ -265,9 +290,14 @@
     flex-direction: column !important;
     align-items: stretch !important;
     justify-content: flex-start;
-    gap: 14px !important;
-    padding: 56px 18px 18px 22px !important; /* tepada status uchun joy */
+    gap: 12px !important;
+    padding: 18px 16px 16px 20px !important;
     grid-template-columns: none !important;
+  }
+
+  /* Status faqat shu kartada bo'lsa, tepada joy ochiladi */
+  .dm-page.md-page .dm-card:has(.dm-status) {
+    padding-top: 54px !important;
   }
 
   .dm-page.md-page .dm-card > *,
@@ -285,18 +315,35 @@
   .dm-page.md-page .dm-card-main {
     width: 100% !important;
     align-items: flex-start !important;
+    gap: 10px;
     margin: 0 !important;
     text-align: left;
   }
 
+  /* Yo'nalish: bitta qatorda */
   .dm-page.md-page .dm-route {
+    flex-wrap: nowrap !important;
     justify-content: flex-start !important;
-    font-size: 1.15rem;
-    gap: 6px 10px;
+    gap: 8px;
+    width: 100%;
+    font-size: 1.08rem;
+    line-height: 1.2;
   }
-  .dm-page.md-page .dm-route-line { flex-basis: 36px; width: 36px !important; }
+  .dm-page.md-page .dm-route > span:not(.dm-route-line) {
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .dm-page.md-page .dm-route-line {
+    flex: 0 0 18px;
+    width: 18px !important;
+    margin: 0 4px;
+  }
 
-  /* Pastki qism: narx, so'ng tugma */
+  .dm-page.md-page .dm-tags { gap: 6px; }
+  .dm-page.md-page .dm-tags > * { padding: 3px 11px; font-size: .78rem; }
+
+  /* Pastki qism: narx va tugma */
   .dm-page.md-page .dm-card-side {
     display: flex !important;
     flex-direction: column !important;
@@ -323,7 +370,7 @@
     margin: 0 !important;
   }
 
-  /* STATUS: eng tepada, o'ng burchakda */
+  /* Status: kartaning eng tepasida, o'ng burchakda */
   .dm-page.md-page .dm-card-side > .dm-status {
     position: absolute !important;
     top: 14px !important;
@@ -338,10 +385,9 @@
     display: inline-flex;
     padding: 5px 12px !important;
     font-size: .74rem !important;
-    white-space: nowrap;
   }
 
-  /* Kuryerlar sahifasi: ism bloki */
+  /* Safarlar sahifasi: kuryer ismi */
   .dm-page.md-page .dm-card-side > .cc-identity {
     position: static !important;
     align-self: stretch;
@@ -350,8 +396,9 @@
 
 @media (max-width: 360px) {
   .dm-page.md-page { padding-left: 10px; padding-right: 10px; }
-  .dm-page.md-page .dm-card { padding: 54px 14px 16px 18px !important; }
-  .dm-page.md-page .dm-route { font-size: 1.05rem; }
+  .dm-page.md-page .dm-card { padding: 16px 12px 14px 18px !important; }
+  .dm-page.md-page .dm-card:has(.dm-status) { padding-top: 52px !important; }
+  .dm-page.md-page .dm-route { font-size: 1rem; }
   .dm-page.md-page .dm-card-side .dm-reward { font-size: 1.3rem; }
   .dm-page.md-page .dm-card-side > .dm-status { top: 12px !important; right: 12px !important; }
 }

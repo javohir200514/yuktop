@@ -37,8 +37,8 @@ import static uz.onetimecourier.one_time_courier.view.DeliveryViewSupport.tag;
  * Kuryer safarlari ro'yxati. Tuzilishi va dizayni ochiq yuklar sahifasi bilan bir xil:
  * tepada yo'nalish filtri, pastda kartalar. Kuryer hisobida "+ Safar e'lon qilish" tugmasi ko'rinadi.
  *
- * Dizayn (bosh sahifa bilan bir xil korporativ uslub) feed-corporate.css da. U eski stillardan
- * KEYIN ulanishi kerak, shuning uchun annotatsiyalar ro'yxatida oxirgi turadi.
+ * Dizayn feed-corporate.css va feed-fix.css da. Ular eski stillardan KEYIN ulanishi kerak,
+ * shuning uchun annotatsiyalar ro'yxatida oxirgi turadi (feed-fix.css eng oxirgi).
  */
 @Route(value = "couriers", layout = PageLayout.class)
 @RouteAlias(value = "trips", layout = PageLayout.class)
@@ -65,10 +65,6 @@ public class CouriersView extends Div {
     /** Avatar ranglari. Har bir kuryer ismi doim bir xil rangni oladi. */
     private static final String[] AVATAR_TONES = {"blue", "amber", "green", "violet"};
 
-    /**
-     * Karta ikonkasi: yuk mashinasi. Uslub bosh sahifadagi ikonkalar bilan bir xil:
-     * ingichka kontur (currentColor), yengil to'ldirma (.f) va ko'k aksent (.a).
-     */
     private static final String TRUCK_SVG =
             "<svg viewBox=\"0 0 48 48\" xmlns=\"http://www.w3.org/2000/svg\">"
                     + "<path class=\"f\" d=\"M3 12h26v23H3z\"/>"
@@ -108,7 +104,6 @@ public class CouriersView extends Div {
 
         addClassNames("md-page", "dm-page");
 
-        // ---- sarlavha: yorliq, sahifa nomi va qisqa yozuv
         Span kicker = new Span("Kuryer safarlari");
         kicker.addClassName("dm-kicker");
 
@@ -122,7 +117,6 @@ public class CouriersView extends Div {
         Div head = new Div(kicker, title, subtitle);
         head.addClassName("dm-page-head");
 
-        // ---- filtr paneli (ochiq yuklar bilan bir xil)
         configureFilters();
         Span filterArrow = new Span("⇄");
         filterArrow.addClassName("dm-filter-arrow");
@@ -130,7 +124,6 @@ public class CouriersView extends Div {
         Div filters = new Div(fromFilter, filterArrow, toFilter, clearButton);
         filters.addClassName("dm-filter-bar");
 
-        // ---- sarlavha qatori: jami soni va kuryer uchun tugma
         totalLabel.addClassName("dm-total");
 
         Div toolbar = new Div(totalLabel);
@@ -149,7 +142,6 @@ public class CouriersView extends Div {
         listBox.addClassName("dm-list");
         buildPager();
 
-        // Kontent bir ekran balandlikda turadi, footer undan pastda (scroll qilganda ko'rinadi)
         Div main = new Div(head, filters, toolbar, alert, listBox, pager);
         main.addClassName("page-fold");
 
@@ -289,15 +281,16 @@ public class CouriersView extends Div {
         Div route = new Div(from, line, to);
         route.addClassName("dm-route");
 
-        Div tags = new Div(tag("Sig'im: " + sizeLabel(t.maxPackageSize())));
+        // Har bir belgi o'z nomi bilan: oddiy foydalanuvchi nima ekanini tushunadi
+        Div tags = new Div(tag("Eng katta yuk: " + sizeLabel(t.maxPackageSize())));
         if (t.vehicleType() != null) {
-            tags.add(tag(t.vehicleType().getLabel()));
+            tags.add(tag("Transport: " + t.vehicleType().getLabel()));
         }
         if (!isBlank(t.vehicleBrand())) {
-            tags.add(tag(t.vehicleBrand()));
+            tags.add(tag("Markasi: " + t.vehicleBrand().strip()));
         }
         if (!isBlank(t.vehicleColor())) {
-            tags.add(tag(t.vehicleColor()));
+            tags.add(tag("Rangi: " + t.vehicleColor().strip()));
         }
         tags.addClassName("dm-tags");
 
@@ -336,7 +329,7 @@ public class CouriersView extends Div {
         return card;
     }
 
-    /** Kuryer ismi: rangli avatar (bosh harflar) va ism. Kartaning o'ng tomonida. */
+    /** Kuryer ismi: rangli avatar (bosh harflar) va ism. */
     private static Div identity(String courierName) {
         Div avatar = new Div();
         avatar.setText(initials(courierName));
@@ -358,7 +351,6 @@ public class CouriersView extends Div {
         return box;
     }
 
-    /** "Javohir Komilov" -> "JK". Bitta so'z bo'lsa, bitta harf. */
     private static String initials(String name) {
         StringBuilder sb = new StringBuilder();
         for (String word : name.trim().split("\\s+")) {
@@ -369,7 +361,6 @@ public class CouriersView extends Div {
         return sb.length() == 0 ? "?" : sb.toString();
     }
 
-    /** Ism uchun doim bir xil rang. */
     private static String toneFor(String name) {
         return AVATAR_TONES[Math.floorMod(name.hashCode(), AVATAR_TONES.length)];
     }
@@ -416,7 +407,6 @@ public class CouriersView extends Div {
         dialog.open();
     }
 
-    /** Yuk mashinasi ikonkasi: oddiy Div, SVG ichida. Shu sababli klass doim karta elementiga tegadi. */
     private static Div iconBox() {
         Div box = new Div();
         box.addClassName("dm-card-icon");
