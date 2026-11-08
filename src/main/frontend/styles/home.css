@@ -976,7 +976,6 @@
     padding: 10px 14px calc(10px + env(safe-area-inset-bottom, 0px));
 
     background: rgba(18, 18, 18, .96);
-    border-top: 3px solid var(--yellow);
     -webkit-backdrop-filter: blur(6px);
     backdrop-filter: blur(6px);
 
