@@ -119,7 +119,7 @@ public class MainNavbar extends Div {
     private static final String BOTTOM_PAD_JS = """
             (function () {
               if (window.__ybPad) { window.__ybPad(); return; }
-              const PAD = 'calc(64px + env(safe-area-inset-bottom, 0px) + 28px)';
+              const PAD = 'calc(40px + env(safe-area-inset-bottom, 0px) + 28px)';
               const apply = () => {
                 const mobile = window.matchMedia('(max-width: 820px)').matches;
                 const vh = window.innerHeight;
