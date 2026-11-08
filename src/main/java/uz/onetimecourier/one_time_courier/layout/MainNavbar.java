@@ -212,29 +212,34 @@ public class MainNavbar extends Div {
         bar.getElement().setAttribute("role", "navigation");
         bar.getElement().setAttribute("aria-label", "Asosiy menyu");
 
-        bar.add(tab("Yuklar", "/deliveries", VaadinIcon.PACKAGE, false));
-        bar.add(tab("Safarlar", "/couriers", VaadinIcon.TRUCK, false, "/trips"));
+        // 1-tab: Bosh sahifa (hamma uchun)
+        bar.add(tab("Bosh sahifa", "/", VaadinIcon.HOME, false));
 
         if (!isLoggedIn()) {
+            bar.add(tab("Yuklar", "/deliveries", VaadinIcon.PACKAGE, false));
+            bar.add(tab("Safarlar", "/couriers", VaadinIcon.TRUCK, false, "/trips"));
             bar.add(tab("Kuryerlar", "/reyting/kuryerlar", VaadinIcon.TROPHY, false));
-            bar.add(tab("Biz haqimizda", "/about", VaadinIcon.INFO_CIRCLE, false));
             bar.add(tab("Kirish", "/login", VaadinIcon.SIGN_IN, false));
             tabs.add(bar);
             return;
         }
 
+        // 2-tab: Safarlar
+        bar.add(tab("Safarlar", "/couriers", VaadinIcon.TRUCK, false, "/trips"));
+
+        // 3-tab (markaz): asosiy amal
         if (isSender()) {
             bar.add(tab("Yuk joylash", "/deliveries/new", VaadinIcon.PLUS, true, "/deliveries/edit"));
-            bar.add(tab("Yuklarim", "/deliveries/mine", VaadinIcon.CLIPBOARD_TEXT, false));
         } else if (isCourier()) {
             bar.add(tab("Yetkazishlar", "/courier/deliveries", VaadinIcon.CLIPBOARD_CHECK, true));
-            bar.add(tab("Reyting", "/reyting/kuryerlar", VaadinIcon.TROPHY, false));
         } else {
             bar.add(tab("Kuryerlar", "/reyting/kuryerlar", VaadinIcon.TROPHY, false));
-            bar.add(tab("Biz haqimizda", "/about", VaadinIcon.INFO_CIRCLE, false));
         }
 
-        // Profil tugmasi: yuqoriga ochiladigan varaqni boshqaradi
+        // 4-tab: ochiq yuklar ("Yuklarim" endi faqat Profil varag'ida)
+        bar.add(tab("Yuklar", "/deliveries", VaadinIcon.PACKAGE, false));
+
+        // 5-tab: Profil tugmasi, yuqoriga ochiladigan varaqni boshqaradi
         profileTab.addClassName("mtb-item");
         profileTab.getElement().setAttribute("type", "button");
         profileTab.getElement().setAttribute("aria-haspopup", "menu");

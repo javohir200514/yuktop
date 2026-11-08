@@ -4,6 +4,7 @@ import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
@@ -42,10 +43,8 @@ import static uz.onetimecourier.one_time_courier.view.DeliveryViewSupport.typeLa
 import static uz.onetimecourier.one_time_courier.view.DeliveryViewSupport.weightText;
 
 /**
- * Kuryer qabul qilgan yuklar: to'liq ma'lumot, "Olib ketdim" / "Yetkazdim".
- *
- * Dizayn (korporativ uslub) my-deliveries-corporate.css da, klasslar "mdv-" prefiksi bilan.
- * U eski stillardan KEYIN ulanishi kerak, shuning uchun annotatsiyalar ro'yxatida oxirgi turadi.
+ * Kuryer qabul qilgan yuklar. Kartada faqat qisqa ma'lumot (holat, yo'nalish, yuk turi, narx),
+ * to'liq ma'lumot "Batafsil" oynasida. Dizayn my-deliveries-corporate.css va my-deliveries-mobile.css da.
  */
 @Route(value = "courier/deliveries", layout = PageLayout.class)
 @PageTitle("Mening yetkazishlarim | YukBor")
@@ -80,8 +79,6 @@ public class MyCourierDeliveriesView extends Div {
     private final DeliveryService deliveryService;
     private final DeliveryFeedBroadcaster feed;
     private final RatingService ratingService;
-
-    /** Foydalanuvchi ID'si view yaratilganda olinadi (push oqimida SecurityContext bo'lmasligi mumkin). */
     private final Long userId;
 
     private final Map<Tab, NativeButton> tabButtons = new EnumMap<>(Tab.class);
@@ -145,7 +142,6 @@ public class MyCourierDeliveriesView extends Div {
     protected void onAttach(AttachEvent attachEvent) {
         super.onAttach(attachEvent);
         if (feedRegistration == null) {
-            // Jo'natuvchi tasdiqlasa, bekor qilsa yoki holat o'zgarsa, ro'yxat o'zi yangilanadi
             feedRegistration = feed.register(attachEvent.getUI(), this::load);
         }
     }
@@ -283,66 +279,35 @@ public class MyCourierDeliveriesView extends Div {
         return box;
     }
 
-    // ---------------------------------------------------------------- kartochka
+    // ---------------------------------------------------------------- kartochka (qisqa)
 
     private Div card(CourierDeliveryDto d) {
         Div card = new Div();
         card.addClassNames("mdv-card", "mdv-card--" + d.status().name().toLowerCase());
 
-        // Yuqori qator: yo'nalish va holat belgisi
-        Span from = new Span(d.fromRegion().getLabel());
-        Span arrow = new Span("→");
-        arrow.addClassName("mdv-route-arrow");
-        arrow.getElement().setAttribute("aria-hidden", "true");
-        Span to = new Span(d.toRegion().getLabel());
-        Div route = new Div(from, arrow, to);
-        route.addClassName("mdv-route");
-
-        Div top = new Div(route, statusBadge(d.status()));
+        Div top = new Div(route(d), statusBadge(d.status()));
         top.addClassName("mdv-card-top");
 
-        // Teglar
         Div tags = new Div(
                 tag(typeLabel(d.deliveryType())),
-                tag(sizeLabel(d.packageSize())),
+                tag("Yuk: " + sizeLabel(d.packageSize())),
                 tag(weightText(d.weightKg())));
         tags.addClassName("mdv-tags");
 
-        // Jo'natuvchi, manzillar va qabul qiluvchi
-        Div blocks = new Div(
-                senderBlock(d),
-                block("Olib ketish", plain(d.pickupAddress()),
-                        mapLink(d.pickupLat(), d.pickupLng())),
-                block("Yetkazish", plain(d.dropoffAddress()),
-                        mapLink(d.dropoffLat(), d.dropoffLng())),
-                block("Qabul qiluvchi", plain(d.recipientName()),
-                        telLink(d.recipientPhone())));
-        blocks.addClassNames("mdv-blocks", "mdv-blocks--4");
-
-        card.add(top, tags, tracker(d.status()), blocks);
-
-        if (d.description() != null && !d.description().isBlank()) {
-            Div desc = block("Tavsif", plain(d.description()));
-            desc.addClassName("mdv-desc");
-            card.add(desc);
-        }
-
-        // Pastki qator
         Span date = new Span("Qabul qilingan: " + formatDate(d.matchedAt()));
         date.addClassName("mdv-date");
         Span reward = new Span(formatMoney(d.reward()));
         reward.addClassName("mdv-reward");
         Div bottom = new Div(date, reward);
         bottom.addClassName("mdv-card-bottom");
-        card.add(bottom);
 
-        // Amallar
+        card.add(top, tags, bottom);
+
         Div actions = new Div();
         actions.addClassName("mdv-actions");
 
         if (d.status() == DeliveryStatus.MATCHED) {
             if (d.courierPickupRequested()) {
-                // So'rov allaqachon yuborilgan: tugma yo'q, faqat kutish holati
                 Span wait = new Span("Olib ketganingizni bildirdingiz. Jo'natuvchi tasdiqlashini kuting.");
                 wait.addClassName("mdv-pickup-wait");
                 actions.add(wait);
@@ -361,13 +326,83 @@ public class MyCourierDeliveriesView extends Div {
             actions.add(deliver);
         }
 
-        if (actions.getChildren().findAny().isPresent()) {
-            card.add(actions);
-        }
+        NativeButton details = new NativeButton("Batafsil ›");
+        details.addClassNames("mdv-btn", "mdv-btn--outline");
+        details.getElement().setAttribute("type", "button");
+        details.getElement().setAttribute("aria-label",
+                "Batafsil: " + d.fromRegion().getLabel() + " → " + d.toRegion().getLabel());
+        details.addClickListener(e -> openDetails(d));
+        actions.add(details);
+
+        card.add(actions);
         return card;
     }
 
-    /** Jo'natuvchi aloqa ma'lumoti. Telefon va Telegram yo'q bo'lsa, "Ko'rsatilmagan" chiqadi. */
+    private Div route(CourierDeliveryDto d) {
+        Span from = new Span(d.fromRegion().getLabel());
+        Span arrow = new Span("→");
+        arrow.addClassName("mdv-route-arrow");
+        arrow.getElement().setAttribute("aria-hidden", "true");
+        Span to = new Span(d.toRegion().getLabel());
+        Div route = new Div(from, arrow, to);
+        route.addClassName("mdv-route");
+        return route;
+    }
+
+    // ---------------------------------------------------------------- batafsil oynasi
+
+    private void openDetails(CourierDeliveryDto d) {
+        Dialog dialog = new Dialog();
+        dialog.setCloseOnOutsideClick(true);
+        dialog.addOpenedChangeListener(e -> {
+            if (!e.isOpened()) {
+                dialog.removeFromParent();
+            }
+        });
+
+        Div content = new Div();
+        content.addClassNames("mdv-dialog", "mdv-details");
+
+        H2 heading = new H2(d.fromRegion().getLabel() + " → " + d.toRegion().getLabel());
+        heading.addClassName("mdv-dialog-title");
+
+        Div statusRow = new Div(statusBadge(d.status()));
+        statusRow.addClassName("mdv-details-status");
+
+        Div blocks = new Div(
+                senderBlock(d),
+                block("Olib ketish", plain(d.pickupAddress()), mapLink(d.pickupLat(), d.pickupLng())),
+                block("Yetkazish", plain(d.dropoffAddress()), mapLink(d.dropoffLat(), d.dropoffLng())),
+                block("Qabul qiluvchi", plain(d.recipientName()), telLink(d.recipientPhone())),
+                block("Yuk", plain(typeLabel(d.deliveryType()) + " · " + sizeLabel(d.packageSize())
+                        + " · " + weightText(d.weightKg()))),
+                block("Mukofot", plain(formatMoney(d.reward()))));
+        blocks.addClassName("mdv-blocks");
+
+        content.add(heading, statusRow, tracker(d.status()), blocks);
+
+        if (d.description() != null && !d.description().isBlank()) {
+            Div desc = block("Tavsif", plain(d.description()));
+            desc.addClassName("mdv-desc");
+            content.add(desc);
+        }
+
+        Span date = new Span("Qabul qilingan: " + formatDate(d.matchedAt()));
+        date.addClassName("mdv-date");
+        content.add(date);
+
+        NativeButton close = new NativeButton("Yopish");
+        close.addClassNames("mdv-btn", "mdv-btn--solid");
+        close.getElement().setAttribute("type", "button");
+        close.addClickListener(e -> dialog.close());
+        Div actions = new Div(close);
+        actions.addClassNames("mdv-actions", "mdv-details-actions");
+        content.add(actions);
+
+        dialog.add(content);
+        dialog.open();
+    }
+
     private Div senderBlock(CourierDeliveryDto d) {
         Component phone = telLink(d.senderContactPhone());
         Component telegram = telegramLink(d.senderContactTelegram());
@@ -425,8 +460,7 @@ public class MyCourierDeliveriesView extends Div {
                             ? "Jo'natuvchiga bildirildi. U tasdiqlashini kuting"
                             : "Yuk yetkazildi",
                     4000, Notification.Position.TOP_CENTER);
-            // Ro'yxat bu yerda qayta yuklanmaydi: o'zgarishni DeliveryFeedBroadcaster
-            // push orqali yetkazadi. Ikki marta yuklash brauzerdagi DOM ni buzadi.
+            // Ro'yxatni DeliveryFeedBroadcaster push orqali yangilaydi.
             return null;
         });
     }
@@ -438,7 +472,6 @@ public class MyCourierDeliveriesView extends Div {
 
     // ---------------------------------------------------------------- bosqichlar va belgilar
 
-    /** Bosqichlar chizig'i. Faqat yukning haqiqiy holatidan chiqariladi. */
     private Component tracker(DeliveryStatus status) {
         int current = switch (status) {
             case CREATED -> 0;
@@ -526,7 +559,6 @@ public class MyCourierDeliveriesView extends Div {
         return b;
     }
 
-    /** Xaritadagi nuqtaga havola. Koordinata yo'q bo'lsa, null. */
     private static Component mapLink(Double lat, Double lng) {
         if (lat == null || lng == null) {
             return null;
@@ -540,7 +572,6 @@ public class MyCourierDeliveriesView extends Div {
         return a;
     }
 
-    /** Telefon raqamiga havola. Raqam yo'q bo'lsa, null. */
     private static Component telLink(String phone) {
         if (phone == null || phone.isBlank()) {
             return null;
@@ -550,7 +581,6 @@ public class MyCourierDeliveriesView extends Div {
         return a;
     }
 
-    /** Telegram profiliga havola. Username yo'q bo'lsa, null. */
     private static Component telegramLink(String username) {
         if (username == null || username.isBlank()) {
             return null;
