@@ -1,6 +1,7 @@
 /* =========================================
    YUKBOR — TELEFON: PASTKI PANEL, ORQAGA TUGMASI, ILOVA REJIMI
    navbar-links.css dan KEYIN ulanadi. Kompyuterda (>820px) pastki panel ko'rinmaydi.
+   Pastki bo'shliqni MainNavbar ichidagi JS (BOTTOM_PAD_JS) beradi.
 ========================================= */
 
 .main-navbar .mtb { display: none; }
@@ -27,10 +28,8 @@ html.app-mode [class*="site-footer"] {
         --mtb-h: 64px;
         --safe-top: env(safe-area-inset-top, 0px);
         --safe-bottom: env(safe-area-inset-bottom, 0px);
-        --mtb-space: calc(var(--mtb-h) + var(--safe-bottom) + 24px);
     }
 
-    /* html va body ning balandligi/overflow'iga TEGILMAYDI (scroll buzilmasin) */
     body {
         overscroll-behavior-y: none;
         -webkit-tap-highlight-color: transparent;
@@ -46,7 +45,7 @@ html.app-mode [class*="site-footer"] {
         -webkit-touch-callout: none;
     }
 
-    /* ---------- Footer telefonda yo'q ---------- */
+    /* Footer telefonda yo'q */
     body footer.yb-footer,
     body footer.home-footer,
     body .home-footer-bleed {
@@ -64,23 +63,6 @@ html.app-mode [class*="site-footer"] {
 
     body:has(.main-navbar) {
         padding-top: calc(var(--yb-nav-h) + var(--safe-top));
-    }
-
-    /* Pastki bo'shliq: bitta joyda, scroll oxirida panel balandligicha joy */
-    body:has(.main-navbar)::after {
-        content: "";
-        display: block;
-        height: var(--mtb-space);
-        width: 100%;
-        pointer-events: none;
-    }
-
-    /* Sahifa ildizlaridagi ortiqcha pastki bo'shliq kamaytiriladi (ikki marta qo'shilmasin) */
-    body .dm-page.md-page,
-    body .cd-page,
-    body .mdv-page {
-        padding-bottom: 16px !important;
-        min-height: 0;
     }
 
     html { scroll-padding-top: calc(var(--yb-nav-h) + var(--safe-top) + 16px); }
@@ -230,7 +212,7 @@ html.app-mode [class*="site-footer"] {
         outline-offset: -3px;
     }
 
-    /* Markazdagi asosiy tugma: ko'tarilgan sariq doira */
+    /* Markazdagi asosiy tugma */
     .mtb-item--center {
         overflow: visible;
         color: #121212;

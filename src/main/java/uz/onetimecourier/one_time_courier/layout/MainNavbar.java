@@ -28,7 +28,7 @@ import java.util.Set;
 /**
  * Yuqori navbar (kompyuter) va telefon uchun pastki panel (ilova uslubida, 5 ta tugma).
  * Telefonda (≤820px) yuqorida logotip (ichki sahifalarda "orqaga" tugmasi ham), pastda tab panel turadi.
- * Ilova rejimida (PWA, TWA, WebView, ?app=1) <html> ga "app-mode" klassi qo'yiladi: footer yashiriladi.
+ * Ilova rejimida (PWA, TWA, WebView, ?app=1) <html> ga "app-mode" klassi qo'yiladi.
  */
 @CssImport("./styles/navbar-user-menu.css")
 @CssImport("./styles/navbar-links.css")
@@ -38,7 +38,7 @@ public class MainNavbar extends Div {
     /** Aloqa havolasi. O'zingizning Telegram manzilingizga almashtiring. */
     private static final String TELEGRAM_URL = "https://t.me/yukbor";
 
-    /** Shartlar va maxfiylik sahifalari yo'llari. Sahifalar yo'q bo'lsa, null qiling: havola chiqmaydi. */
+    /** Shartlar va maxfiylik sahifalari yo'llari. Sahifalar yo'q bo'lsa, null qiling. */
     private static final String TERMS_ROUTE = "/terms";
     private static final String PRIVACY_ROUTE = "/privacy";
 
@@ -47,7 +47,6 @@ public class MainNavbar extends Div {
             "", "deliveries", "couriers", "trips", "reyting/kuryerlar", "about",
             "deliveries/mine", "courier/deliveries", "login", "register");
 
-    /** Ochiladigan menyu (kompyuter): bosilganda ochiladi/yopiladi, tashqariga bosilsa yoki Esc bosilsa yopiladi. */
     private static final String DROPDOWN_JS = """
             const w = this;
             if (w.__nuInit) { return; }
@@ -85,11 +84,7 @@ public class MainNavbar extends Div {
             dropdown.addEventListener('click', () => setOpen(false));
             """;
 
-    /**
-     * Ilova rejimini aniqlaydi: PWA (standalone), Android TWA (referrer), WebView (UA "wv"),
-     * yoki havolada ?app=1 bo'lsa. Natija eslab qolinadi, keyingi sahifalarda ham ishlaydi.
-     * ?app=0 oddiy rejimga qaytaradi.
-     */
+    /** Ilova rejimini aniqlaydi (PWA, TWA, WebView, ?app=1). ?app=0 oddiy rejimga qaytaradi. */
     private static final String APP_MODE_JS = """
             let app = false;
             try {
@@ -109,21 +104,66 @@ public class MainNavbar extends Div {
             document.documentElement.classList.toggle('app-mode', app);
             """;
 
-    /** Sahifa almashganda eng tepaga qaytaradi (bir zumda, silliq aylantirishsiz). */
+    /** Sahifa almashganda eng tepaga qaytaradi. */
     private static final String SCROLL_TOP_JS = """
             window.scrollTo({top: 0, left: 0, behavior: 'instant'});
             document.documentElement.scrollTop = 0;
             document.body.scrollTop = 0;
             """;
 
-    /** Havola va unga mos yo'llar (alias'lar bilan). activeClass: faol holatda qo'shiladigan klass. */
+    /**
+     * Telefonda (≤820px): scroll qiladigan element(lar)ni topib, pastiga pastki panel balandligicha
+     * bo'shliq beradi. Scroll ichki elementda bo'lmasa, bo'shliq body ga beriladi.
+     * Kompyuterda hamma narsa tozalanadi.
+     */
+    private static final String BOTTOM_PAD_JS = """
+            (function () {
+              if (window.__ybPad) { window.__ybPad(); return; }
+              const PAD = 'calc(64px + env(safe-area-inset-bottom, 0px) + 28px)';
+              const apply = () => {
+                const mobile = window.matchMedia('(max-width: 820px)').matches;
+                const vh = window.innerHeight;
+                let innerScroller = false;
+                document.querySelectorAll('body *').forEach(el => {
+                  if (el.closest('.main-navbar') || el.closest('vaadin-dialog-overlay')
+                      || el.closest('vaadin-select-overlay') || el.closest('vaadin-notification-card')
+                      || el.closest('vaadin-date-picker-overlay') || el.closest('vaadin-time-picker-overlay')) {
+                    return;
+                  }
+                  const cs = getComputedStyle(el);
+                  const scrolls = /(auto|scroll)/.test(cs.overflowY)
+                      && el.clientHeight > vh * 0.4 && el.scrollHeight > el.clientHeight;
+                  if (scrolls && mobile) {
+                    innerScroller = true;
+                    el.style.setProperty('padding-bottom', PAD, 'important');
+                    el.dataset.ybPad = '1';
+                  } else if (el.dataset.ybPad === '1' && !(mobile && scrolls)) {
+                    el.style.removeProperty('padding-bottom');
+                    delete el.dataset.ybPad;
+                  }
+                });
+                if (mobile && !innerScroller) {
+                  document.body.style.setProperty('padding-bottom', PAD, 'important');
+                } else {
+                  document.body.style.removeProperty('padding-bottom');
+                }
+              };
+              window.__ybPad = apply;
+              window.addEventListener('resize', apply);
+              new MutationObserver(() => {
+                clearTimeout(window.__ybPadT);
+                window.__ybPadT = setTimeout(apply, 120);
+              }).observe(document.body, {childList: true, subtree: true});
+              apply();
+            })();
+            """;
+
     private record NavItem(Anchor anchor, List<String> paths, String activeClass) {
     }
 
     private final List<NavItem> navItems = new ArrayList<>();
     private Registration navRegistration;
 
-    // telefon: pastki panel va orqaga tugmasi
     private final Div tabs = new Div();
     private final NativeButton profileTab = new NativeButton();
     private final NativeButton backButton = new NativeButton();
@@ -135,7 +175,7 @@ public class MainNavbar extends Div {
         Div inner = new Div();
         inner.addClassName("navbar-inner");
 
-        // ---------- ORQAGA TUGMASI (faqat telefonda, ichki sahifalarda) ----------
+        // Orqaga tugmasi (faqat telefonda, ichki sahifalarda)
         Icon backIcon = VaadinIcon.ANGLE_LEFT.create();
         backIcon.getElement().setAttribute("aria-hidden", "true");
         backButton.add(backIcon);
@@ -157,7 +197,7 @@ public class MainNavbar extends Div {
 
         logo.add(word);
 
-        // ---------- MENYU (kompyuter) ----------
+        // Menyu (kompyuter)
         Div menu = new Div(
                 link("Yuklar", "/deliveries", VaadinIcon.PACKAGE),
                 link("Safarlar", "/couriers", VaadinIcon.TRUCK, "/trips"),
@@ -174,7 +214,7 @@ public class MainNavbar extends Div {
         }
         menu.addClassName("navbar-menu");
 
-        // ---------- O'NG TOMON (kompyuter) ----------
+        // O'ng tomon (kompyuter)
         Div actions = new Div();
         actions.addClassName("navbar-actions");
 
@@ -196,7 +236,6 @@ public class MainNavbar extends Div {
         inner.add(backButton, logo, panel);
         add(inner);
 
-        // ---------- PASTKI PANEL (telefon) ----------
         buildTabs(authContext);
         add(tabs);
     }
@@ -212,7 +251,6 @@ public class MainNavbar extends Div {
         bar.getElement().setAttribute("role", "navigation");
         bar.getElement().setAttribute("aria-label", "Asosiy menyu");
 
-        // 1-tab: Bosh sahifa (hamma uchun)
         bar.add(tab("Bosh sahifa", "/", VaadinIcon.HOME, false));
 
         if (!isLoggedIn()) {
@@ -224,10 +262,8 @@ public class MainNavbar extends Div {
             return;
         }
 
-        // 2-tab: Safarlar
         bar.add(tab("Safarlar", "/couriers", VaadinIcon.TRUCK, false, "/trips"));
 
-        // 3-tab (markaz): asosiy amal
         if (isSender()) {
             bar.add(tab("Yuk joylash", "/deliveries/new", VaadinIcon.PLUS, true, "/deliveries/edit"));
         } else if (isCourier()) {
@@ -236,10 +272,8 @@ public class MainNavbar extends Div {
             bar.add(tab("Kuryerlar", "/reyting/kuryerlar", VaadinIcon.TROPHY, false));
         }
 
-        // 4-tab: ochiq yuklar ("Yuklarim" endi faqat Profil varag'ida)
         bar.add(tab("Yuklar", "/deliveries", VaadinIcon.PACKAGE, false));
 
-        // 5-tab: Profil tugmasi, yuqoriga ochiladigan varaqni boshqaradi
         profileTab.addClassName("mtb-item");
         profileTab.getElement().setAttribute("type", "button");
         profileTab.getElement().setAttribute("aria-haspopup", "menu");
@@ -254,7 +288,6 @@ public class MainNavbar extends Div {
         profileTab.addClickListener(e -> setSheetOpen(!tabs.getClassNames().contains("mtb-open")));
         bar.add(profileTab);
 
-        // Varaq orqasidagi qoplama: bosilsa yopiladi
         Div backdrop = new Div();
         backdrop.addClassName("mtb-backdrop");
         backdrop.getElement().setAttribute("aria-hidden", "true");
@@ -263,7 +296,6 @@ public class MainNavbar extends Div {
         tabs.add(backdrop, profileSheet(authContext), bar);
     }
 
-    /** Pastki panel tugmasi. center=true bo'lsa, markazdagi ko'tarilgan sariq tugma. */
     private Anchor tab(String text, String route, VaadinIcon icon, boolean center, String... aliases) {
 
         Anchor anchor = new Anchor(route);
@@ -292,7 +324,6 @@ public class MainNavbar extends Div {
         return anchor;
     }
 
-    /** Profil varag'i: ism, havolalar, aloqa, shartlar va chiqish. */
     private Div profileSheet(AuthenticationContext authContext) {
 
         Div sheet = new Div();
@@ -332,7 +363,6 @@ public class MainNavbar extends Div {
         sheet.add(sheetLink("Ishonchli kuryerlar", "/reyting/kuryerlar", VaadinIcon.TROPHY));
         sheet.add(sheetLink("Biz haqimizda", "/about", VaadinIcon.INFO_CIRCLE));
 
-        // Footerdagi narsalar shu yerga ko'chirildi
         Anchor contact = sheetLink("Telegram'da yozing", TELEGRAM_URL, VaadinIcon.CHAT);
         contact.setTarget("_blank");
         contact.getElement().setAttribute("rel", "noopener noreferrer");
@@ -383,9 +413,11 @@ public class MainNavbar extends Div {
         if (navRegistration == null) {
             UI ui = attachEvent.getUI();
             ui.getPage().executeJs(APP_MODE_JS);
+            ui.getPage().executeJs(BOTTOM_PAD_JS);
             navRegistration = ui.addAfterNavigationListener(event -> {
                 markActive(event.getLocation().getPath());
                 ui.getPage().executeJs(SCROLL_TOP_JS);
+                ui.getPage().executeJs(BOTTOM_PAD_JS);
             });
             var location = ui.getInternals().getActiveViewLocation();
             if (location != null) {
@@ -403,7 +435,6 @@ public class MainNavbar extends Div {
         super.onDetach(detachEvent);
     }
 
-    /** Joriy yo'lga mos havolani belgilaydi, ichki sahifada "orqaga" tugmasini ko'rsatadi. */
     private void markActive(String path) {
         String current = normalize(path == null ? "" : path);
         for (NavItem item : navItems) {
@@ -422,10 +453,6 @@ public class MainNavbar extends Div {
 
     // ---------------------------------------------------------------- profil menyusi (kompyuter)
 
-    /**
-     * Profil chipi (ism + rol belgisi + strelka) va uning tagida ochiladigan menyu:
-     * Yuklarimning holati (SENDER) yoki Mening yetkazishlarim (COURIER), Bildirishnomalar, Chiqish.
-     */
     private Div userMenu(AuthenticationContext authContext) {
 
         String firstName = displayName();
@@ -504,7 +531,6 @@ public class MainNavbar extends Div {
         return wrapper;
     }
 
-    /** To'liq ism va kontakt: [0] ism, [1] kontakt. Topilmasa null. */
     private String[] accountInfo() {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -527,7 +553,6 @@ public class MainNavbar extends Div {
         };
     }
 
-    /** Menyu tepasidagi sarlavha: to'liq ism va kontakt. Faqat setText ishlatiladi. */
     private Div accountHeader() {
 
         String[] info = accountInfo();
@@ -553,9 +578,6 @@ public class MainNavbar extends Div {
 
     // ---------------------------------------------------------------- havolalar
 
-    /**
-     * Navbar havolasi. icon null bo'lsa, ikonkasiz. aliases: shu havola ham faol bo'ladigan qo'shimcha yo'llar.
-     */
     private Anchor link(String text, String route, VaadinIcon icon, String... aliases) {
 
         Anchor anchor = new Anchor(route, text);
@@ -578,12 +600,10 @@ public class MainNavbar extends Div {
         return anchor;
     }
 
-    /** "/deliveries" → "deliveries". */
     private static String normalize(String route) {
         return route == null ? "" : route.replaceFirst("^/+", "");
     }
 
-    /** Foydalanuvchi tizimga kirganligini tekshirish. */
     private boolean isLoggedIn() {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -593,12 +613,10 @@ public class MainNavbar extends Div {
                 && !(auth instanceof AnonymousAuthenticationToken);
     }
 
-    /** Faqat menyuni ko'rsatish uchun. Haqiqiy ruxsat tekshiruvi view va servisda. */
     private boolean isSender() {
         return hasRole("SENDER");
     }
 
-    /** Faqat menyuni ko'rsatish uchun. Haqiqiy ruxsat tekshiruvi view va servisda. */
     private boolean isCourier() {
         return hasRole("COURIER");
     }
@@ -612,7 +630,6 @@ public class MainNavbar extends Div {
                 && role.equals(String.valueOf(user.getRole()));
     }
 
-    /** Rol belgisi uchun matn. Rolsiz foydalanuvchiga null. */
     private String roleLabel() {
         if (isCourier()) {
             return "Kuryer";
@@ -623,7 +640,6 @@ public class MainNavbar extends Div {
         return null;
     }
 
-    /** Foydalanuvchi ismini olish. */
     private String displayName() {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
