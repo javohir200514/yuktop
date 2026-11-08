@@ -6,7 +6,7 @@
 .main-navbar .mtb { display: none; }
 .main-navbar .navbar-back { display: none; }
 
-/* ---------- Ilova rejimi: footer umuman ko'rinmaydi ---------- */
+/* ---------- Ilova rejimi: footer ko'rinmaydi ---------- */
 html.app-mode .yb-footer,
 html.app-mode footer,
 html.app-mode .site-footer,
@@ -20,13 +20,6 @@ html.app-mode [class*="site-footer"] {
     .site-footer { display: none !important; }
 }
 
-/* Ilovada footer yo'q bo'lgani uchun pastki bo'shliq kamayadi */
-html.app-mode .dm-page,
-html.app-mode .cd-page,
-html.app-mode .mdv-page {
-    padding-bottom: 16px;
-}
-
 @media (max-width: 820px) {
 
     :root {
@@ -34,10 +27,11 @@ html.app-mode .mdv-page {
         --mtb-h: 64px;
         --safe-top: env(safe-area-inset-top, 0px);
         --safe-bottom: env(safe-area-inset-bottom, 0px);
+        --mtb-space: calc(var(--mtb-h) + var(--safe-bottom) + 24px);
     }
 
-    /* Ilova hissi: tortib yangilash va tasodifiy belgilash o'chiriladi */
-    html, body {
+    /* html va body ning balandligi/overflow'iga TEGILMAYDI (scroll buzilmasin) */
+    body {
         overscroll-behavior-y: none;
         -webkit-tap-highlight-color: transparent;
     }
@@ -52,7 +46,14 @@ html.app-mode .mdv-page {
         -webkit-touch-callout: none;
     }
 
-    /* ---------- Tepa: logotip (va orqaga tugmasi) ---------- */
+    /* ---------- Footer telefonda yo'q ---------- */
+    body footer.yb-footer,
+    body footer.home-footer,
+    body .home-footer-bleed {
+        display: none !important;
+    }
+
+    /* ---------- Tepa ---------- */
     .main-navbar {
         height: calc(var(--yb-nav-h) + var(--safe-top)) !important;
         padding-top: var(--safe-top);
@@ -63,7 +64,23 @@ html.app-mode .mdv-page {
 
     body:has(.main-navbar) {
         padding-top: calc(var(--yb-nav-h) + var(--safe-top));
-        padding-bottom: calc(var(--mtb-h) + var(--safe-bottom) + 8px);
+    }
+
+    /* Pastki bo'shliq: bitta joyda, scroll oxirida panel balandligicha joy */
+    body:has(.main-navbar)::after {
+        content: "";
+        display: block;
+        height: var(--mtb-space);
+        width: 100%;
+        pointer-events: none;
+    }
+
+    /* Sahifa ildizlaridagi ortiqcha pastki bo'shliq kamaytiriladi (ikki marta qo'shilmasin) */
+    body .dm-page.md-page,
+    body .cd-page,
+    body .mdv-page {
+        padding-bottom: 16px !important;
+        min-height: 0;
     }
 
     html { scroll-padding-top: calc(var(--yb-nav-h) + var(--safe-top) + 16px); }
@@ -339,39 +356,4 @@ html.app-mode .mdv-page {
 
 @media (prefers-reduced-motion: reduce) {
     .mtb-item { transition: none; }
-}
-/* =====================================================
-   FOOTER: telefonda (pastki panel bor) va ilova rejimida yashirin
-   Kompyuterda oddiy brauzerda ko'rinishda qoladi.
-   ===================================================== */
-
-html.app-mode body footer.yb-footer,
-html.app-mode body .home-footer {
-    display: none !important;
-}
-
-@media (max-width: 820px) {
-    body footer.yb-footer,
-    body footer.home-footer,
-    body .home-footer-bleed {
-        display: none !important;
-        height: 0 !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        overflow: hidden !important;
-    }
-
-    /* Footer yo'q, shuning uchun pastki bo'shliq pastki panelga yetarli bo'lsin */
-    .dm-page,
-    .cd-page,
-    .mdv-page {
-        padding-bottom: 24px !important;
-    }
-}
-
-@media (display-mode: standalone) {
-    body footer.yb-footer,
-    body .home-footer {
-        display: none !important;
-    }
 }
