@@ -166,10 +166,13 @@ public class TelegramBotPoller {
                 str(from.get("first_name")),
                 str(from.get("last_name")),
                 str(from.get("username")));
-        boolean ok = store.complete(loginToken, profile);
+        String code = store.complete(loginToken, profile);
         bot.sendMessage(chatId,
-                ok ? "Tasdiqlandi. Saytga qaytishingiz mumkin."
-                   : "Havola eskirgan. Saytdan qaytadan urinib ko'ring.",
+                code != null
+                        ? "Kirish kodingiz: " + code
+                        + "\n\nKodni faqat o'zingiz ochgan YukBor saytidagi oynaga kiriting. Kod 5 daqiqa amal qiladi.\n"
+                        + "Agar siz kirishni boshlamagan bo'lsangiz, bu kodni hech kimga bermang."
+                        : "Havola eskirgan. Saytdan qaytadan urinib ko'ring.",
                 null);
     }
 

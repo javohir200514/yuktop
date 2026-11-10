@@ -2,11 +2,13 @@ package uz.onetimecourier.one_time_courier.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
+import uz.onetimecourier.one_time_courier.config.AsyncConfig;
 import uz.onetimecourier.one_time_courier.dto.DeliveryStatusChangedEvent;
 import uz.onetimecourier.one_time_courier.entity.DeliveryEntity;
 import uz.onetimecourier.one_time_courier.entity.UserEntity;
@@ -40,6 +42,7 @@ public class TelegramNotificationService {
         this.bot = bot;
     }
 
+    @Async(AsyncConfig.TELEGRAM_EXECUTOR)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public void onDeliveryStatusChanged(DeliveryStatusChangedEvent event) {

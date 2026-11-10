@@ -29,7 +29,6 @@ public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
     private final OAuthLoginSuccessHandler oauthLoginSuccessHandler;
-    private final GoogleOAuth2UserService googleOAuth2UserService;
 
     public static final String[] PUBLIC_ENDPOINTS = {
             "/actuator/health",
@@ -73,8 +72,6 @@ public class SecurityConfig {
         // Google OAuth2 login
         http.oauth2Login(oauth -> oauth
                 .loginPage("/login")
-                .userInfoEndpoint(info ->
-                        info.userService(googleOAuth2UserService))
                 .successHandler(oauthLoginSuccessHandler)
         );
 
@@ -105,7 +102,7 @@ public class SecurityConfig {
                 // Brauzer imkoniyatlarini cheklash
                 .addHeaderWriter(new StaticHeadersWriter(
                         "Permissions-Policy",
-                        "camera=(), microphone=(), geolocation=()"
+                        "camera=(), microphone=(), geolocation=(self)"
                 ))
 
                 // CSP: hozircha kuzatish rejimi

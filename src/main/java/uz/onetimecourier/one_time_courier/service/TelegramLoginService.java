@@ -38,4 +38,7 @@ public class TelegramLoginService {
     public UserEntity resolveUser(TelegramLoginSessionStore.TelegramProfile p) {
         return oauthUserService.findOrCreateTelegramUser(p.id(), p.firstName(), p.lastName(), p.username());
     }
+    public TelegramLoginSessionStore.PollResult verify(String token, String code) {
+        return store.verify(token, code);
+    }
 }

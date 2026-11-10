@@ -25,12 +25,14 @@ import com.vaadin.flow.server.VaadinServletRequest;
 import com.vaadin.flow.server.VaadinServletResponse;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.flow.shared.Registration;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import uz.onetimecourier.one_time_courier.config.LoginAttemptService;
 import uz.onetimecourier.one_time_courier.config.SessionAuthenticator;
 import uz.onetimecourier.one_time_courier.config.TelegramLoginSessionStore;
 import uz.onetimecourier.one_time_courier.entity.UserEntity;
@@ -69,6 +71,7 @@ public class LoginView extends Div implements BeforeEnterObserver {
     private final AuthenticationManager authenticationManager;
     private final TelegramLoginService telegramLoginService;
     private final SessionAuthenticator sessionAuthenticator;
+    private final LoginAttemptService loginAttempts;
 
     private final TextField phone = new TextField("Telefon raqam");
     private final PasswordField password = new PasswordField("Parol");
@@ -80,16 +83,35 @@ public class LoginView extends Div implements BeforeEnterObserver {
     private final NativeButton googleBtn = new NativeButton();
     private final NativeButton telegramBtn = new NativeButton();
 
+    // Telegram bot yuborgan kodni kiritish maydoni (kod tekshirilmaguncha kirish yo'q)
+    private final TextField telegramCode = new TextField("Telegramdagi kod");
+    private final NativeButton telegramCodeBtn = new NativeButton("Tasdiqlash");
+    private final Div telegramCodeBox = new Div(telegramCode, telegramCodeBtn);
+
     private boolean busy = false;
     private String telegramToken;
     private Registration pollRegistration;
 
     public LoginView(AuthenticationManager authenticationManager,
                      TelegramLoginService telegramLoginService,
-                     SessionAuthenticator sessionAuthenticator) {
+                     SessionAuthenticator sessionAuthenticator,
+                     LoginAttemptService loginAttempts) {
         this.authenticationManager = authenticationManager;
         this.telegramLoginService = telegramLoginService;
         this.sessionAuthenticator = sessionAuthenticator;
+        this.loginAttempts = loginAttempts;
+
+        telegramCode.setPlaceholder("6 xonali kod");
+        telegramCode.setAllowedCharPattern("[0-9]");
+        telegramCode.setMaxLength(6);
+        telegramCode.setWidthFull();
+        telegramCode.addClassName("login-input");
+        telegramCodeBtn.addClassNames("login-submit");
+        telegramCodeBtn.getElement().setAttribute("type", "button");
+        telegramCodeBtn.addClickListener(e -> submitTelegramCode());
+        telegramCode.addKeyPressListener(Key.ENTER, e -> submitTelegramCode());
+        telegramCodeBox.addClassName("login-telegram-code");
+        telegramCodeBox.setVisible(false);
 
         addClassName("login-page");
 
@@ -155,7 +177,7 @@ public class LoginView extends Div implements BeforeEnterObserver {
         password.addKeyPressListener(Key.ENTER, e -> login());
 
         card.add(brand, title, description, form, submit,
-                buildDivider(), buildSocialButtons(), buildFooter());
+                buildDivider(), buildSocialButtons(), telegramCodeBox, buildFooter());
         add(card);
     }
 
@@ -234,24 +256,29 @@ public class LoginView extends Div implements BeforeEnterObserver {
             return;
         }
 
+        HttpServletRequest request = VaadinServletRequest.getCurrent().getHttpServletRequest();
+        String ip = request.getRemoteAddr();
+
+        if (loginAttempts.isBlocked(phoneNumber, ip)) {
+            showError("Juda ko'p urinish. " + loginAttempts.minutesLeft(phoneNumber, ip)
+                    + " daqiqadan keyin qayta urinib ko'ring.");
+            return;
+        }
+
         setBusy(true, "Tekshirilmoqda...", false);
         try {
             Authentication authentication = authenticationManager.authenticate(
                     UsernamePasswordAuthenticationToken.unauthenticated(phoneNumber, passwordValue));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            // Sessiyaga saqlash (Google/Telegram bilan bir xil yo'l)
-            org.springframework.security.core.context.SecurityContext context =
-                    SecurityContextHolder.createEmptyContext();
-            context.setAuthentication(authentication);
-            new org.springframework.security.web.context.HttpSessionSecurityContextRepository().saveContext(
-                    context,
-                    VaadinServletRequest.getCurrent().getHttpServletRequest(),
+            loginAttempts.recordSuccess(phoneNumber);
+            // Sessiya ID si almashtiriladi va kontekst sessiyaga yoziladi (Google/Telegram bilan bir xil yo'l)
+            sessionAuthenticator.establish(authentication, request,
                     VaadinServletResponse.getCurrent().getHttpServletResponse());
 
             UI.getCurrent().getPage().setLocation("/");
         } catch (AuthenticationException ex) {
             SecurityContextHolder.clearContext();
+            loginAttempts.recordFailure(phoneNumber, ip);
             password.clear();
             showError("Telefon raqam yoki parol noto'g'ri.");
             resetSubmit();
@@ -302,10 +329,41 @@ public class LoginView extends Div implements BeforeEnterObserver {
         TelegramLoginSessionStore.PollResult result = telegramLoginService.poll(telegramToken);
         switch (result.state()) {
             case PENDING -> { }
+            case WAITING_CODE -> showCodeBox(ui);
             case EXPIRED -> {
                 stopTelegramPolling(ui);
                 showError("Vaqt tugadi. Telegram orqali qayta urinib ko'ring.");
             }
+            case DONE -> { } // DONE faqat kod tekshirilgandan keyin qaytadi (submitTelegramCode)
+        }
+    }
+
+    /** Bot kod yuborgach: pollingni to'xtatamiz va kod kiritish maydonini ko'rsatamiz. */
+    private void showCodeBox(UI ui) {
+        if (pollRegistration != null) {
+            pollRegistration.remove();
+            pollRegistration = null;
+        }
+        if (ui != null) {
+            ui.setPollInterval(-1);
+        }
+        setTelegramLabel("Telegramdagi kodni kiriting");
+        telegramCodeBox.setVisible(true);
+        telegramCode.focus();
+    }
+
+    private void submitTelegramCode() {
+        if (telegramToken == null) {
+            return;
+        }
+        UI ui = UI.getCurrent();
+        String code = telegramCode.getValue() == null ? "" : telegramCode.getValue().trim();
+        if (!code.matches("\\d{6}")) {
+            showError("6 xonali kodni kiriting.");
+            return;
+        }
+        TelegramLoginSessionStore.PollResult result = telegramLoginService.verify(telegramToken, code);
+        switch (result.state()) {
             case DONE -> {
                 stopTelegramPolling(ui);
                 try {
@@ -317,6 +375,14 @@ public class LoginView extends Div implements BeforeEnterObserver {
                 } catch (Exception ex) {
                     showError("Kirishda xatolik yuz berdi. Qayta urinib ko'ring.");
                 }
+            }
+            case EXPIRED -> {
+                stopTelegramPolling(ui);
+                showError("Kod noto'g'ri yoki vaqt tugadi. Telegram orqali qayta urinib ko'ring.");
+            }
+            default -> {
+                telegramCode.clear();
+                showError("Kod noto'g'ri. Qayta kiriting.");
             }
         }
     }
@@ -330,6 +396,8 @@ public class LoginView extends Div implements BeforeEnterObserver {
             ui.setPollInterval(-1);
         }
         telegramToken = null;
+        telegramCode.clear();
+        telegramCodeBox.setVisible(false);
         setTelegramLabel(TELEGRAM_LABEL);
     }
 
