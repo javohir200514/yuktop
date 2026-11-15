@@ -142,53 +142,201 @@ public class TelegramUpdateHandler {
      *   dlv:<id>                  - yuk yetkazildi ("Ha")
      *   no:<id>                   - "Yo'q", keyinroq eslatiladi
      */
+
     public void onCallback(String callbackId, long fromId, String data) {
         try {
-            // Baholash kuryer va jo'natuvchi uchun umumiy, shuning uchun kuryer tekshiruvidan oldin
-            if (data != null && data.startsWith("rt:")) {
+            if (data == null || data.isBlank()) {
+                answer(callbackId, "Noto'g'ri so'rov");
+                return;
+            }
+
+            // 1. Baholash — kuryer va jo'natuvchi uchun umumiy
+            if (data.startsWith("rt:")) {
                 rate(callbackId, fromId, data);
                 return;
             }
 
-            Optional<UserEntity> user = userByChat(fromId);
-            if (user.isEmpty() || user.get().getRole() != Role.COURIER) {
+            // 2. Telegram hisobini tekshirish
+            Optional<UserEntity> userOptional = userByChat(fromId);
+
+            if (userOptional.isEmpty()) {
+                answer(callbackId, "Hisobingiz Telegram'ga ulanmagan");
+                return;
+            }
+
+            UserEntity actor = userOptional.get();
+
+            // 3. Jo'natuvchining yuk olib ketilganini tasdiqlashi
+            if (data.startsWith("spy:")) {
+                if (actor.getRole() != Role.SENDER) {
+                    answer(callbackId, "Bu amal faqat jo'natuvchi uchun");
+                    return;
+                }
+
+                confirmPickup(callbackId, actor, data.substring(4));
+                return;
+            }
+
+            // 4. Jo'natuvchining yuk yetkazilganini tasdiqlashi
+            if (data.startsWith("dyy:")) {
+                if (actor.getRole() != Role.SENDER) {
+                    answer(callbackId, "Bu amal faqat jo'natuvchi uchun");
+                    return;
+                }
+
+                confirmDelivery(callbackId, actor, data.substring(4));
+                return;
+            }
+
+            // 5. Jo'natuvchi "Yo'q" tugmasini bossa
+            if (data.startsWith("spn:")) {
+                if (actor.getRole() != Role.SENDER) {
+                    answer(callbackId, "Bu amal faqat jo'natuvchi uchun");
+                    return;
+                }
+
+                answer(callbackId,
+                        "Yaxshi. Hozircha tasdiqlanmadi. Keyinroq qayta tasdiqlashingiz mumkin.");
+                return;
+            }
+
+            if (data.startsWith("dyn:")) {
+                if (actor.getRole() != Role.SENDER) {
+                    answer(callbackId, "Bu amal faqat jo'natuvchi uchun");
+                    return;
+                }
+
+                answer(callbackId,
+                        "Yaxshi. Hozircha tasdiqlanmadi. Keyinroq qayta tasdiqlashingiz mumkin.");
+                return;
+            }
+
+            // 6. Qolgan tugmalar faqat kuryer uchun
+            if (actor.getRole() != Role.COURIER) {
                 answer(callbackId, "Bu amal faqat kuryer hisobi uchun");
                 return;
             }
-            if (data == null) {
-                answer(callbackId, null);
-                return;
-            }
-            UserEntity courier = user.get();
+
+            UserEntity courier = actor;
 
             if (data.equals("sub:new")) {
                 answer(callbackId, null);
                 fromMenu(fromId);
+
             } else if (data.equals("sub:list")) {
                 answer(callbackId, null);
                 listSubscriptions(fromId, courier);
+
             } else if (data.startsWith("f:")) {
                 answer(callbackId, null);
                 toMenu(fromId, data.substring(2));
+
             } else if (data.startsWith("t:")) {
                 String[] p = data.substring(2).split(":", 2);
-                subscribe(callbackId, fromId, courier, regionOf(p[0]), regionOf(p[1]));
+
+                if (p.length != 2) {
+                    answer(callbackId, "Noto'g'ri yo'nalish");
+                    return;
+                }
+
+                subscribe(
+                        callbackId,
+                        fromId,
+                        courier,
+                        regionOf(p[0]),
+                        regionOf(p[1])
+                );
+
             } else if (data.startsWith("del:")) {
-                delete(callbackId, courier, Long.parseLong(data.substring(4)));
+                delete(
+                        callbackId,
+                        courier,
+                        Long.parseLong(data.substring(4))
+                );
+
             } else if (data.startsWith("acc:")) {
-                accept(callbackId, fromId, courier, Long.parseLong(data.substring(4)));
+                accept(
+                        callbackId,
+                        fromId,
+                        courier,
+                        Long.parseLong(data.substring(4))
+                );
+
             } else if (data.startsWith("pick:")) {
-                pickUp(callbackId, fromId, courier, Long.parseLong(data.substring(5)));
+                pickUp(
+                        callbackId,
+                        fromId,
+                        courier,
+                        Long.parseLong(data.substring(5))
+                );
+
             } else if (data.startsWith("dlv:")) {
-                deliver(callbackId, fromId, courier, Long.parseLong(data.substring(4)));
+                deliver(
+                        callbackId,
+                        fromId,
+                        courier,
+                        Long.parseLong(data.substring(4))
+                );
+
             } else if (data.startsWith("no:")) {
                 answer(callbackId, "Yaxshi, keyinroq eslataman");
+
             } else {
                 answer(callbackId, null);
             }
+
         } catch (RuntimeException e) {
             log.warn("Telegram tugma xatosi: {}", e.getMessage());
             answer(callbackId, "Xato yuz berdi. Qayta urinib ko'ring.");
+        }
+    }
+
+    private void confirmDelivery(
+            String callbackId,
+            UserEntity sender,
+            String deliveryIdText
+    ) {
+        try {
+            long deliveryId = Long.parseLong(deliveryIdText);
+
+            deliveryService.confirmDeliveryBySender(
+                    sender.getId(),
+                    deliveryId
+            );
+
+            answer(callbackId,
+                    "✅ Yuk yetkazilgani tasdiqlandi. Rahmat!");
+
+        } catch (NumberFormatException e) {
+            answer(callbackId, "Noto'g'ri yuk raqami");
+
+        } catch (BusinessException e) {
+            answer(callbackId, e.getMessage());
+        }
+    }
+
+
+    private void confirmPickup(
+            String callbackId,
+            UserEntity sender,
+            String deliveryIdText
+    ) {
+        try {
+            long deliveryId = Long.parseLong(deliveryIdText);
+
+            deliveryService.confirmPickupBySender(
+                    sender.getId(),
+                    deliveryId
+            );
+
+            answer(callbackId,
+                    "✅ Yuk olib ketilgani tasdiqlandi. Rahmat!");
+
+        } catch (NumberFormatException e) {
+            answer(callbackId, "Noto'g'ri yuk raqami");
+
+        } catch (BusinessException e) {
+            answer(callbackId, e.getMessage());
         }
     }
 
@@ -347,16 +495,25 @@ public class TelegramUpdateHandler {
 
     // ================================================================ yordamchilar
 
+
     private Optional<UserEntity> userByChat(long chatId) {
         return userRepository.findByTelegramId(chatId);
     }
 
     private void answer(String callbackId, String text) {
-        if (callbackId == null) return;
-        String trimmed = text == null ? null
-                : (text.length() > MAX_ANSWER_LENGTH ? text.substring(0, MAX_ANSWER_LENGTH) : text);
+        if (callbackId == null) {
+            return;
+        }
+
+        String trimmed = text == null
+                ? null
+                : (text.length() > MAX_ANSWER_LENGTH
+                ? text.substring(0, MAX_ANSWER_LENGTH)
+                : text);
+
         bot.answerCallback(callbackId, trimmed);
     }
+
 
     /** Telefon raqamini so'rovchi reply klaviatura. */
     private static Map<String, Object> contactKeyboard() {

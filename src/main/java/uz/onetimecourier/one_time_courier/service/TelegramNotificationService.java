@@ -42,6 +42,7 @@ public class TelegramNotificationService {
         this.bot = bot;
     }
 
+
     @Async(AsyncConfig.TELEGRAM_EXECUTOR)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
@@ -49,14 +50,16 @@ public class TelegramNotificationService {
         if (!bot.enabled()) {
             return;
         }
+
         try {
             deliveries.findById(event.deliveryId())
-                    .ifPresent(d -> dispatch(d, event.status()));
+                    .ifPresent(d -> dispatch(d, d.getStatus()));
+
         } catch (RuntimeException e) {
-            log.error("Telegram bildirishnomasi tayyorlanmadi (yuk #{}, holat {})",
-                    event.deliveryId(), event.status(), e);
+            log.warn("Telegram bildirishnoma xatosi: {}", bot.safe(e));
         }
     }
+
 
     private void dispatch(DeliveryEntity d, DeliveryStatus status) {
         switch (status) {
