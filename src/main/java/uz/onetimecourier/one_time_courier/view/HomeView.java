@@ -128,6 +128,15 @@ public class HomeView extends Div {
             </svg>
             """;
 
+    /** Qo'lda chizilgandek strelka: ko'ringach o'zi chiziladi (pathLength=1 animatsiya uchun). */
+    private static final String ICON_HAND_ARROW = """
+            <svg viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="3.5"
+                 stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+              <path pathLength="1" d="M6 10C30 5 70 14 84 46c4 9 6 16 8 22"/>
+              <path pathLength="1" d="M74 56l18 14 12-20"/>
+            </svg>
+            """;
+
     private static final String ICON_BIG_TRUCK = """
             <svg viewBox="0 0 230 96" xmlns="http://www.w3.org/2000/svg">
               <rect x="4" y="10" width="140" height="58" rx="5" fill="#f5f3ee"/>
@@ -167,6 +176,7 @@ public class HomeView extends Div {
                 ticker(),
                 road(),
                 steps(),
+                postNudge(),
                 features(),
                 faq(),
                 ctaBand(),
@@ -175,19 +185,54 @@ public class HomeView extends Div {
         );
     }
 
-    /** Telefonda: hero tugmalari ekrandan chiqqach, pastda doimiy panel chiqadi. */
+    /**
+     * 1) Telefonda: hero tugmalari ekrandan chiqqach, pastda doimiy panel chiqadi.
+     * 2) Kartalar scroll qilinganda birin-ketin "ochilib" chiqadi.
+     */
     @Override
     protected void onAttach(AttachEvent event) {
         super.onAttach(event);
         getElement().executeJs("""
-                const actions = this.querySelector('.home-actions');
-                const bar = this.querySelector('.home-mobile-bar');
-                if (!actions || !bar || !('IntersectionObserver' in window)) { return; }
-                if (this._ybObserver) { this._ybObserver.disconnect(); }
-                this._ybObserver = new IntersectionObserver(function (entries) {
-                    bar.classList.toggle('is-visible', !entries[0].isIntersecting);
+                const page = this;
+
+                /* ---- 1. Telefonda pastki panel ---- */
+                const actions = page.querySelector('.home-actions');
+                const bar = page.querySelector('.home-mobile-bar');
+                if (actions && bar && 'IntersectionObserver' in window) {
+                    if (page._ybObserver) { page._ybObserver.disconnect(); }
+                    page._ybObserver = new IntersectionObserver(function (entries) {
+                        bar.classList.toggle('is-visible', !entries[0].isIntersecting);
+                    });
+                    page._ybObserver.observe(actions);
+                }
+
+                /* ---- 2. Scroll bilan ochiladigan kartalar ---- */
+                if (!('IntersectionObserver' in window)) { return; }
+                if (page._ybReveal) { page._ybReveal.disconnect(); }
+
+                const targets = page.querySelectorAll(
+                    '.home-section-header, .home-step, .home-feature, ' +
+                    '.home-faq-item, .home-cta-panel, .home-nudge');
+
+                targets.forEach(function (el) {
+                    el.classList.add('yb-reveal');
+                    if (el.matches('.home-section-header, .home-nudge')) {
+                        el.classList.add('yb-reveal--soft');
+                    }
                 });
-                this._ybObserver.observe(actions);
+
+                page._ybReveal = new IntersectionObserver(function (entries, obs) {
+                    let k = 0; /* bir vaqtda ko'ringanlar birin-ketin ochiladi */
+                    entries.forEach(function (entry) {
+                        if (!entry.isIntersecting) { return; }
+                        entry.target.style.setProperty('--i', k++);
+                        entry.target.classList.add('is-in');
+                        obs.unobserve(entry.target);
+                    });
+                }, { threshold: 0.18, rootMargin: '0px 0px -6% 0px' });
+
+                targets.forEach(function (el) { page._ybReveal.observe(el); });
+                page.classList.add('yb-reveal-ready');
                 """);
     }
 
@@ -206,8 +251,6 @@ public class HomeView extends Div {
         // ---- chap: sarlavha, matn, tugmalar ----
         Div copy = new Div();
         copy.addClassName("home-hero-copy");
-
-
 
         H1 title = new H1();
         title.addClassName("home-title");
@@ -393,6 +436,39 @@ public class HomeView extends Div {
 
         step.add(num, top, new H3(title), new Paragraph(description));
         return step;
+    }
+
+    // ================= YUK JOYLASHGA UNDASH =================
+
+    private Div postNudge() {
+        Div section = new Div();
+        section.addClassName("home-nudge-section");
+
+        Div container = new Div();
+        container.addClassName("home-container");
+
+        Div nudge = new Div();
+        nudge.addClassName("home-nudge");
+
+        Div text = new Div();
+        text.addClassName("home-nudge-text");
+
+        Span note = new Span("Yuk jo'natmoqchimisiz?");
+        note.addClassName("home-nudge-note");
+
+        Span sub = new Span("Bir daqiqada joylang, yo'ldosh kuryer o'zi topiladi.");
+        sub.addClassName("home-nudge-sub");
+
+        text.add(note, sub);
+
+        Anchor button = new Anchor("/deliveries/new");
+        button.addClassName("home-nudge-button");
+        button.add(svgBox(ICON_PACKAGE, "home-nudge-icon"), new Span("Yuk joylashtirish"));
+
+        nudge.add(text, svgBox(ICON_HAND_ARROW, "home-nudge-arrow"), button);
+        container.add(nudge);
+        section.add(container);
+        return section;
     }
 
     // ================= AFZALLIKLAR =================
