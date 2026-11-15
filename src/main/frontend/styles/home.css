@@ -518,68 +518,151 @@
 }
 
 /* =====================================================
-   YO'L VA YUK MASHINASI
+   JO'NATMA YORLIQLARI
    ===================================================== */
 
-.home-road {
+.home-labels {
     position: relative;
     width: 100%;
-    height: 112px;
+    padding: 44px 0 44px;
 
     background: var(--asphalt-2);
     border-bottom: 4px solid var(--white);
     overflow: hidden;
 }
 
-.home-road::before {
+.home-labels-note {
+    display: block;
+    margin: 0 0 30px;
+
+    color: var(--yellow);
+    font-family: var(--font-hand);
+    font-size: clamp(24px, 6vw, 30px);
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    transform: rotate(-1deg);
+}
+
+.home-labels-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 30px;
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+.home-label {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+    padding: 20px 18px 16px;
+
+    background: #f3ecd8;
+    color: #2a2a2a;
+    box-shadow: 3px 4px 0 #0b0b0b;
+    transition: transform .25s ease;
+}
+
+.home-label:nth-child(1) { transform: rotate(-3deg); }
+.home-label:nth-child(2) { transform: rotate(2deg); }
+.home-label:nth-child(3) { transform: rotate(-1deg); }
+
+.home-label:hover {
+    transform: rotate(0deg) translateY(-4px);
+}
+
+/* yopishtirilgan skotch */
+.home-label::before {
     content: "";
     position: absolute;
-    left: 0;
-    right: 0;
-    top: 24px;
-    height: 5px;
+    top: -10px;
+    left: 50%;
+    width: 64px;
+    height: 20px;
+    margin-left: -32px;
+    background: rgba(255, 210, 31, .8);
+    transform: rotate(-3deg);
+}
 
-    background-image: repeating-linear-gradient(
+.home-label-no {
+    color: #8a7a4a;
+    font-family: var(--font-hand);
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.home-label-route {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: .6px;
+    line-height: 1.05;
+    text-transform: uppercase;
+}
+
+.home-label-info {
+    padding-bottom: 12px;
+    border-bottom: 2px dashed #c9bc93;
+    font-size: 15px;
+    color: #5b5440;
+}
+
+/* shtrix-kod */
+.home-label-code {
+    height: 30px;
+    margin-top: 8px;
+    max-width: 62%;
+    background: repeating-linear-gradient(
         90deg,
-        var(--white) 0 38px,
-        transparent 38px 76px
+        #2a2a2a 0 2px, transparent 2px 5px,
+        #2a2a2a 5px 6px, transparent 6px 9px,
+        #2a2a2a 9px 12px, transparent 12px 14px
     );
-    background-size: 76px 5px;
-    opacity: .85;
-    animation: home-road-move 1.4s linear infinite;
 }
 
-.home-truck {
+/* shtamp: yorliq ochilgach ustiga "bosiladi" */
+.home-label-stamp {
     position: absolute;
-    left: 0;
-    bottom: 10px;
-    z-index: 2;
-    display: block;
-    width: 150px;
+    right: 14px;
+    bottom: 14px;
 
-    animation: home-drive 15s linear infinite;
+    padding: 1px 10px 0;
+    border: 3px solid currentColor;
+    border-radius: 5px;
+
+    font-family: var(--font-display);
+    font-size: 21px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transform: rotate(-10deg);
+    opacity: .9;
 }
 
-.home-truck svg {
-    display: block;
-    width: 100%;
-    height: auto;
-    animation: home-bump .5s ease-in-out infinite alternate;
+.home-label-stamp.is-red   { color: #c0392b; }
+.home-label-stamp.is-green { color: #0f8a52; }
+.home-label-stamp.is-blue  { color: #1d5fd1; }
+
+.home-label.is-in .home-label-stamp {
+    animation: home-stamp .45s calc(.7s + var(--i, 0) * 120ms) cubic-bezier(.2, .9, .3, 1.3) backwards;
 }
 
-@keyframes home-road-move {
-    from { background-position-x: 0; }
-    to   { background-position-x: -76px; }
+@keyframes home-stamp {
+    0%   { opacity: 0; transform: rotate(-22deg) scale(2.4); }
+    70%  { opacity: .95; transform: rotate(-8deg) scale(.94); }
+    100% { opacity: .9; transform: rotate(-10deg) scale(1); }
 }
 
-@keyframes home-drive {
-    from { transform: translateX(-200px); }
-    to   { transform: translateX(calc(100vw + 40px)); }
-}
-
-@keyframes home-bump {
-    from { transform: translateY(0); }
-    to   { transform: translateY(1.5px); }
+@media (min-width: 700px) {
+    .home-labels-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 26px;
+        max-width: none;
+    }
 }
 
 /* =====================================================
@@ -1208,12 +1291,12 @@
         font-size: 24px;
     }
 
-    .home-road {
-        height: 150px;
+    .home-labels {
+        padding: 64px 0 60px;
     }
 
-    .home-truck {
-        width: 220px;
+    .home-label-route {
+        font-size: 30px;
     }
 
     .home-section {
@@ -1290,9 +1373,6 @@
         animation: none !important;
     }
 
-    .home-truck {
-        left: 8%;
-    }
 }
 /* =========================================
    YUKBOR — NAVBAR VA HERO YAKUNIY TUZATISH
@@ -1387,46 +1467,62 @@ body:has(.main-navbar) {
 
 /* =====================================================
    SCROLL BILAN OCHILISH
+   animation asosida: hover, FAQ va boshqa transitionlarga xalaqit bermaydi.
    JS ishlamasa kartalar yashirinmaydi (faqat .yb-reveal-ready bilan)
    ===================================================== */
 
-.home-page.yb-reveal-ready .yb-reveal {
+.home-page.yb-reveal-ready .yb-reveal:not(.is-in) {
     opacity: 0;
-    translate: 0 36px;
-    rotate: 1.6deg;
-    clip-path: inset(0 0 100% 0 round 16px);
-
-    transition:
-        opacity .5s ease,
-        translate .75s cubic-bezier(.2, .85, .25, 1),
-        rotate .9s cubic-bezier(.2, .85, .25, 1),
-        clip-path .8s cubic-bezier(.2, .85, .25, 1);
-    transition-delay: calc(var(--i, 0) * 120ms);
-    will-change: opacity, translate, clip-path;
-}
-
-.home-page.yb-reveal-ready .yb-reveal:nth-child(even) {
-    rotate: -1.6deg;
 }
 
 .home-page.yb-reveal-ready .yb-reveal.is-in {
-    opacity: 1;
-    translate: 0 0;
-    rotate: 0deg;
-    /* manfiy qiymat: soya va qiyshaygan burchaklar kesilmasin */
-    clip-path: inset(-30px -30px -30px -30px round 16px);
+    animation: yb-reveal .8s cubic-bezier(.2, .85, .25, 1) backwards;
+    animation-delay: calc(var(--i, 0) * 120ms);
+}
+
+.home-page.yb-reveal-ready .yb-reveal:nth-child(even).is-in {
+    animation-name: yb-reveal-alt;
 }
 
 /* Sarlavhalar va undov bloki: kesilmaydi, faqat yumshoq chiqadi */
-.home-page.yb-reveal-ready .yb-reveal--soft {
-    rotate: 0deg;
-    clip-path: none;
-    translate: 0 24px;
+.home-page.yb-reveal-ready .yb-reveal.yb-reveal--soft.is-in {
+    animation-name: yb-reveal-soft;
 }
 
-.home-page.yb-reveal-ready .yb-reveal--soft.is-in {
-    clip-path: none;
-    translate: 0 0;
+@keyframes yb-reveal {
+    from {
+        opacity: 0;
+        translate: 0 36px;
+        rotate: 1.6deg;
+        clip-path: inset(0 0 100% 0 round 16px);
+    }
+    to {
+        opacity: 1;
+        translate: 0 0;
+        rotate: 0deg;
+        /* manfiy qiymat: soya va qiyshaygan burchaklar kesilmasin */
+        clip-path: inset(-30px -30px -30px -30px round 16px);
+    }
+}
+
+@keyframes yb-reveal-alt {
+    from {
+        opacity: 0;
+        translate: 0 36px;
+        rotate: -1.6deg;
+        clip-path: inset(0 0 100% 0 round 16px);
+    }
+    to {
+        opacity: 1;
+        translate: 0 0;
+        rotate: 0deg;
+        clip-path: inset(-30px -30px -30px -30px round 16px);
+    }
+}
+
+@keyframes yb-reveal-soft {
+    from { opacity: 0; translate: 0 24px; }
+    to   { opacity: 1; translate: 0 0; }
 }
 
 /* =====================================================
@@ -1636,7 +1732,7 @@ body:has(.main-navbar) {
     .home-nudge-arrow {
         width: 84px;
         height: 56px;
-        transform: rotate(-35deg);
+        transform: rotate(-62deg);
     }
 
     .home-nudge-button {
@@ -1646,11 +1742,8 @@ body:has(.main-navbar) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .home-page.yb-reveal-ready .yb-reveal {
+    .home-page.yb-reveal-ready .yb-reveal:not(.is-in) {
         opacity: 1;
-        translate: 0 0;
-        rotate: 0deg;
-        clip-path: none;
     }
 
     .home-nudge-arrow path {

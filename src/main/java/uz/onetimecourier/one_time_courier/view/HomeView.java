@@ -137,29 +137,6 @@ public class HomeView extends Div {
             </svg>
             """;
 
-    private static final String ICON_BIG_TRUCK = """
-            <svg viewBox="0 0 230 96" xmlns="http://www.w3.org/2000/svg">
-              <rect x="4" y="10" width="140" height="58" rx="5" fill="#f5f3ee"/>
-              <rect x="4" y="52" width="140" height="8" fill="#ffd21f"/>
-              <text x="74" y="40" text-anchor="middle" font-family="'Barlow Condensed', Impact, sans-serif"
-                    font-size="28" font-weight="800" fill="#121212" letter-spacing="1.5">YUKBOR</text>
-              <path d="M148 24h36c5 0 8 2 11 6l14 18c2 3 3 5 3 9v13H148z" fill="#ffd21f"/>
-              <path d="M156 31h24l13 17h-37z" fill="#2b3a4c"/>
-              <rect x="4" y="68" width="210" height="8" rx="3" fill="#2a2a2a"/>
-              <rect x="207" y="56" width="8" height="9" rx="2" fill="#fff6c2"/>
-              <g fill="#0b0b0b" stroke="#f5f3ee" stroke-width="3">
-                <circle cx="36" cy="78" r="13"/>
-                <circle cx="104" cy="78" r="13"/>
-                <circle cx="182" cy="78" r="13"/>
-              </g>
-              <g fill="#f5f3ee">
-                <circle cx="36" cy="78" r="4.5"/>
-                <circle cx="104" cy="78" r="4.5"/>
-                <circle cx="182" cy="78" r="4.5"/>
-              </g>
-            </svg>
-            """;
-
     private static final String[][] SAMPLE_ROUTES = {
             {"Toshkent", "Samarqand"},
             {"Samarqand", "Buxoro"},
@@ -174,7 +151,7 @@ public class HomeView extends Div {
         add(
                 hero(),
                 ticker(),
-                road(),
+                labels(),
                 steps(),
                 postNudge(),
                 features(),
@@ -212,7 +189,7 @@ public class HomeView extends Div {
 
                 const targets = page.querySelectorAll(
                     '.home-section-header, .home-step, .home-feature, ' +
-                    '.home-faq-item, .home-cta-panel, .home-nudge');
+                    '.home-faq-item, .home-cta-panel, .home-nudge, .home-label');
 
                 targets.forEach(function (el) {
                     el.classList.add('yb-reveal');
@@ -385,12 +362,57 @@ public class HomeView extends Div {
         return band;
     }
 
-    private Div road() {
-        Div road = new Div();
-        road.addClassName("home-road");
-        road.getElement().setAttribute("aria-hidden", "true");
-        road.add(svgBox(ICON_BIG_TRUCK, "home-truck"));
-        return road;
+    /** {raqam, qayerdan, qayerga, yuk, shtamp, shtamp rangi} */
+    private static final String[][] LABELS = {
+            {"0427", "Toshkent", "Buxoro", "Hujjatlar · 2 kg", "Yo'lda", "is-red"},
+            {"0431", "Andijon", "Toshkent", "Kiyim · 6 kg", "Yetkazildi", "is-green"},
+            {"0436", "Qarshi", "Toshkent", "Quti · 11 kg", "Yangi", "is-blue"}
+    };
+
+    /** Jo'natma yorliqlari: scroll qilinganda "yopishib" chiqadi, so'ng ustiga shtamp bosiladi. */
+    private Div labels() {
+        Div band = new Div();
+        band.addClassName("home-labels");
+
+        Div container = new Div();
+        container.addClassName("home-container");
+
+        Span note = new Span("namunaviy jo'natmalar");
+        note.addClassName("home-labels-note");
+
+        Div grid = new Div();
+        grid.addClassName("home-labels-grid");
+        for (String[] l : LABELS) {
+            grid.add(label(l[0], l[1], l[2], l[3], l[4], l[5]));
+        }
+
+        container.add(note, grid);
+        band.add(container);
+        return band;
+    }
+
+    private Div label(String number, String from, String to, String cargo, String stamp, String tone) {
+        Div label = new Div();
+        label.addClassName("home-label");
+
+        Span no = new Span("jo'natma №" + number);
+        no.addClassName("home-label-no");
+
+        Span route = new Span(from + " → " + to);
+        route.addClassName("home-label-route");
+
+        Span info = new Span(cargo);
+        info.addClassName("home-label-info");
+
+        Div code = new Div();
+        code.addClassName("home-label-code");
+        code.getElement().setAttribute("aria-hidden", "true");
+
+        Span mark = new Span(stamp);
+        mark.addClassNames("home-label-stamp", tone);
+
+        label.add(no, route, info, code, mark);
+        return label;
     }
 
     // ================= QADAMLAR =================
